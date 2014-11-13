@@ -6,20 +6,20 @@ using PerfectBound.WinForms.Interfaces;
 
 namespace PerfectBound.WinForms.Implementations
 {
-    internal class ObservableSourceControlProperty<TSource, TControl, TProp> : IObservableSourceControlProperty<TSource, TControl, TProp> 
+    internal class ObservableSourceBindableProperty<TSource, TBindable, TProp> : IObservableSourceBindableProperty<TSource, TBindable, TProp> 
         where TSource : INotifyPropertyChanged 
-        where TControl : Control
+        where TBindable : IBindableComponent
     {
-        private readonly ObservableSourceControl<TSource, TControl> _parent;
+        private readonly ObservableSourceBindable<TSource, TBindable> _parent;
         private readonly string _memberName;
 
-        public ObservableSourceControlProperty(ObservableSourceControl<TSource, TControl> parent, Expression<Func<TControl, TProp>> member)
+        public ObservableSourceBindableProperty(ObservableSourceBindable<TSource, TBindable> parent, Expression<Func<TBindable, TProp>> member)
         {
             _parent = parent;
             _memberName = member.GetAccessorName();
         }
 
-        public IObservableSourceControl<TSource, TControl> BindTo(
+        public IObservableSourceBindable<TSource, TBindable> BindTo(
             Expression<Func<TSource, TProp>> sourceMember,
             ControlUpdateMode controlUpdateMode = ControlUpdateMode.OnPropertyChanged,
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
@@ -29,7 +29,7 @@ namespace PerfectBound.WinForms.Implementations
             return _parent;
         }
 
-        public IObservableSourceControl<TSource, TControl> UpdateSource(
+        public IObservableSourceBindable<TSource, TBindable> UpdateSource(
             Expression<Func<TSource, TProp>> sourceMember,
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
         {
@@ -38,26 +38,26 @@ namespace PerfectBound.WinForms.Implementations
             return _parent;
         }
 
-        public IObservableSourceControl<TSource, TControl> UpdateControlFrom(Expression<Func<TSource, TProp>> sourceMember)
+        public IObservableSourceBindable<TSource, TBindable> UpdateBindable(Expression<Func<TSource, TProp>> sourceMember)
         {
             var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), ControlUpdateMode.OnPropertyChanged, DataSourceUpdateMode.Never);
             _parent.AddDataBinding(binding);
             return _parent;
         }
 
-        public ITwoWayUpdateProperty<TSource, TControl, TSourceProp> Convert<TSourceProp>(Func<TProp, TSourceProp> to, Func<TSourceProp, TProp> from)
+        public ITwoWayUpdateProperty<TSource, TBindable, TSourceProp> Convert<TSourceProp>(Func<TProp, TSourceProp> to, Func<TSourceProp, TProp> from)
         {
-            return new ConversionControlProperty<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) { ConvertToFunc = to, ConvertFromFunc = from };
+            return new ConversionControlProperty<TSource, TBindable, TProp, TSourceProp>(_parent, _memberName) { ConvertToFunc = to, ConvertFromFunc = from };
         }
 
-        public IControlToSourceUpdateProperty<TSource, TControl, TSourceProp> ConvertTo<TSourceProp>(Func<TProp, TSourceProp> func)
+        public IControlToSourceUpdateProperty<TSource, TBindable, TSourceProp> ConvertTo<TSourceProp>(Func<TProp, TSourceProp> func)
         {
-            return new ConversionControlProperty<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) {ConvertToFunc = func};
+            return new ConversionControlProperty<TSource, TBindable, TProp, TSourceProp>(_parent, _memberName) {ConvertToFunc = func};
         }
 
-        public IControlFromSourceUpdateProperty<TSource, TControl, TSourceProp> ConvertFrom<TSourceProp>(Func<TSourceProp, TProp> func)
+        public IControlFromSourceUpdateProperty<TSource, TBindable, TSourceProp> ConvertFrom<TSourceProp>(Func<TSourceProp, TProp> func)
         {
-            return new ConversionControlProperty<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) { ConvertFromFunc = func };
+            return new ConversionControlProperty<TSource, TBindable, TProp, TSourceProp>(_parent, _memberName) { ConvertFromFunc = func };
         }
     }
 }

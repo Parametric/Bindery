@@ -66,7 +66,7 @@ namespace PerfectBound.WinForms.Test.Tests
             using (new ControlTester(textBox))
             using (var source = Bindery.ObservableSource(viewModel))
             {
-                source.Control(textBox).Property(c => c.Text).ConvertFrom<int>(Convert.ToString).UpdateControlFrom(vm => vm.IntValue);
+                source.Control(textBox).Property(c => c.Text).ConvertFrom<int>(Convert.ToString).UpdateBindable(vm => vm.IntValue);
                 viewModel.IntValue = 3;
                 Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));
             }

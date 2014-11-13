@@ -52,16 +52,18 @@
     <Compile Include="Bindery.cs" />
     <Compile Include="Implementations\ConversionControlProperty.cs" />
     <Compile Include="ExpressionExtensions.cs" />
+    <Compile Include="Implementations\ObservableSourceBindable.cs" />
     <Compile Include="Interfaces\IControlFromSourceUpdateProperty.cs" />
     <Compile Include="Interfaces\IControlToSourceUpdateProperty.cs" />
     <Compile Include="Interfaces\IObservableSource.cs" />
+    <Compile Include="Interfaces\IObservableSourceBindable.cs" />
+    <Compile Include="Interfaces\IObservableSourceBindableProperty.cs" />
     <Compile Include="Interfaces\IObservableSourceControl.cs" />
-    <Compile Include="Interfaces\IObservableSourceControlProperty.cs" />
     <Compile Include="Interfaces\IObservableSourceProperty.cs" />
     <Compile Include="Interfaces\ITwoWayUpdateProperty.cs" />
     <Compile Include="Implementations\ObservableSource.cs" />
     <Compile Include="Implementations\ObservableSourceControl.cs" />
-    <Compile Include="Implementations\ObservableSourceControlProperty.cs" />
+    <Compile Include="Implementations\ObservableSourceBindableProperty.cs" />
     <Compile Include="Implementations\ObservableSourceProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -5,10 +5,10 @@ using System.Windows.Forms;
 
 namespace PerfectBound.WinForms.Interfaces
 {
-    public interface IControlToSourceUpdateProperty<TSource, TControl, TProp>
+    public interface IControlToSourceUpdateProperty<TSource, TBindable, TProp>
         where TSource : INotifyPropertyChanged
-        where TControl: Control
+        where TBindable: IBindableComponent
     {
-        IObservableSourceControl<TSource, TControl> UpdateSource(Expression<Func<TSource, TProp>> sourceMember, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
+        IObservableSourceBindable<TSource, TBindable> UpdateSource(Expression<Func<TSource, TProp>> sourceMember, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
     }
 }

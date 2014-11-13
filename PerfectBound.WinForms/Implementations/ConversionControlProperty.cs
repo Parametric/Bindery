@@ -6,17 +6,17 @@ using PerfectBound.WinForms.Interfaces;
 
 namespace PerfectBound.WinForms.Implementations
 {
-    internal class ConversionControlProperty<TSource, TControl, TControlProp, TSourceProp> : 
-        IControlToSourceUpdateProperty<TSource,TControl, TSourceProp>, 
-        IControlFromSourceUpdateProperty<TSource,TControl,TSourceProp>,
-        ITwoWayUpdateProperty<TSource, TControl, TSourceProp>
+    internal class ConversionControlProperty<TSource, TBindable, TControlProp, TSourceProp> : 
+        IControlToSourceUpdateProperty<TSource,TBindable, TSourceProp>, 
+        IControlFromSourceUpdateProperty<TSource,TBindable,TSourceProp>,
+        ITwoWayUpdateProperty<TSource, TBindable, TSourceProp>
         where TSource : INotifyPropertyChanged
-        where TControl: Control
+        where TBindable: IBindableComponent
     {
-        private readonly ObservableSourceControl<TSource, TControl> _parent;
+        private readonly ObservableSourceBindable<TSource, TBindable> _parent;
         private readonly string _memberName;
 
-        public ConversionControlProperty(ObservableSourceControl<TSource, TControl> parent, string memberName)
+        public ConversionControlProperty(ObservableSourceBindable<TSource, TBindable> parent, string memberName)
         {
             _parent = parent;
             _memberName = memberName;
@@ -26,7 +26,7 @@ namespace PerfectBound.WinForms.Implementations
 
         public Func<TSourceProp, TControlProp> ConvertFromFunc { get; set; }
 
-        public IObservableSourceControl<TSource, TControl> UpdateSource(Expression<Func<TSource, TSourceProp>> sourceMember, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
+        public IObservableSourceBindable<TSource, TBindable> UpdateSource(Expression<Func<TSource, TSourceProp>> sourceMember, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
         {
             var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), ControlUpdateMode.Never, dataSourceUpdateMode);
             binding.Parse += (sender, e) => e.Value = ConvertToFunc((TControlProp) e.Value);
@@ -34,7 +34,7 @@ namespace PerfectBound.WinForms.Implementations
             return _parent;
         }
 
-        public IObservableSourceControl<TSource, TControl> UpdateControlFrom(Expression<Func<TSource, TSourceProp>> sourceMember)
+        public IObservableSourceBindable<TSource, TBindable> UpdateBindable(Expression<Func<TSource, TSourceProp>> sourceMember)
         {
             var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), ControlUpdateMode.OnPropertyChanged, DataSourceUpdateMode.Never);
             binding.Format += (sender, e) => e.Value = ConvertFromFunc((TSourceProp)e.Value);
@@ -42,7 +42,7 @@ namespace PerfectBound.WinForms.Implementations
             return _parent;
         }
 
-        public IObservableSourceControl<TSource, TControl> BindTo(Expression<Func<TSource, TSourceProp>> sourceMember, ControlUpdateMode controlUpdateMode = ControlUpdateMode.OnPropertyChanged,
+        public IObservableSourceBindable<TSource, TBindable> BindTo(Expression<Func<TSource, TSourceProp>> sourceMember, ControlUpdateMode controlUpdateMode = ControlUpdateMode.OnPropertyChanged,
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
         {
             var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), controlUpdateMode, dataSourceUpdateMode);
