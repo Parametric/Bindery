@@ -2,10 +2,11 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
+using PerfectBound.WinForms.Interfaces;
 
-namespace PerfectBound.WinForms.Binding
+namespace PerfectBound.WinForms.Implementations
 {
-    public class ObservableSourceProperty<TSource, TProp> : IObservableSourceProperty<TSource, TProp> where TSource : INotifyPropertyChanged
+    internal class ObservableSourceProperty<TSource, TProp> : IObservableSourceProperty<TSource, TProp> where TSource : INotifyPropertyChanged
     {
         private readonly ObservableSource<TSource> _source;
         private readonly string _memberName;

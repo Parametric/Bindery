@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq.Expressions;
+﻿using System.ComponentModel;
+using PerfectBound.WinForms.Implementations;
+using PerfectBound.WinForms.Interfaces;
 
-namespace PerfectBound.WinForms.Binding
+namespace PerfectBound.WinForms
 {
     public static class Bindery
     {

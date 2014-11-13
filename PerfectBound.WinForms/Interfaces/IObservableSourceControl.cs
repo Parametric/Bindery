@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Windows.Forms;
 using System.Windows.Input;
 
-namespace PerfectBound.WinForms.Binding
+namespace PerfectBound.WinForms.Interfaces
 {
     public interface IObservableSourceControl<TSource, TControl>
         where TSource : INotifyPropertyChanged

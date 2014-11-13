@@ -49,17 +49,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binding\Bindery.cs" />
-    <Compile Include="Binding\ControlBinding.cs" />
-    <Compile Include="Binding\ExpressionExtensions.cs" />
-    <Compile Include="Binding\IObservableSource.cs" />
-    <Compile Include="Binding\IObservableSourceControl.cs" />
-    <Compile Include="Binding\IObservableSourceControlProperty.cs" />
-    <Compile Include="Binding\IObservableSourceProperty.cs" />
-    <Compile Include="Binding\ObservableSource.cs" />
-    <Compile Include="Binding\ObservableSourceControl.cs" />
-    <Compile Include="Binding\ObservableSourceControlProperty.cs" />
-    <Compile Include="Binding\ObservableSourceProperty.cs" />
+    <Compile Include="Bindery.cs" />
+    <Compile Include="Implementations\ConversionControlProperty.cs" />
+    <Compile Include="ExpressionExtensions.cs" />
+    <Compile Include="Interfaces\IControlFromSourceUpdateProperty.cs" />
+    <Compile Include="Interfaces\IControlToSourceUpdateProperty.cs" />
+    <Compile Include="Interfaces\IObservableSource.cs" />
+    <Compile Include="Interfaces\IObservableSourceControl.cs" />
+    <Compile Include="Interfaces\IObservableSourceControlProperty.cs" />
+    <Compile Include="Interfaces\IObservableSourceProperty.cs" />
+    <Compile Include="Interfaces\ITwoWayUpdateProperty.cs" />
+    <Compile Include="Implementations\ObservableSource.cs" />
+    <Compile Include="Implementations\ObservableSourceControl.cs" />
+    <Compile Include="Implementations\ObservableSourceControlProperty.cs" />
+    <Compile Include="Implementations\ObservableSourceProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

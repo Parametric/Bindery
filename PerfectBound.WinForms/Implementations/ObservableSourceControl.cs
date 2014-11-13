@@ -3,11 +3,11 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 using System.Windows.Input;
+using PerfectBound.WinForms.Interfaces;
 
-namespace PerfectBound.WinForms.Binding
+namespace PerfectBound.WinForms.Implementations
 {
-    public class ObservableSourceControl<TSource, TControl> : IObservableSourceControl<TSource, TControl> 
-        where TSource : INotifyPropertyChanged
+    internal class ObservableSourceControl<TSource, TControl> : IObservableSourceControl<TSource, TControl> where TSource : INotifyPropertyChanged
         where TControl : Control
     {
         public ObservableSource<TSource> Source { get; private set; }
@@ -32,9 +32,18 @@ namespace PerfectBound.WinForms.Binding
             return new ObservableSourceControlProperty<TSource, TControl, TProp>(this, member);
         }
 
-        public void AddDataBinding(System.Windows.Forms.Binding binding)
+        public void AddDataBinding(Binding binding)
         {
             Control.DataBindings.Add(binding);
+        }
+
+        internal Binding CreateBinding(string controlPropertyName, string sourcePropertyName, ControlUpdateMode controlUpdateMode, DataSourceUpdateMode dataSourceUpdateMode)
+        {
+            return new Binding(controlPropertyName, Source.Object, sourcePropertyName)
+            {
+                ControlUpdateMode = controlUpdateMode,
+                DataSourceUpdateMode = dataSourceUpdateMode
+            };
         }
     }
 }

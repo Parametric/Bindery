@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 
-namespace PerfectBound.WinForms.Binding
+namespace PerfectBound.WinForms.Interfaces
 {
     public interface IObservableSourceProperty<TSource, out TProp> where TSource : INotifyPropertyChanged
     {

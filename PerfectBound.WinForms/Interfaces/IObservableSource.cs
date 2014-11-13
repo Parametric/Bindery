@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 
-namespace PerfectBound.WinForms.Binding
+namespace PerfectBound.WinForms.Interfaces
 {
     public interface IObservableSource<T> : IDisposable 
         where T:INotifyPropertyChanged

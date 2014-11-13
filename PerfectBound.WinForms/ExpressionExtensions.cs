@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace PerfectBound.WinForms.Binding
+namespace PerfectBound.WinForms
 {
-    public static class ExpressionExtensions
+    internal static class ExpressionExtensions
     {
         public static string GetAccessorName<T, TR>(this Expression<Func<T, TR>> expression)
         {

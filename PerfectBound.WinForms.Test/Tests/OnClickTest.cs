@@ -1,6 +1,5 @@
 ﻿using System.Windows.Forms;
 using NUnit.Framework;
-using PerfectBound.WinForms.Binding;
 using PerfectBound.WinForms.Test.TestClasses;
 
 namespace PerfectBound.WinForms.Test.Tests

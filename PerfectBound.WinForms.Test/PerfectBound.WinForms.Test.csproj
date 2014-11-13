@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Tests\BindToTest.cs" />
+    <Compile Include="TestClasses\ControlTester.cs" />
     <Compile Include="Tests\OnClickTest.cs" />
     <Compile Include="Tests\OnPropertyChangedTest.cs" />
     <Compile Include="Properties\Annotations.cs" />

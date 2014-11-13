@@ -4,10 +4,11 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 using System.Windows.Forms;
+using PerfectBound.WinForms.Interfaces;
 
-namespace PerfectBound.WinForms.Binding
+namespace PerfectBound.WinForms.Implementations
 {
-    public class ObservableSource<T> : IObservableSource<T> where T : INotifyPropertyChanged
+    internal class ObservableSource<T> : IObservableSource<T> where T : INotifyPropertyChanged
     {
         public T Object { get; private set; }
         public IObservable<PropertyChangedEventArgs> PropertyChangedObservable { get; private set; }

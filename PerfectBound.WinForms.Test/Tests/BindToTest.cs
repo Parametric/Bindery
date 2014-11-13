@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using NUnit.Framework;
-using PerfectBound.WinForms.Binding;
 using PerfectBound.WinForms.Test.TestClasses;
 
 namespace PerfectBound.WinForms.Test.Tests
@@ -25,17 +24,71 @@ namespace PerfectBound.WinForms.Test.Tests
             }
         }
 
-        public class ControlTester : IDisposable
+        [Test]
+        public void UpdatingSourceUpdatesControl()
         {
-            private Form _form = new Form();
+            // Arrange
+            var viewModel = new TestViewModel();
+            var textBox = new TextBox();
 
-            public ControlTester(Control control)
+            using (new ControlTester(textBox))
+            using (var source = Bindery.ObservableSource(viewModel))
             {
-           }
+                source.Control(textBox).Property(c => c.Text).BindTo(vm => vm.StringValue);
+                viewModel.StringValue = "new value";
+                Assert.That(textBox.Text, Is.EqualTo(viewModel.StringValue));
+            }
+        }
 
-            public void Dispose()
+        [Test]
+        public void UpdateSourceWithConversion()
+        {
+            // Arrange
+            var viewModel = new TestViewModel();
+            var textBox = new TextBox();
+
+            using (new ControlTester(textBox))
+            using (var source = Bindery.ObservableSource(viewModel))
             {
-                _form.Close();
+                source.Control(textBox).Property(c => c.Text).ConvertTo(Convert.ToInt32).UpdateSource(vm => vm.IntValue);
+                textBox.Text = "3";
+                Assert.That(viewModel.IntValue, Is.EqualTo(Convert.ToInt32(textBox.Text)));
+            }
+        }
+
+        [Test]
+        public void UpdateControlWithConversion()
+        {
+            // Arrange
+            var viewModel = new TestViewModel();
+            var textBox = new TextBox();
+
+            using (new ControlTester(textBox))
+            using (var source = Bindery.ObservableSource(viewModel))
+            {
+                source.Control(textBox).Property(c => c.Text).ConvertFrom<int>(Convert.ToString).UpdateControlFrom(vm => vm.IntValue);
+                viewModel.IntValue = 3;
+                Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));
+            }
+        }
+
+        [Test]
+        public void TwoWayBindingWithConversion()
+        {
+            // Arrange
+            var viewModel = new TestViewModel();
+            var textBox = new TextBox();
+
+            using (new ControlTester(textBox))
+            using (var source = Bindery.ObservableSource(viewModel))
+            {
+                source.Control(textBox).Property(c => c.Text).Convert(to:int.Parse, from:Convert.ToString).BindTo(vm => vm.IntValue);
+                
+                viewModel.IntValue = 3;
+                Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));
+
+                textBox.Text = "30";
+                Assert.That(viewModel.IntValue, Is.EqualTo(Convert.ToInt32(textBox.Text)));
             }
         }
     }
