@@ -38,6 +38,9 @@
     <Reference Include="System.Reactive.Interfaces">
       <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,8 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binding\Bindery.cs" />
-    <Compile Include="Binding\BindingSource.cs" />
     <Compile Include="Binding\ControlBinding.cs" />
+    <Compile Include="Binding\ExpressionExtensions.cs" />
+    <Compile Include="Binding\IObservableSource.cs" />
+    <Compile Include="Binding\IObservableSourceControl.cs" />
+    <Compile Include="Binding\IObservableSourceControlProperty.cs" />
+    <Compile Include="Binding\IObservableSourceProperty.cs" />
+    <Compile Include="Binding\ObservableSource.cs" />
+    <Compile Include="Binding\ObservableSourceControl.cs" />
+    <Compile Include="Binding\ObservableSourceControlProperty.cs" />
+    <Compile Include="Binding\ObservableSourceProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -128,8 +128,8 @@ namespace PerfectBound.WinForms.Binding
 
         private System.Windows.Forms.Binding CreateBinding<TProp>(Expression<Func<TControl, TProp>> controlMember, Expression<Func<TSource, TProp>> sourceMember)
         {
-            var propertyName = Bindery.GetAccessorName(controlMember);
-            var dataMember = Bindery.GetAccessorName(sourceMember);
+            var propertyName = controlMember.GetAccessorName();
+            var dataMember = sourceMember.GetAccessorName();
 
             var dataSourceType = Source.GetType();
 

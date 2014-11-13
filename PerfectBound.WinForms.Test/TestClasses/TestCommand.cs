@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Input;
 
-namespace PerfectBound.WinForms.Test
+namespace PerfectBound.WinForms.Test.TestClasses
 {
     public class TestCommand : ICommand
     {
@@ -11,10 +11,12 @@ namespace PerfectBound.WinForms.Test
         {
             _viewModel = viewModel;
             _viewModel.PropertyChanged += (sender, e) => OnCanExecuteChanged();
+            ExecuteAction = vm => { };
             CanExecuteCondition = vm => true;
         }
 
         public Func<TestViewModel, bool> CanExecuteCondition { get; set; }
+        public Action<TestViewModel> ExecuteAction { get; set; }
 
         public bool CanExecute(object parameter)
         {
@@ -23,7 +25,7 @@ namespace PerfectBound.WinForms.Test
 
         public void Execute(object parameter)
         {
-            _viewModel.CommandExecutedCount++;
+            ExecuteAction(_viewModel);
         }
 
         public event EventHandler CanExecuteChanged;

@@ -1,29 +1,32 @@
 ﻿using System.Windows.Forms;
 using NUnit.Framework;
 using PerfectBound.WinForms.Binding;
+using PerfectBound.WinForms.Test.TestClasses;
 
-namespace PerfectBound.WinForms.Test
+namespace PerfectBound.WinForms.Test.Tests
 {
     [TestFixture]
-    public class CommandButtonTest
+    public class OnClickTest
     {
         [Test]
         public void ClickingTheControlExecutesTheCommand()
         {
             // Arrange
             var viewModel = new TestViewModel();
+            var executedCount = 0;
+            viewModel.Command.ExecuteAction = vm => executedCount++;
             var button = new Button();
 
-            using (var bindingSource = Bindery.Source(viewModel))
+            using (var source = Bindery.ObservableSource(viewModel))
             {
-                bindingSource.Control(button).Command(vm => vm.Command);
+                source.Control(button).OnClick(vm => vm.Command);
 
                 // Act
                 button.PerformClick();
                 button.PerformClick();
 
                 // Assert
-                Assert.That(viewModel.CommandExecutedCount, Is.EqualTo(2));
+                Assert.That(executedCount, Is.EqualTo(2));
             }
         }
 
@@ -34,17 +37,17 @@ namespace PerfectBound.WinForms.Test
             var viewModel = new TestViewModel();
             var button = new Button();
 
-            using (var bindingSource = Bindery.Source(viewModel))
+            using (var source = Bindery.ObservableSource(viewModel))
             {
-                bindingSource.Control(button).Command(vm => vm.Command);
+                source.Control(button).OnClick(vm => vm.Command);
 
-                viewModel.Command.CanExecuteCondition = vm => vm.Value >= 0;
+                viewModel.Command.CanExecuteCondition = vm => vm.IntValue >= 0;
 
-                viewModel.Value = 5;
+                viewModel.IntValue = 5;
                 Assert.That(button.Enabled, Is.True);
-                viewModel.Value = -1;
+                viewModel.IntValue = -1;
                 Assert.That(button.Enabled, Is.False);
-                viewModel.Value = 5;
+                viewModel.IntValue = 5;
                 Assert.That(button.Enabled, Is.True);
             }
         }
