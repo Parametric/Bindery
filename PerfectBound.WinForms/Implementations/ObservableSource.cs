@@ -35,6 +35,11 @@ namespace PerfectBound.WinForms.Implementations
             return new ObservableSourceControl<T,TControl>(this, control);
         }
 
+        public IObservableSourceBindable<T, TBindable> Bindable<TBindable>(TBindable bindable) where TBindable : IBindableComponent
+        {
+            return new ObservableSourceBindable<T, TBindable>(this, bindable);
+        }
+
         public void Dispose()
         {
             _subscriptions.ForEach(x=>x.Dispose());

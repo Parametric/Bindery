@@ -9,6 +9,6 @@ namespace PerfectBound.WinForms.Interfaces
         where TSource : INotifyPropertyChanged
         where TBindable : IBindableComponent
     {
-        IObservableSourceBindable<TSource, TBindable> UpdateBindable(Expression<Func<TSource, TProp>> sourceMember);
+        IObservableSourceBindable<TSource, TBindable> UpdateControlFrom(Expression<Func<TSource, TProp>> sourceMember);
     }
 }

@@ -10,5 +10,6 @@ namespace PerfectBound.WinForms.Interfaces
     {
         IObservableSourceProperty<T, TProp> Property<TProp>(Expression<Func<T, TProp>> member);
         IObservableSourceControl<T, TControl> Control<TControl>(TControl control) where TControl : Control;
+        IObservableSourceBindable<T, TBindable> Bindable<TBindable>(TBindable bindable) where TBindable : IBindableComponent;
     }
 }

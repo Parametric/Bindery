@@ -38,7 +38,7 @@ namespace PerfectBound.WinForms.Implementations
             return _parent;
         }
 
-        public IObservableSourceBindable<TSource, TBindable> UpdateBindable(Expression<Func<TSource, TProp>> sourceMember)
+        public IObservableSourceBindable<TSource, TBindable> UpdateControlFrom(Expression<Func<TSource, TProp>> sourceMember)
         {
             var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), ControlUpdateMode.OnPropertyChanged, DataSourceUpdateMode.Never);
             _parent.AddDataBinding(binding);

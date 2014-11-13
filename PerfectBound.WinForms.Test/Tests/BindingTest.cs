@@ -6,10 +6,10 @@ using PerfectBound.WinForms.Test.TestClasses;
 namespace PerfectBound.WinForms.Test.Tests
 {
     [TestFixture]
-    public class BindToTest
+    public class BindingTest
     {
         [Test]
-        public void UpdatingControlUpdatesSource()
+        public void TwoWayBinding()
         {
             // Arrange
             var viewModel = new TestViewModel();
@@ -18,28 +18,50 @@ namespace PerfectBound.WinForms.Test.Tests
             using (new ControlTester(textBox))
             using (var source = Bindery.ObservableSource(viewModel))
             {
-                source.Control(textBox).Property(c => c.Text).BindTo(vm => vm.StringValue);
-                textBox.Text = "new value";
+                source.Bindable(textBox).Property(c => c.Text).BindTo(vm => vm.StringValue);
+                textBox.Text = "value #1";
                 Assert.That(viewModel.StringValue, Is.EqualTo(textBox.Text));
-            }
-        }
-
-        [Test]
-        public void UpdatingSourceUpdatesControl()
-        {
-            // Arrange
-            var viewModel = new TestViewModel();
-            var textBox = new TextBox();
-
-            using (new ControlTester(textBox))
-            using (var source = Bindery.ObservableSource(viewModel))
-            {
-                source.Control(textBox).Property(c => c.Text).BindTo(vm => vm.StringValue);
-                viewModel.StringValue = "new value";
+                viewModel.StringValue = "value #2";
                 Assert.That(textBox.Text, Is.EqualTo(viewModel.StringValue));
             }
         }
 
+        [Test]
+        public void OneWayBindingTowardsSource()
+        {
+            // Arrange
+            var viewModel = new TestViewModel();
+            var textBox = new TextBox();
+
+            using (new ControlTester(textBox))
+            using (var source = Bindery.ObservableSource(viewModel))
+            {
+                source.Bindable(textBox).Property(c => c.Text).UpdateSource(vm => vm.StringValue);
+                textBox.Text = "value #1";
+                Assert.That(viewModel.StringValue, Is.EqualTo(textBox.Text));
+                viewModel.StringValue = "value #2";
+                Assert.That(textBox.Text, Is.Not.EqualTo(viewModel.StringValue));
+            }
+        }
+
+        [Test]
+        public void OneWayBindingTowardsControl()
+        {
+            // Arrange
+            var viewModel = new TestViewModel();
+            var textBox = new TextBox();
+
+            using (new ControlTester(textBox))
+            using (var source = Bindery.ObservableSource(viewModel))
+            {
+                source.Bindable(textBox).Property(c => c.Text).UpdateControlFrom(vm => vm.StringValue);
+                textBox.Text = "value #1";
+                Assert.That(viewModel.StringValue, Is.Not.EqualTo(textBox.Text));
+                viewModel.StringValue = "value #2";
+                Assert.That(textBox.Text, Is.EqualTo(viewModel.StringValue));
+            }
+        }
+        
         [Test]
         public void UpdateSourceWithConversion()
         {
@@ -66,7 +88,7 @@ namespace PerfectBound.WinForms.Test.Tests
             using (new ControlTester(textBox))
             using (var source = Bindery.ObservableSource(viewModel))
             {
-                source.Control(textBox).Property(c => c.Text).ConvertFrom<int>(Convert.ToString).UpdateBindable(vm => vm.IntValue);
+                source.Control(textBox).Property(c => c.Text).ConvertFrom<int>(Convert.ToString).UpdateControlFrom(vm => vm.IntValue);
                 viewModel.IntValue = 3;
                 Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));
             }

@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tests\BindToTest.cs" />
+    <Compile Include="Tests\BindingTest.cs" />
     <Compile Include="TestClasses\ControlTester.cs" />
     <Compile Include="Tests\OnClickTest.cs" />
     <Compile Include="Tests\OnPropertyChangedTest.cs" />
