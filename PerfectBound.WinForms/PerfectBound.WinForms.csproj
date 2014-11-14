@@ -49,22 +49,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bindery.cs" />
-    <Compile Include="Implementations\ConversionControlProperty.cs" />
+    <Compile Include="Bind.cs" />
+    <Compile Include="Implementations\ConversionControlPropertyBinder.cs" />
     <Compile Include="ExpressionExtensions.cs" />
-    <Compile Include="Implementations\ObservableSourceBindable.cs" />
-    <Compile Include="Interfaces\IControlFromSourceUpdateProperty.cs" />
-    <Compile Include="Interfaces\IControlToSourceUpdateProperty.cs" />
-    <Compile Include="Interfaces\IObservableSource.cs" />
-    <Compile Include="Interfaces\IObservableSourceBindable.cs" />
-    <Compile Include="Interfaces\IObservableSourceBindableProperty.cs" />
-    <Compile Include="Interfaces\IObservableSourceControl.cs" />
-    <Compile Include="Interfaces\IObservableSourceProperty.cs" />
-    <Compile Include="Interfaces\ITwoWayUpdateProperty.cs" />
-    <Compile Include="Implementations\ObservableSource.cs" />
-    <Compile Include="Implementations\ObservableSourceControl.cs" />
-    <Compile Include="Implementations\ObservableSourceBindableProperty.cs" />
-    <Compile Include="Implementations\ObservableSourceProperty.cs" />
+    <Compile Include="Implementations\BindableBinder.cs" />
+    <Compile Include="Implementations\BindableEventBinder.cs" />
+    <Compile Include="Interfaces\IBindableEventBinder.cs" />
+    <Compile Include="Interfaces\IControlFromSourceUpdatePropertyBinder.cs" />
+    <Compile Include="Interfaces\IControlToSourceUpdatePropertyBinder.cs" />
+    <Compile Include="Interfaces\ISourceBinder.cs" />
+    <Compile Include="Interfaces\IBindableBinder.cs" />
+    <Compile Include="Interfaces\IBindablePropertyBinder.cs" />
+    <Compile Include="Interfaces\IControlBinder.cs" />
+    <Compile Include="Interfaces\ISourcePropertyBinder.cs" />
+    <Compile Include="Interfaces\ITwoWayUpdatePropertyBinder.cs" />
+    <Compile Include="Implementations\SourceBinder.cs" />
+    <Compile Include="Implementations\ControlBinder.cs" />
+    <Compile Include="Implementations\BindablePropertyBinder.cs" />
+    <Compile Include="Implementations\SourcePropertyBinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

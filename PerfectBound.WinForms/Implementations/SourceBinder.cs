@@ -8,13 +8,13 @@ using PerfectBound.WinForms.Interfaces;
 
 namespace PerfectBound.WinForms.Implementations
 {
-    internal class ObservableSource<T> : IObservableSource<T> where T : INotifyPropertyChanged
+    internal class SourceBinder<T> : ISourceBinder<T> where T : INotifyPropertyChanged
     {
         public T Object { get; private set; }
         public IObservable<PropertyChangedEventArgs> PropertyChangedObservable { get; private set; }
         private readonly List<IDisposable> _subscriptions;
 
-        public ObservableSource(T obj)
+        public SourceBinder(T obj)
         {
             Object = obj;
             PropertyChangedObservable = Observable.FromEvent<PropertyChangedEventHandler, PropertyChangedEventArgs>(
@@ -25,19 +25,19 @@ namespace PerfectBound.WinForms.Implementations
         }
 
 
-        public IObservableSourceProperty<T, TProp> Property<TProp>(Expression<Func<T, TProp>> member)
+        public ISourcePropertyBinder<T, TProp> Property<TProp>(Expression<Func<T, TProp>> member)
         {
-            return new ObservableSourceProperty<T,TProp>(this, member);
+            return new SourcePropertyBinder<T,TProp>(this, member);
         }
 
-        public IObservableSourceControl<T, TControl> Control<TControl>(TControl control) where TControl : Control
+        public IControlBinder<T, TControl> Control<TControl>(TControl control) where TControl : Control
         {
-            return new ObservableSourceControl<T,TControl>(this, control);
+            return new ControlBinder<T,TControl>(this, control);
         }
 
-        public IObservableSourceBindable<T, TBindable> Bindable<TBindable>(TBindable bindable) where TBindable : IBindableComponent
+        public IBindableBinder<T, TBindable> Bindable<TBindable>(TBindable bindable) where TBindable : IBindableComponent
         {
-            return new ObservableSourceBindable<T, TBindable>(this, bindable);
+            return new BindableBinder<T, TBindable>(this, bindable);
         }
 
         public void Dispose()

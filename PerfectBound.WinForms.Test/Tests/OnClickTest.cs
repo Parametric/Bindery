@@ -16,9 +16,9 @@ namespace PerfectBound.WinForms.Test.Tests
             viewModel.Command.ExecuteAction = vm => executedCount++;
             var button = new Button();
 
-            using (var source = Bindery.ObservableSource(viewModel))
+            using (var binder = Bind.Source(viewModel))
             {
-                source.Control(button).OnClick(vm => vm.Command);
+                binder.Control(button).OnClick(vm => vm.Command);
 
                 // Act
                 button.PerformClick();
@@ -36,9 +36,9 @@ namespace PerfectBound.WinForms.Test.Tests
             var viewModel = new TestViewModel();
             var button = new Button();
 
-            using (var source = Bindery.ObservableSource(viewModel))
+            using (var binder = Bind.Source(viewModel))
             {
-                source.Control(button).OnClick(vm => vm.Command);
+                binder.Control(button).OnClick(vm => vm.Command);
 
                 viewModel.Command.CanExecuteCondition = vm => vm.IntValue >= 0;
 

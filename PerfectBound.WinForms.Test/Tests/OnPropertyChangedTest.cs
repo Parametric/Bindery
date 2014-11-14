@@ -13,9 +13,9 @@ namespace PerfectBound.WinForms.Test.Tests
             var viewModel = new TestViewModel();
             var callCount = 0;
             var setValue = 0;
-            using (var source = Bindery.ObservableSource(viewModel))
+            using (var binder = Bind.Source(viewModel))
             {
-                source.Property(vm => vm.IntValue).OnChanged(x =>
+                binder.Property(vm => vm.IntValue).OnChanged(x =>
                 {
                     setValue = x;
                     callCount++;
@@ -34,9 +34,9 @@ namespace PerfectBound.WinForms.Test.Tests
             // Arrange
             var viewModel = new TestViewModel();
             var callCount = 0;
-            using (var source = Bindery.ObservableSource(viewModel))
+            using (var binder = Bind.Source(viewModel))
             {
-                source.Property(vm => vm.IntValue).OnChanged(x => callCount++);
+                binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
 
                 // Act
                 viewModel.StringValue = "3";
@@ -50,9 +50,9 @@ namespace PerfectBound.WinForms.Test.Tests
             // Arrange
             var viewModel = new TestViewModel {IntValue=3};
             var callCount = 0;
-            using (var source = Bindery.ObservableSource(viewModel))
+            using (var binder = Bind.Source(viewModel))
             {
-                source.Property(vm => vm.IntValue).OnChanged(x => callCount++);
+                binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
                 // Act
                 viewModel.IntValue = viewModel.IntValue;
             }
@@ -65,9 +65,9 @@ namespace PerfectBound.WinForms.Test.Tests
         {
             var viewModel = new TestViewModel();
             var callCount = 0;
-            using (var source = Bindery.ObservableSource(viewModel))
+            using (var binder = Bind.Source(viewModel))
             {
-                source.Property(vm => vm.IntValue).OnChanged(x => callCount++);
+                binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
             }
             // Act
             viewModel.IntValue = 3;

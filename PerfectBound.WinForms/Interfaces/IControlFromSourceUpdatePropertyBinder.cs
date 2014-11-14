@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 
 namespace PerfectBound.WinForms.Interfaces
 {
-    public interface IObservableSourceBindable<TSource, TBindable>
+    public interface IControlFromSourceUpdatePropertyBinder<TSource, TBindable, TProp>
         where TSource : INotifyPropertyChanged
         where TBindable : IBindableComponent
     {
-        IObservableSourceBindableProperty<TSource, TBindable, TProp> Property<TProp>(Expression<Func<TBindable, TProp>> member);
+        IBindableBinder<TSource, TBindable> UpdateControlFrom(Expression<Func<TSource, TProp>> sourceMember);
     }
 }

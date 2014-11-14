@@ -6,19 +6,19 @@ using PerfectBound.WinForms.Interfaces;
 
 namespace PerfectBound.WinForms.Implementations
 {
-    internal class ObservableSourceControl<TSource, TControl> : 
-        ObservableSourceBindable<TSource,TControl>, 
-        IObservableSourceControl<TSource, TControl> 
+    internal class ControlBinder<TSource, TControl> : 
+        BindableBinder<TSource,TControl>, 
+        IControlBinder<TSource, TControl> 
         where TSource : INotifyPropertyChanged
         where TControl : Control
     {
-        public ObservableSourceControl(ObservableSource<TSource> source, TControl bindable) :base(source,bindable)
+        public ControlBinder(SourceBinder<TSource> sourceBinder, TControl bindable) :base(sourceBinder,bindable)
         {
         }
 
-        public IObservableSourceControl<TSource, TControl> OnClick(Func<TSource, ICommand> commandMember)
+        public IControlBinder<TSource, TControl> OnClick(Func<TSource, ICommand> commandMember)
         {
-            var command = commandMember(Source.Object);
+            var command = commandMember(SourceBinder.Object);
             Bindable.Click += (sender, e) => command.Execute(null);
             command.CanExecuteChanged += (sender, e) => Bindable.Enabled = command.CanExecute(null);
             return this;

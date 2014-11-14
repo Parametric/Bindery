@@ -52,8 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestClasses\TestButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Tests\BindingTest.cs" />
     <Compile Include="TestClasses\ControlTester.cs" />
+    <Compile Include="Tests\EventTest.cs" />
     <Compile Include="Tests\OnClickTest.cs" />
     <Compile Include="Tests\OnPropertyChangedTest.cs" />
     <Compile Include="Properties\Annotations.cs" />
