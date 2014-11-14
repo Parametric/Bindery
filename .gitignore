@@ -4,3 +4,5 @@ obj/
 *.DotSettings
 *.suo
 *.user
+*.ncrunchsolution
+*.ncrunchproject
