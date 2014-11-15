@@ -5,11 +5,11 @@ using System.Windows.Forms;
 
 namespace Bindery.Interfaces
 {
-    public interface ITwoWayUpdatePropertyBinder<TSource, TBindable, TProp>
+    public interface ITwoWayUpdatePropertyBinder<TSource, TControl, TProp>
         where TSource : INotifyPropertyChanged
-        where TBindable : IBindableComponent
+        where TControl : IBindableComponent
     {
-        IBindableBinder<TSource, TBindable> BindTo(
+        IControlBinder<TSource, TControl> BindTo(
             Expression<Func<TSource, TProp>> sourceMember,
             ControlUpdateMode controlUpdateMode = ControlUpdateMode.OnPropertyChanged,
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);

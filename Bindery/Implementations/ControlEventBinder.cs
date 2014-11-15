@@ -9,24 +9,24 @@ using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class BindableEventBinder<TSource, TBindable, TEventArgs> : IBindableEventBinder<TSource, TBindable>
+    internal class ControlEventBinder<TSource, TControl, TEventArgs> : IControlEventBinder<TSource, TControl>
         where TSource : INotifyPropertyChanged
-        where TBindable : IBindableComponent 
+        where TControl : IBindableComponent 
     {
-        private readonly BindableBinder<TSource, TBindable> _parent;
+        private readonly ControlBinder<TSource, TControl> _parent;
         private readonly IObservable<TEventArgs> _observable;
 
-        public BindableEventBinder(BindableBinder<TSource, TBindable> parent, string eventName)
+        public ControlEventBinder(ControlBinder<TSource, TControl> parent, string eventName)
         {
             _parent = parent;
-            var memberInfos = typeof (TBindable).GetMember(eventName);
+            var memberInfos = typeof (TControl).GetMember(eventName);
             if (memberInfos.Length == 0)
                 throw new ArgumentException(string.Format("{1} is not a member of {0}.", 
-                    parent.Bindable.GetType().Name, eventName));
+                    parent.Control.GetType().Name, eventName));
             var eventInfo = memberInfos[0] as EventInfo;
             if (eventInfo==null)
                 throw new ArgumentException(string.Format("{0}.{1} is not an event.",
-                    parent.Bindable.GetType().Name, eventName));
+                    parent.Control.GetType().Name, eventName));
             _observable = CreateObservable(eventInfo);
         }
 
@@ -45,7 +45,7 @@ namespace Bindery.Implementations
             return func();
         }
 
-        public IBindableBinder<TSource, TBindable> Triggers(Func<TSource, ICommand> commandMember)
+        public IControlBinder<TSource, TControl> Executes(Func<TSource, ICommand> commandMember)
         {
             var command = commandMember(_parent.SourceBinder.Object);
             var subscription = _observable.Subscribe(x =>
@@ -76,7 +76,7 @@ namespace Bindery.Implementations
             // Builds:
             //  handler=>event.Add(handler)
             var handler = Expression.Parameter(eventInfo.EventHandlerType, "handler");
-            var target = Expression.Constant(_parent.Bindable);
+            var target = Expression.Constant(_parent.Control);
             var callAdd = Expression.Call(target, eventMethod, new Expression[] { handler });
             var actionType = Expression.GetActionType(eventInfo.EventHandlerType);
             return Expression.Lambda(actionType, callAdd, handler);

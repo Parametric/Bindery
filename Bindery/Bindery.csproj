@@ -52,20 +52,18 @@
     <Compile Include="Bind.cs" />
     <Compile Include="Implementations\ConversionControlPropertyBinder.cs" />
     <Compile Include="ExpressionExtensions.cs" />
-    <Compile Include="Implementations\BindableBinder.cs" />
-    <Compile Include="Implementations\BindableEventBinder.cs" />
-    <Compile Include="Interfaces\IBindableEventBinder.cs" />
+    <Compile Include="Implementations\ControlBinder.cs" />
+    <Compile Include="Implementations\ControlEventBinder.cs" />
+    <Compile Include="Interfaces\IControlEventBinder.cs" />
     <Compile Include="Interfaces\IControlFromSourceUpdatePropertyBinder.cs" />
     <Compile Include="Interfaces\IControlToSourceUpdatePropertyBinder.cs" />
     <Compile Include="Interfaces\ISourceBinder.cs" />
-    <Compile Include="Interfaces\IBindableBinder.cs" />
-    <Compile Include="Interfaces\IBindablePropertyBinder.cs" />
     <Compile Include="Interfaces\IControlBinder.cs" />
+    <Compile Include="Interfaces\IControlPropertyBinder.cs" />
     <Compile Include="Interfaces\ISourcePropertyBinder.cs" />
     <Compile Include="Interfaces\ITwoWayUpdatePropertyBinder.cs" />
     <Compile Include="Implementations\SourceBinder.cs" />
-    <Compile Include="Implementations\ControlBinder.cs" />
-    <Compile Include="Implementations\BindablePropertyBinder.cs" />
+    <Compile Include="Implementations\ControlPropertyBinder.cs" />
     <Compile Include="Implementations\SourcePropertyBinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

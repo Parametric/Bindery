@@ -18,7 +18,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event("Click").Triggers(vm => vm.Command);
+                binder.Control(button).Event("Click").Executes(vm => vm.Command);
 
                 // Act
                 button.PerformClick();
@@ -40,7 +40,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event("Click").Triggers(vm => vm.Command);
+                binder.Control(button).Event("Click").Executes(vm => vm.Command);
 
                 // Act
                 button.PerformClick();
@@ -61,7 +61,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event<TestEventArgs>("Test").Triggers(vm => vm.Command);
+                binder.Control(button).Event<TestEventArgs>("Test").Executes(vm => vm.Command);
 
                 // Act
                 button.PerformTest(new TestEventArgs());
@@ -82,7 +82,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event<MouseEventArgs>("MouseMove").Triggers(vm => vm.Command);
+                binder.Control(button).Event<MouseEventArgs>("MouseMove").Executes(vm => vm.Command);
 
                 // Act
                 button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
@@ -102,7 +102,7 @@ namespace Bindery.Test.Tests
 
             var button = new TestButton();
             var binder = Bind.Source(viewModel);
-            binder.Control(button).Event("Click").Triggers(vm => vm.Command);
+            binder.Control(button).Event("Click").Executes(vm => vm.Command);
 
             try
             {
@@ -130,7 +130,7 @@ namespace Bindery.Test.Tests
             {
                 // Act
                 var ex = Assert.Throws<ArgumentException>(
-                    () => binder.Control(button).Event("BadName").Triggers(vm => vm.Command));
+                    () => binder.Control(button).Event("BadName").Executes(vm => vm.Command));
                 Console.WriteLine(ex.Message);
             }
         }
@@ -146,7 +146,7 @@ namespace Bindery.Test.Tests
             {
                 // Act
                 var ex = Assert.Throws<ArgumentException>(
-                    () => binder.Control(button).Event("Text").Triggers(vm => vm.Command));
+                    () => binder.Control(button).Event("Text").Executes(vm => vm.Command));
                 Console.WriteLine(ex.Message);
             }
         }

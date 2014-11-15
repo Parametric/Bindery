@@ -9,7 +9,6 @@ namespace Bindery.Interfaces
         where T:INotifyPropertyChanged
     {
         ISourcePropertyBinder<T, TProp> Property<TProp>(Expression<Func<T, TProp>> member);
-        IControlBinder<T, TControl> Control<TControl>(TControl control) where TControl : Control;
-        IBindableBinder<T, TBindable> Bindable<TBindable>(TBindable bindable) where TBindable : IBindableComponent;
+        IControlBinder<T, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent;
     }
 }

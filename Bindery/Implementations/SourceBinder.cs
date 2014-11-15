@@ -30,14 +30,9 @@ namespace Bindery.Implementations
             return new SourcePropertyBinder<T,TProp>(this, member);
         }
 
-        public IControlBinder<T, TControl> Control<TControl>(TControl control) where TControl : Control
+        public IControlBinder<T, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent
         {
             return new ControlBinder<T,TControl>(this, control);
-        }
-
-        public IBindableBinder<T, TBindable> Bindable<TBindable>(TBindable bindable) where TBindable : IBindableComponent
-        {
-            return new BindableBinder<T, TBindable>(this, bindable);
         }
 
         public void Dispose()

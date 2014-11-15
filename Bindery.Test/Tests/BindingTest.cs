@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace Bindery.Test.Tests
 {
+    [Ignore("The tests must create active forms")]
     [TestFixture]
     public class BindingTest
     {
@@ -18,7 +19,7 @@ namespace Bindery.Test.Tests
             using (new ControlTester(textBox))
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Bindable(textBox).Property(c => c.Text).BindTo(vm => vm.StringValue);
+                binder.Control(textBox).Property(c => c.Text).BindTo(vm => vm.StringValue);
                 textBox.Text = "value #1";
                 Assert.That(viewModel.StringValue, Is.EqualTo(textBox.Text));
                 viewModel.StringValue = "value #2";
@@ -36,7 +37,7 @@ namespace Bindery.Test.Tests
             using (new ControlTester(textBox))
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Bindable(textBox).Property(c => c.Text).UpdateSource(vm => vm.StringValue);
+                binder.Control(textBox).Property(c => c.Text).UpdateSource(vm => vm.StringValue);
                 textBox.Text = "value #1";
                 Assert.That(viewModel.StringValue, Is.EqualTo(textBox.Text));
                 viewModel.StringValue = "value #2";
@@ -54,7 +55,7 @@ namespace Bindery.Test.Tests
             using (new ControlTester(textBox))
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Bindable(textBox).Property(c => c.Text).UpdateControlFrom(vm => vm.StringValue);
+                binder.Control(textBox).Property(c => c.Text).UpdateControlFrom(vm => vm.StringValue);
                 textBox.Text = "value #1";
                 Assert.That(viewModel.StringValue, Is.Not.EqualTo(textBox.Text));
                 viewModel.StringValue = "value #2";
