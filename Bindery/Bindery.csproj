@@ -57,6 +57,10 @@
     <Compile Include="Implementations\ControlBinder.cs" />
     <Compile Include="Implementations\ControlEventBinder.cs" />
     <Compile Include="Implementations\ControlObservableConversionBinder.cs" />
+    <Compile Include="Interfaces\Observables\IOnCompleteDefined.cs" />
+    <Compile Include="Interfaces\Observables\IOnErrorDefined.cs" />
+    <Compile Include="Interfaces\Observables\IOnNextDefined.cs" />
+    <Compile Include="Implementations\SourceObservableBinder.cs" />
     <Compile Include="Interfaces\IControlEventBinder.cs" />
     <Compile Include="Interfaces\IControlFromSourceUpdatePropertyBinder.cs" />
     <Compile Include="Interfaces\IControlToSourceUpdatePropertyBinder.cs" />
@@ -70,6 +74,7 @@
     <Compile Include="Implementations\SourceBinder.cs" />
     <Compile Include="Implementations\ControlPropertyBinder.cs" />
     <Compile Include="Implementations\SourcePropertyBinder.cs" />
+    <Compile Include="Interfaces\Observables\ISubscriptionComplete.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

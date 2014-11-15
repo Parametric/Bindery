@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using Bindery.Implementations;
+using Bindery.Interfaces.Observables;
 
 namespace Bindery.Interfaces
 {
-    public interface ISourceObservableBinder<TSource, out TArg> 
+    public interface ISourceObservableBinder<TSource, TArg> 
         where TSource : INotifyPropertyChanged
     {
-        ISourceBinder<TSource> OnNext(Action<TArg> action);
+        IOnNextDefined<TSource> OnNext(Action<TArg> onNext);
     }
 }

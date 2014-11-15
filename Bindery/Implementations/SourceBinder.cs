@@ -51,25 +51,4 @@ namespace Bindery.Implementations
             _subscriptions.Add(subscription);
         }
     }
-
-    internal class SourceObservableBinder<TSource, TArg> : ISourceObservableBinder<TSource,TArg> 
-        where TSource : INotifyPropertyChanged
-    {
-        private readonly SourceBinder<TSource> _parent;
-        private readonly Func<TSource, IObservable<TArg>> _observableMember;
-
-        public SourceObservableBinder(SourceBinder<TSource> parent, Func<TSource, IObservable<TArg>> observableMember)
-        {
-            _parent = parent;
-            _observableMember = observableMember;
-        }
-
-        public ISourceBinder<TSource> OnNext(Action<TArg> action)
-        {
-            var observable = _observableMember(_parent.Source);
-            var subscription = observable.Subscribe(action);
-            _parent.AddSubscription(subscription);
-            return _parent;
-        }
-    }
 }
