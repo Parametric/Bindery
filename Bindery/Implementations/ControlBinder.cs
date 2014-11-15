@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Reactive.Disposables;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Bindery.Interfaces;
@@ -58,9 +59,25 @@ namespace Bindery.Implementations
         }
 
 
-        public void AddDataBinding(Binding binding)
+        public void AddDataBinding(Binding binding, ConvertEventHandler formatHandler = null, ConvertEventHandler parseHandler = null)
         {
+            if (formatHandler != null)
+                binding.Format += formatHandler;
+            if (parseHandler != null)
+                binding.Parse += parseHandler;
             Control.DataBindings.Add(binding);
+
+            var subscription = Disposable.Create(()=> RemoveDataBinding(binding, formatHandler, parseHandler));
+            AddSubscription(subscription);
+        }
+
+        private void RemoveDataBinding(Binding binding, ConvertEventHandler formatHandler, ConvertEventHandler parseHandler)
+        {
+            Control.DataBindings.Remove(binding);
+            if (formatHandler != null)
+                binding.Format -= formatHandler;
+            if (parseHandler != null)
+                binding.Parse -= parseHandler;
         }
 
         internal Binding CreateBinding(string controlPropertyName, string sourcePropertyName, ControlUpdateMode controlUpdateMode, DataSourceUpdateMode dataSourceUpdateMode)

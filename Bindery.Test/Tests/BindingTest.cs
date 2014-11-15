@@ -8,8 +8,9 @@ namespace Bindery.Test.Tests
     [TestFixture]
     public class BindingTest
     {
-        [Test]
-        public void TwoWayBinding()
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void TwoWayBinding(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
             var viewModel = new TestViewModel();
@@ -19,15 +20,22 @@ namespace Bindery.Test.Tests
             using (var binder = Bind.Source(viewModel))
             {
                 binder.ToControl(textBox).Property(c => c.Text).BindTo(vm => vm.StringValue);
+                if (!binderActiveDuringEvent)
+                    binder.Dispose();
+
                 textBox.Text = "value #1";
-                Assert.That(viewModel.StringValue, Is.EqualTo(textBox.Text));
+                var expected = expectUpdated ? textBox.Text : null;
+                Assert.That(viewModel.StringValue, Is.EqualTo(expected));
+
                 viewModel.StringValue = "value #2";
-                Assert.That(textBox.Text, Is.EqualTo(viewModel.StringValue));
+                expected = expectUpdated ? viewModel.StringValue : "value #1";
+                Assert.That(textBox.Text, Is.EqualTo(expected));
             }
         }
 
-        [Test]
-        public void OneWayBindingTowardsSource()
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void OneWayBindingTowardsSource(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
             var viewModel = new TestViewModel();
@@ -37,15 +45,20 @@ namespace Bindery.Test.Tests
             using (var binder = Bind.Source(viewModel))
             {
                 binder.ToControl(textBox).Property(c => c.Text).UpdateSource(vm => vm.StringValue);
+                if (!binderActiveDuringEvent)
+                    binder.Dispose();
+
                 textBox.Text = "value #1";
-                Assert.That(viewModel.StringValue, Is.EqualTo(textBox.Text));
+                var expected = expectUpdated ? textBox.Text : string.Empty;
+                Assert.That(viewModel.StringValue, Is.EqualTo(expected));
                 viewModel.StringValue = "value #2";
                 Assert.That(textBox.Text, Is.Not.EqualTo(viewModel.StringValue));
             }
         }
 
-        [Test]
-        public void OneWayBindingTowardsControl()
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void OneWayBindingTowardsControl(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
             var viewModel = new TestViewModel();
@@ -55,10 +68,14 @@ namespace Bindery.Test.Tests
             using (var binder = Bind.Source(viewModel))
             {
                 binder.ToControl(textBox).Property(c => c.Text).UpdateControlFrom(vm => vm.StringValue);
+                if (!binderActiveDuringEvent)
+                    binder.Dispose();
+
                 textBox.Text = "value #1";
                 Assert.That(viewModel.StringValue, Is.Not.EqualTo(textBox.Text));
                 viewModel.StringValue = "value #2";
-                Assert.That(textBox.Text, Is.EqualTo(viewModel.StringValue));
+                string expected = expectUpdated ? viewModel.StringValue : "value #1";
+                Assert.That(textBox.Text, Is.EqualTo(expected));
             }
         }
         
