@@ -26,7 +26,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Observe(c => c.MouseMoveButton).Executes(vm => vm.Command);
+                binder.ToControl(button).Observe(c => c.MouseMoveButton).Executes(vm => vm.Command);
 
                 // Act
                 if (!binderActiveDuringEvent) binder.Dispose();
@@ -49,7 +49,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Observe(c => c.MouseMoveButton).UpdateSource(vm => vm.StringValue);
+                binder.ToControl(button).Observe(c => c.MouseMoveButton).UpdateSource(vm => vm.StringValue);
 
                 // Act
                 if (!binderActiveDuringEvent) binder.Dispose();

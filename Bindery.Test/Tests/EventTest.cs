@@ -22,7 +22,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event("Click").Executes(vm => vm.Command);
+                binder.ToControl(button).Event("Click").Executes(vm => vm.Command);
 
                 // Act
                 if (!binderActiveDuringEvent)
@@ -46,7 +46,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event<TestEventArgs>("Test").Executes(vm => vm.Command);
+                binder.ToControl(button).Event<TestEventArgs>("Test").Executes(vm => vm.Command);
 
                 // Act
                 button.PerformTest(new TestEventArgs());
@@ -67,7 +67,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event<MouseEventArgs>("MouseMove").Executes(vm => vm.Command);
+                binder.ToControl(button).Event<MouseEventArgs>("MouseMove").Executes(vm => vm.Command);
 
                 // Act
                 button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
@@ -93,7 +93,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event<MouseEventArgs>("MouseMove").ConvertArgsTo<int>(args=>args.X).Executes(vm => vm.Command);
+                binder.ToControl(button).Event<MouseEventArgs>("MouseMove").ConvertArgsTo<int>(args=>args.X).Executes(vm => vm.Command);
 
                 // Act
                 if (!binderActiveDuringEvent) binder.Dispose();
@@ -116,7 +116,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event<MouseEventArgs>("MouseMove").ConvertArgsTo<string>(args => Convert.ToString(args.Button)).UpdateSource(vm => vm.StringValue);
+                binder.ToControl(button).Event<MouseEventArgs>("MouseMove").ConvertArgsTo<string>(args => Convert.ToString(args.Button)).UpdateSource(vm => vm.StringValue);
                 if (!binderActiveDuringEvent)
                     binder.Dispose();
                 button.PerformMouseMove(new MouseEventArgs(MouseButtons.Right, 0, 0, 0, 0));
@@ -137,7 +137,7 @@ namespace Bindery.Test.Tests
             {
                 // Act
                 var ex = Assert.Throws<ArgumentException>(
-                    () => binder.Control(button).Event("BadName").Executes(vm => vm.Command));
+                    () => binder.ToControl(button).Event("BadName").Executes(vm => vm.Command));
                 Assert.That(ex.Message, Is.EqualTo("'BadName' is not a member of 'Bindery.Test.TestClasses.TestButton'."));
             }
         }
@@ -153,7 +153,7 @@ namespace Bindery.Test.Tests
             {
                 // Act
                 var ex = Assert.Throws<ArgumentException>(
-                    () => binder.Control(button).Event("Text").Executes(vm => vm.Command));
+                    () => binder.ToControl(button).Event("Text").Executes(vm => vm.Command));
                 Assert.That(ex.Message, Is.EqualTo("'Bindery.Test.TestClasses.TestButton.Text' is not an event."));
             }
         }
@@ -168,7 +168,7 @@ namespace Bindery.Test.Tests
             using (var binder = Bind.Source(viewModel))
             {
                 // Act
-                var ex = Assert.Throws<ArgumentException>(() => binder.Control(button).Event<MouseEventArgs>("Click").Executes(vm => vm.Command));
+                var ex = Assert.Throws<ArgumentException>(() => binder.ToControl(button).Event<MouseEventArgs>("Click").Executes(vm => vm.Command));
                 Assert.That(ex.Message, Is.EqualTo("ParameterExpression of type 'System.Windows.Forms.MouseEventArgs' cannot be used for delegate parameter of type 'System.EventArgs'"));
             }
         }

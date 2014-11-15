@@ -8,17 +8,17 @@ using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class SourceBinder<TSource> : ISourceBinder<TSource> 
-        where TSource : INotifyPropertyChanged
+    internal class SourceBinder<TSource> : ISourceBinder<TSource> where TSource : INotifyPropertyChanged
     {
         public TSource Source { get; private set; }
-        public IObservable<PropertyChangedEventArgs> PropertyChangedObservable { get; private set; }
+        private readonly IObservable<PropertyChangedEventArgs> _propertyChangedObservable;
+
         private readonly List<IDisposable> _subscriptions;
 
         public SourceBinder(TSource obj)
         {
             Source = obj;
-            PropertyChangedObservable = Observable.FromEvent<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+            _propertyChangedObservable = Observable.FromEvent<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 argsAction => (sender, e) => argsAction(e),
                 handler => Source.PropertyChanged += handler,
                 handler => Source.PropertyChanged -= handler);
@@ -26,19 +26,24 @@ namespace Bindery.Implementations
         }
 
 
-        public ISourcePropertyBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member)
+        public IControlBinder<TSource, TControl> ToControl<TControl>(TControl control) where TControl : IBindableComponent
         {
-            return new SourcePropertyBinder<TSource,TProp>(this, member);
+            return new ControlBinder<TSource, TControl>(this, control);
         }
 
-        public IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent
+        public ITargetBinder<TSource, TTarget> ToTarget<TTarget>(TTarget target) where TTarget : class
         {
-            return new ControlBinder<TSource,TControl>(this, control);
+            return new TargetBinder<TSource, TTarget>(this, target);
+        }
+
+        public ISourcePropertyBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member)
+        {
+            return new SourcePropertyBinder<TSource, TProp>(this, member);
         }
 
         public ISourceObservableBinder<TSource, TArg> Observe<TArg>(Func<TSource, IObservable<TArg>> observableMember)
         {
-            return new SourceObservableBinder<TSource,TArg>(this, observableMember);
+            return new SourceObservableBinder<TSource, TArg>(this, observableMember);
         }
 
         public void Dispose()
@@ -49,6 +54,14 @@ namespace Bindery.Implementations
         public void AddSubscription(IDisposable subscription)
         {
             _subscriptions.Add(subscription);
+        }
+
+        public IObservable<TProp> GetPropertyChangedValueObservable<TProp>(string memberName, Func<TSource, TProp> memberAccessor)
+        {
+            var observable = _propertyChangedObservable
+                .Where(args => args.PropertyName == memberName)
+                .Select(x => memberAccessor.Invoke(Source));
+            return observable;
         }
     }
 }

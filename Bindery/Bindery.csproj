@@ -57,6 +57,10 @@
     <Compile Include="Implementations\ControlBinder.cs" />
     <Compile Include="Implementations\ControlEventBinder.cs" />
     <Compile Include="Implementations\ControlObservableConversionBinder.cs" />
+    <Compile Include="Implementations\TargetBinder.cs" />
+    <Compile Include="Implementations\TargetPropertyBinder.cs" />
+    <Compile Include="Interfaces\ITargetBinder.cs" />
+    <Compile Include="Interfaces\ITargetPropertyBinder.cs" />
     <Compile Include="Interfaces\Observables\IOnCompleteDefined.cs" />
     <Compile Include="Interfaces\Observables\IOnErrorDefined.cs" />
     <Compile Include="Interfaces\Observables\IOnNextDefined.cs" />

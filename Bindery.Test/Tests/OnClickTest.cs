@@ -18,7 +18,7 @@ namespace Bindery.Test.Tests
 
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).OnClick(vm => vm.Command);
+                binder.ToControl(button).OnClick(vm => vm.Command);
 
                 // Act
                 button.PerformClick();
@@ -38,7 +38,7 @@ namespace Bindery.Test.Tests
 
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).OnClick(vm => vm.Command);
+                binder.ToControl(button).OnClick(vm => vm.Command);
 
                 viewModel.Command.CanExecuteCondition = vm => vm.IntValue >= 0;
 
