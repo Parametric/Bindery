@@ -47,6 +47,11 @@ namespace Bindery.Implementations
             return this;
         }
 
+        public IControlObservableBinder<TSource, TControl, TArg> Observe<TArg>(Func<TControl, IObservable<TArg>> observableMember)
+        {
+            return new ControlObservableBinder<TSource, TControl, TArg>(this, observableMember(Control));
+        }
+
         public TSource Source
         {
             get { return _sourceBinder.Source; }

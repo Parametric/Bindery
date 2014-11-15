@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Windows.Forms;
 
 namespace Bindery.Test.TestClasses
@@ -6,6 +7,14 @@ namespace Bindery.Test.TestClasses
     public class TestButton : Button
     {
         public event EventHandler<TestEventArgs> Test;
+
+        public TestButton()
+        {
+            MouseMoveButton = Observable.FromEvent<MouseEventHandler, MouseEventArgs>(
+                argsAction => (sender, e) => argsAction(e),
+                addHandler => this.MouseMove += addHandler,
+                removeHandler => this.MouseMove -= removeHandler).Select(arg => Convert.ToString(arg.Button));
+        }
 
         protected virtual void OnTest(TestEventArgs e)
         {
@@ -22,9 +31,7 @@ namespace Bindery.Test.TestClasses
         {
             base.OnMouseMove(e);
         }
-    }
 
-    public class TestEventArgs
-    {
+        public IObservable<string> MouseMoveButton { get; private set; }
     }
 }

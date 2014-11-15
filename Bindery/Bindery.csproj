@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Bind.cs" />
     <Compile Include="Extensions\CommandExtensions.cs" />
+    <Compile Include="Implementations\ControlObservableBinder.cs" />
     <Compile Include="Implementations\ControlPropertyConversionBinder.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Implementations\ControlBinder.cs" />
@@ -59,7 +60,7 @@
     <Compile Include="Interfaces\IControlEventBinder.cs" />
     <Compile Include="Interfaces\IControlFromSourceUpdatePropertyBinder.cs" />
     <Compile Include="Interfaces\IControlToSourceUpdatePropertyBinder.cs" />
-    <Compile Include="Interfaces\IControlObservableConversionBinder.cs" />
+    <Compile Include="Interfaces\IControlObservableBinder.cs" />
     <Compile Include="Interfaces\ISourceBinder.cs" />
     <Compile Include="Interfaces\IControlBinder.cs" />
     <Compile Include="Interfaces\IControlPropertyBinder.cs" />

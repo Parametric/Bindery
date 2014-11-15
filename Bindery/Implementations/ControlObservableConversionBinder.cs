@@ -9,7 +9,7 @@ using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class ControlObservableConversionBinder<TSource, TControl, TEventArgs, TConverted> : IControlObservableConversionBinder<TSource, TControl, TConverted> 
+    internal class ControlObservableConversionBinder<TSource, TControl, TEventArgs, TConverted> : IControlObservableBinder<TSource, TControl, TConverted> 
         where TSource : INotifyPropertyChanged 
         where TControl : IBindableComponent
     {

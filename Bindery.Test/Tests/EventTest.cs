@@ -138,7 +138,7 @@ namespace Bindery.Test.Tests
                 // Act
                 var ex = Assert.Throws<ArgumentException>(
                     () => binder.Control(button).Event("BadName").Executes(vm => vm.Command));
-                Assert.That(ex.Message, Is.EqualTo("BadName is not a member of TestButton."));
+                Assert.That(ex.Message, Is.EqualTo("'BadName' is not a member of 'Bindery.Test.TestClasses.TestButton'."));
             }
         }
 
@@ -154,7 +154,7 @@ namespace Bindery.Test.Tests
                 // Act
                 var ex = Assert.Throws<ArgumentException>(
                     () => binder.Control(button).Event("Text").Executes(vm => vm.Command));
-                Assert.That(ex.Message, Is.EqualTo("TestButton.Text is not an event."));
+                Assert.That(ex.Message, Is.EqualTo("'Bindery.Test.TestClasses.TestButton.Text' is not an event."));
             }
         }
 

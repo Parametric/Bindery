@@ -22,12 +22,12 @@ namespace Bindery.Implementations
             _parent = parent;
             var memberInfos = typeof (TControl).GetMember(eventName);
             if (memberInfos.Length == 0)
-                throw new ArgumentException(string.Format("{1} is not a member of {0}.", 
-                    parent.Control.GetType().Name, eventName));
+                throw new ArgumentException(string.Format("'{1}' is not a member of '{0}'.", 
+                    parent.Control.GetType().FullName, eventName));
             var eventInfo = memberInfos[0] as EventInfo;
             if (eventInfo==null)
-                throw new ArgumentException(string.Format("{0}.{1} is not an event.",
-                    parent.Control.GetType().Name, eventName));
+                throw new ArgumentException(string.Format("'{0}.{1}' is not an event.",
+                    parent.Control.GetType().FullName, eventName));
             _observable = CreateObservable(eventInfo);
         }
 
@@ -54,7 +54,7 @@ namespace Bindery.Implementations
             return _parent;
         }
 
-        public IControlObservableConversionBinder<TSource, TControl, TConverted> ConvertArgsTo<TConverted>(Func<TEventArgs, TConverted> conversion)
+        public IControlObservableBinder<TSource, TControl, TConverted> ConvertArgsTo<TConverted>(Func<TEventArgs, TConverted> conversion)
         {
             return new ControlObservableConversionBinder<TSource, TControl, TEventArgs, TConverted>(_parent, _observable, conversion);
         }

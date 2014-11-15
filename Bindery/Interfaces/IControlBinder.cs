@@ -17,5 +17,8 @@ namespace Bindery.Interfaces
         IControlEventBinder<TSource, TControl, TEventArgs> Event<TEventArgs>(string eventName);
 
         IControlBinder<TSource, TControl> OnClick(Func<TSource, ICommand> commandMember);
+
+        IControlObservableBinder<TSource, TControl, TArg> Observe<TArg>(Func<TControl, IObservable<TArg>> observableMember);
     }
+
 }
