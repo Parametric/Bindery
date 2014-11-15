@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
+using Bindery.Extensions;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
@@ -22,7 +23,7 @@ namespace Bindery.Implementations
         public ISourceBinder<TSource> OnChanged(Action<TProp> action)
         {
             var subscription = _sourceBinder.PropertyChangedObservable.Where(args => args.PropertyName == _memberName)
-                .Select(x => _memberAccessor.Invoke(_sourceBinder.Object))
+                .Select(x => _memberAccessor.Invoke(_sourceBinder.Source))
                 .Subscribe(action);
             _sourceBinder.AddSubscription(subscription);
             return _sourceBinder;

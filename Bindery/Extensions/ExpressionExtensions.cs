@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Bindery
+namespace Bindery.Extensions
 {
     internal static class ExpressionExtensions
     {

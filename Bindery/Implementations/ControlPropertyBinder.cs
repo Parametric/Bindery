@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Forms;
+using Bindery.Extensions;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
@@ -47,17 +48,17 @@ namespace Bindery.Implementations
 
         public ITwoWayUpdatePropertyBinder<TSource, TControl, TSourceProp> Convert<TSourceProp>(Func<TProp, TSourceProp> to, Func<TSourceProp, TProp> from)
         {
-            return new ConversionControlPropertyBinder<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) { ConvertToFunc = to, ConvertFromFunc = from };
+            return new ControlPropertyConversionBinder<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) { ConvertToFunc = to, ConvertFromFunc = from };
         }
 
         public IControlToSourceUpdatePropertyBinder<TSource, TControl, TSourceProp> ConvertTo<TSourceProp>(Func<TProp, TSourceProp> func)
         {
-            return new ConversionControlPropertyBinder<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) {ConvertToFunc = func};
+            return new ControlPropertyConversionBinder<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) {ConvertToFunc = func};
         }
 
         public IControlFromSourceUpdatePropertyBinder<TSource, TControl, TSourceProp> ConvertFrom<TSourceProp>(Func<TSourceProp, TProp> func)
         {
-            return new ConversionControlPropertyBinder<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) { ConvertFromFunc = func };
+            return new ControlPropertyConversionBinder<TSource, TControl, TProp, TSourceProp>(_parent, _memberName) { ConvertFromFunc = func };
         }
     }
 }

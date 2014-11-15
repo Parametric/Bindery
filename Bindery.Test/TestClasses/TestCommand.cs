@@ -11,12 +11,12 @@ namespace Bindery.Test.TestClasses
         {
             _viewModel = viewModel;
             _viewModel.PropertyChanged += (sender, e) => OnCanExecuteChanged();
-            ExecuteAction = vm => { };
+            ExecuteAction = parm => { };
             CanExecuteCondition = vm => true;
         }
 
         public Func<TestViewModel, bool> CanExecuteCondition { get; set; }
-        public Action<TestViewModel> ExecuteAction { get; set; }
+        public Action<dynamic> ExecuteAction { get; set; }
 
         public bool CanExecute(object parameter)
         {
@@ -25,7 +25,7 @@ namespace Bindery.Test.TestClasses
 
         public void Execute(object parameter)
         {
-            ExecuteAction(_viewModel);
+            ExecuteAction(parameter);
         }
 
         public event EventHandler CanExecuteChanged;

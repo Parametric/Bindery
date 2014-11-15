@@ -11,12 +11,13 @@ namespace Bindery.Implementations
         where TSource : INotifyPropertyChanged
         where TControl : IBindableComponent
     {
-        public SourceBinder<TSource> SourceBinder { get; private set; }
+        private readonly SourceBinder<TSource> _sourceBinder;
+
         public TControl Control { get; private set; }
 
         public ControlBinder(SourceBinder<TSource> sourceBinder, TControl control)
         {
-            SourceBinder = sourceBinder;
+            _sourceBinder = sourceBinder;
             Control = control;
         }
 
@@ -25,12 +26,12 @@ namespace Bindery.Implementations
             return new ControlPropertyBinder<TSource, TControl, TProp>(this, member);
         }
 
-        public IControlEventBinder<TSource, TControl> Event<TEventArgs>(string eventName)
+        public IControlEventBinder<TSource, TControl, TEventArgs> Event<TEventArgs>(string eventName)
         {
             return new ControlEventBinder<TSource, TControl, TEventArgs>(this, eventName);
         }
 
-        public IControlEventBinder<TSource, TControl> Event(string eventName)
+        public IControlEventBinder<TSource, TControl, EventArgs> Event(string eventName)
         {
             return new ControlEventBinder<TSource, TControl, EventArgs>(this, eventName);
         }
@@ -40,12 +41,17 @@ namespace Bindery.Implementations
             var control = Control as Control;
             if (control==null)
                 throw new NotSupportedException("The control must inherit from System.Windows.Form.Control in order use OnClick()");
-            var command = commandMember(SourceBinder.Object);
+            var command = commandMember(Source);
             control.Click += (sender, e) => command.Execute(null);
             command.CanExecuteChanged += (sender, e) => control.Enabled = command.CanExecute(null);
             return this;
         }
-        
+
+        public TSource Source
+        {
+            get { return _sourceBinder.Source; }
+        }
+
 
         public void AddDataBinding(Binding binding)
         {
@@ -54,11 +60,16 @@ namespace Bindery.Implementations
 
         internal Binding CreateBinding(string controlPropertyName, string sourcePropertyName, ControlUpdateMode controlUpdateMode, DataSourceUpdateMode dataSourceUpdateMode)
         {
-            return new Binding(controlPropertyName, SourceBinder.Object, sourcePropertyName)
+            return new Binding(controlPropertyName, Source, sourcePropertyName)
             {
                 ControlUpdateMode = controlUpdateMode,
                 DataSourceUpdateMode = dataSourceUpdateMode
             };
+        }
+
+        public void AddSubscription(IDisposable subscription)
+        {
+            _sourceBinder.AddSubscription(subscription);
         }
     }
 }

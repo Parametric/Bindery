@@ -5,11 +5,12 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Bindery.Extensions;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class ControlEventBinder<TSource, TControl, TEventArgs> : IControlEventBinder<TSource, TControl>
+    internal class ControlEventBinder<TSource, TControl, TEventArgs> : IControlEventBinder<TSource, TControl, TEventArgs>
         where TSource : INotifyPropertyChanged
         where TControl : IBindableComponent 
     {
@@ -47,14 +48,15 @@ namespace Bindery.Implementations
 
         public IControlBinder<TSource, TControl> Executes(Func<TSource, ICommand> commandMember)
         {
-            var command = commandMember(_parent.SourceBinder.Object);
-            var subscription = _observable.Subscribe(x =>
-            {
-                if (command.CanExecute(null))
-                    command.Execute(null);
-            });
-            _parent.SourceBinder.AddSubscription(subscription);
+            var command = commandMember(_parent.Source);
+            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(default(TEventArgs)));
+            _parent.AddSubscription(subscription);
             return _parent;
+        }
+
+        public IControlObservableConversionBinder<TSource, TControl, TConverted> ConvertArgsTo<TConverted>(Func<TEventArgs, TConverted> conversion)
+        {
+            return new ControlObservableConversionBinder<TSource, TControl, TEventArgs, TConverted>(_parent, _observable, conversion);
         }
 
         private static Expression CreateConversion(EventInfo eventInfo)

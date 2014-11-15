@@ -2,11 +2,12 @@ using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Forms;
+using Bindery.Extensions;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class ConversionControlPropertyBinder<TSource, TControl, TControlProp, TSourceProp> : 
+    internal class ControlPropertyConversionBinder<TSource, TControl, TControlProp, TSourceProp> : 
         IControlToSourceUpdatePropertyBinder<TSource,TControl, TSourceProp>, 
         IControlFromSourceUpdatePropertyBinder<TSource,TControl,TSourceProp>,
         ITwoWayUpdatePropertyBinder<TSource, TControl, TSourceProp>
@@ -16,7 +17,7 @@ namespace Bindery.Implementations
         private readonly ControlBinder<TSource, TControl> _parent;
         private readonly string _memberName;
 
-        public ConversionControlPropertyBinder(ControlBinder<TSource, TControl> parent, string memberName)
+        public ControlPropertyConversionBinder(ControlBinder<TSource, TControl> parent, string memberName)
         {
             _parent = parent;
             _memberName = memberName;

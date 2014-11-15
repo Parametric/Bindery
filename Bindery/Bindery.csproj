@@ -50,13 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bind.cs" />
-    <Compile Include="Implementations\ConversionControlPropertyBinder.cs" />
-    <Compile Include="ExpressionExtensions.cs" />
+    <Compile Include="Extensions\CommandExtensions.cs" />
+    <Compile Include="Implementations\ControlPropertyConversionBinder.cs" />
+    <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Implementations\ControlBinder.cs" />
     <Compile Include="Implementations\ControlEventBinder.cs" />
+    <Compile Include="Implementations\ControlObservableConversionBinder.cs" />
     <Compile Include="Interfaces\IControlEventBinder.cs" />
     <Compile Include="Interfaces\IControlFromSourceUpdatePropertyBinder.cs" />
     <Compile Include="Interfaces\IControlToSourceUpdatePropertyBinder.cs" />
+    <Compile Include="Interfaces\IControlObservableConversionBinder.cs" />
     <Compile Include="Interfaces\ISourceBinder.cs" />
     <Compile Include="Interfaces\IControlBinder.cs" />
     <Compile Include="Interfaces\IControlPropertyBinder.cs" />

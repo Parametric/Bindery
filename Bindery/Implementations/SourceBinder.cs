@@ -8,31 +8,31 @@ using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class SourceBinder<T> : ISourceBinder<T> where T : INotifyPropertyChanged
+    internal class SourceBinder<TSource> : ISourceBinder<TSource> where TSource : INotifyPropertyChanged
     {
-        public T Object { get; private set; }
+        public TSource Source { get; private set; }
         public IObservable<PropertyChangedEventArgs> PropertyChangedObservable { get; private set; }
         private readonly List<IDisposable> _subscriptions;
 
-        public SourceBinder(T obj)
+        public SourceBinder(TSource obj)
         {
-            Object = obj;
+            Source = obj;
             PropertyChangedObservable = Observable.FromEvent<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 argsAction => (sender, e) => argsAction(e),
-                handler => Object.PropertyChanged += handler,
-                handler => Object.PropertyChanged -= handler);
+                handler => Source.PropertyChanged += handler,
+                handler => Source.PropertyChanged -= handler);
             _subscriptions = new List<IDisposable>();
         }
 
 
-        public ISourcePropertyBinder<T, TProp> Property<TProp>(Expression<Func<T, TProp>> member)
+        public ISourcePropertyBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member)
         {
-            return new SourcePropertyBinder<T,TProp>(this, member);
+            return new SourcePropertyBinder<TSource,TProp>(this, member);
         }
 
-        public IControlBinder<T, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent
+        public IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent
         {
-            return new ControlBinder<T,TControl>(this, control);
+            return new ControlBinder<TSource,TControl>(this, control);
         }
 
         public void Dispose()

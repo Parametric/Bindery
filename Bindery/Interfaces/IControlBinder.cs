@@ -12,9 +12,9 @@ namespace Bindery.Interfaces
     {
         IControlPropertyBinder<TSource, TControl, TProp> Property<TProp>(Expression<Func<TControl, TProp>> member);
 
-        IControlEventBinder<TSource, TControl> Event(string eventName);
+        IControlEventBinder<TSource, TControl, EventArgs> Event(string eventName);
 
-        IControlEventBinder<TSource, TControl> Event<TEventArgs>(string eventName);
+        IControlEventBinder<TSource, TControl, TEventArgs> Event<TEventArgs>(string eventName);
 
         IControlBinder<TSource, TControl> OnClick(Func<TSource, ICommand> commandMember);
     }
