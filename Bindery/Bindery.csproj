@@ -64,6 +64,7 @@
     <Compile Include="Interfaces\ISourceBinder.cs" />
     <Compile Include="Interfaces\IControlBinder.cs" />
     <Compile Include="Interfaces\IControlPropertyBinder.cs" />
+    <Compile Include="Interfaces\ISourceObservableBinder.cs" />
     <Compile Include="Interfaces\ISourcePropertyBinder.cs" />
     <Compile Include="Interfaces\ITwoWayUpdatePropertyBinder.cs" />
     <Compile Include="Implementations\SourceBinder.cs" />

@@ -5,10 +5,11 @@ using System.Windows.Forms;
 
 namespace Bindery.Interfaces
 {
-    public interface ISourceBinder<T> : IDisposable 
-        where T:INotifyPropertyChanged
+    public interface ISourceBinder<TSource> : IDisposable 
+        where TSource:INotifyPropertyChanged
     {
-        ISourcePropertyBinder<T, TProp> Property<TProp>(Expression<Func<T, TProp>> member);
-        IControlBinder<T, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent;
+        ISourcePropertyBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member);
+        IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent;
+        ISourceObservableBinder<TSource, TArg> Observe<TArg>(Func<TSource, IObservable<TArg>> observableMember);
     }
 }

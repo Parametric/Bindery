@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using Bindery.Test.Properties;
 
@@ -9,6 +11,7 @@ namespace Bindery.Test.TestClasses
         public TestViewModel()
         {
             Command = new TestCommand(this);
+            MyObservable = Observable.Return(5);
         }
 
         private int _intValue;
@@ -37,6 +40,8 @@ namespace Bindery.Test.TestClasses
         }
 
         public TestCommand Command { get; set; }
+
+        public IObservable<int> MyObservable { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

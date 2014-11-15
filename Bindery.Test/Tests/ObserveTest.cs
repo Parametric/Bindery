@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
@@ -11,7 +13,7 @@ namespace Bindery.Test.Tests
         [TestCase(false, false, false)]
         [TestCase(true, false, false)]
         [TestCase(false, true, false)]
-        public void ObserveAndSendToCommand(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
+        public void ObserveControlAndSendToCommand(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
             var viewModel = new TestViewModel();
@@ -37,7 +39,7 @@ namespace Bindery.Test.Tests
 
         [TestCase(true, true)]
         [TestCase(false, false)]
-        public void ObserveAndSetSourceValue(bool binderActiveDuringEvent, bool expectUpdated)
+        public void ObserveControlAndSetSourceValue(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
             var viewModel = new TestViewModel();
@@ -58,5 +60,32 @@ namespace Bindery.Test.Tests
             }
         }
 
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void ObserveSourceAndTakeAction(bool binderActiveDuringEvent, bool expectUpdated)
+        {
+            // Arrange
+            var task = new Task<int>(()=>5);
+            var viewModel = new TestViewModel {MyObservable = task.ToObservable()};
+
+            using (var binder = Bind.Source(viewModel))
+            {
+                var result = 0;
+                binder.Observe(vm => vm.MyObservable).OnNext(arg => result = arg);
+                if (!binderActiveDuringEvent) 
+                    binder.Dispose();
+
+                task.ContinueWith(x =>
+                {
+                    var expected = expectUpdated ? 5 : 0;
+
+                    // Assert
+                    Assert.That(result, Is.EqualTo(expected));
+                });
+
+                // Act
+                task.Start();
+            }
+        }
     }
 }
