@@ -11,10 +11,8 @@ namespace Bindery.Interfaces
     {
         IBindablePropertyBinder<TSource, TBindable, TProp> Property<TProp>(Expression<Func<TBindable, TProp>> member);
 
-        IBindableEventBinder<TSource, TBindable> Event(Func<TBindable, Action<EventHandler>> getAddHandler);
+        IBindableEventBinder<TSource, TBindable> Event(string eventName);
 
-        IBindableEventBinder<TSource, TBindable> Event<TEventArgs>(Func<TBindable, Action<EventHandler<TEventArgs>>> getAddHandler);
-
-        IBindableEventBinder<TSource, TBindable> Event<TEventArgs, THandler>(Func<TBindable, Action<THandler>> getAddHandler);
+        IBindableEventBinder<TSource, TBindable> Event<TEventArgs>(string eventName);
     }
 }

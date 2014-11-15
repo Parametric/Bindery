@@ -24,19 +24,14 @@ namespace Bindery.Implementations
             return new BindablePropertyBinder<TSource, TBindable, TProp>(this, member);
         }
 
-        public IBindableEventBinder<TSource, TBindable> Event(Func<TBindable, Action<EventHandler>> getAddHandler)
+        public IBindableEventBinder<TSource, TBindable> Event<TEventArgs>(string eventName)
         {
-            return new BindableEventBinder<TSource, TBindable, EventArgs, EventHandler>(this, getAddHandler);
+            return new BindableEventBinder<TSource, TBindable, TEventArgs>(this, eventName);
         }
 
-        public IBindableEventBinder<TSource, TBindable> Event<TEventArgs>(Func<TBindable, Action<EventHandler<TEventArgs>>> getAddHandler)
+        public IBindableEventBinder<TSource, TBindable> Event(string eventName)
         {
-            return new BindableEventBinder<TSource, TBindable, TEventArgs, EventHandler<TEventArgs>>(this, getAddHandler);
-        }
-
-        public IBindableEventBinder<TSource, TBindable> Event<TEventArgs, THandler>(Func<TBindable, Action<THandler>> getAddHandler)
-        {
-            return new BindableEventBinder<TSource, TBindable, TEventArgs, THandler>(this, getAddHandler);
+            return new BindableEventBinder<TSource, TBindable, EventArgs>(this, eventName);
         }
 
         public void AddDataBinding(Binding binding)

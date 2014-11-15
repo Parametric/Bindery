@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
@@ -17,7 +18,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event(c => h => c.Click += h).Triggers(vm => vm.Command);
+                binder.Control(button).Event("Click").Triggers(vm => vm.Command);
 
                 // Act
                 button.PerformClick();
@@ -39,7 +40,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event(c => h => c.Click += h).Triggers(vm => vm.Command);
+                binder.Control(button).Event("Click").Triggers(vm => vm.Command);
 
                 // Act
                 button.PerformClick();
@@ -60,7 +61,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event<TestEventArgs>(c => h => c.Test += h).Triggers(vm => vm.Command);
+                binder.Control(button).Event<TestEventArgs>("Test").Triggers(vm => vm.Command);
 
                 // Act
                 button.PerformTest(new TestEventArgs());
@@ -81,7 +82,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.Control(button).Event<MouseEventArgs, MouseEventHandler>(c => h => c.MouseMove += h).Triggers(vm => vm.Command);
+                binder.Control(button).Event<MouseEventArgs>("MouseMove").Triggers(vm => vm.Command);
 
                 // Act
                 button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
@@ -101,7 +102,7 @@ namespace Bindery.Test.Tests
 
             var button = new TestButton();
             var binder = Bind.Source(viewModel);
-            binder.Control(button).Event(c => h => c.Click += h).Triggers(vm => vm.Command);
+            binder.Control(button).Event("Click").Triggers(vm => vm.Command);
 
             try
             {
@@ -115,6 +116,38 @@ namespace Bindery.Test.Tests
             finally
             {
                 button.Dispose();
+            }
+        }
+
+        [Test]
+        public void MemberDoesNotExist()
+        {
+            // Arrange
+            var viewModel = new TestViewModel();
+
+            using (var button = new TestButton())
+            using (var binder = Bind.Source(viewModel))
+            {
+                // Act
+                var ex = Assert.Throws<ArgumentException>(
+                    () => binder.Control(button).Event("BadName").Triggers(vm => vm.Command));
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        [Test]
+        public void EventNameIsNotAnEvent()
+        {
+            // Arrange
+            var viewModel = new TestViewModel();
+
+            using (var button = new TestButton())
+            using (var binder = Bind.Source(viewModel))
+            {
+                // Act
+                var ex = Assert.Throws<ArgumentException>(
+                    () => binder.Control(button).Event("Text").Triggers(vm => vm.Command));
+                Console.WriteLine(ex.Message);
             }
         }
 
