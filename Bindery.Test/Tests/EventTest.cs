@@ -93,7 +93,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.ToControl(button).Event<MouseEventArgs>("MouseMove").ConvertArgsTo<int>(args=>args.X).Executes(vm => vm.Command);
+                binder.ToControl(button).Event<MouseEventArgs>("MouseMove").Executes(vm => vm.Command, args => args.X);
 
                 // Act
                 if (!binderActiveDuringEvent) binder.Dispose();
@@ -116,7 +116,7 @@ namespace Bindery.Test.Tests
             using (var button = new TestButton())
             using (var binder = Bind.Source(viewModel))
             {
-                binder.ToControl(button).Event<MouseEventArgs>("MouseMove").ConvertArgsTo<string>(args => Convert.ToString(args.Button)).UpdateSource(vm => vm.StringValue);
+                binder.ToControl(button).Event<MouseEventArgs>("MouseMove").UpdateSource(vm => vm.StringValue, args => Convert.ToString(args.Button));
                 if (!binderActiveDuringEvent)
                     binder.Dispose();
                 button.PerformMouseMove(new MouseEventArgs(MouseButtons.Right, 0, 0, 0, 0));

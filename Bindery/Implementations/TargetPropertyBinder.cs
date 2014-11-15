@@ -20,15 +20,28 @@ namespace Bindery.Implementations
 
         public ITargetBinder<TSource, TTarget> UpdateTargetFrom(Expression<Func<TSource, TProp>> sourceMember)
         {
+            Action<TProp> propertyUpdater = value => _propSetter(value);
+            ConfigureTargetPropertyUpdate(sourceMember, propertyUpdater);
+            return _parent;
+        }
+
+        public ITargetBinder<TSource, TTarget> UpdateTargetFrom<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TProp> conversion)
+        {
+            Action<TSourceProp> propertyUpdater = value => _propSetter(conversion(value));
+            ConfigureTargetPropertyUpdate(sourceMember, propertyUpdater);
+            return _parent;
+        }
+
+        private void ConfigureTargetPropertyUpdate<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Action<TSourceProp> updateProperty)
+        {
             // Update target with source value immediately
             var sourceAccessor = sourceMember.Compile();
             var sourceValue = sourceAccessor(_parent.Source);
-            _propSetter(sourceValue);
+            updateProperty(sourceValue);
             // Update target when source property changes
             var observable = _parent.GetSourcePropertyChangedValueObservable(sourceMember.GetAccessorName(), sourceAccessor);
-            var subscription = observable.Subscribe(value => _propSetter(value));
+            var subscription = observable.Subscribe(updateProperty);
             _parent.AddSubscription(subscription);
-            return _parent;
         }
     }
 }

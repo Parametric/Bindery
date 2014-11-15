@@ -5,7 +5,6 @@ using NUnit.Framework;
 
 namespace Bindery.Test.Tests
 {
-    [Ignore("The tests must create active forms")]
     [TestFixture]
     public class BindingTest
     {
@@ -73,7 +72,7 @@ namespace Bindery.Test.Tests
             using (new ControlTester(textBox))
             using (var binder = Bind.Source(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).ConvertTo(Convert.ToInt32).UpdateSource(vm => vm.IntValue);
+                binder.ToControl(textBox).Property(c => c.Text).UpdateSource(vm => vm.IntValue, Convert.ToInt32);
                 textBox.Text = "3";
                 Assert.That(viewModel.IntValue, Is.EqualTo(Convert.ToInt32(textBox.Text)));
             }
@@ -89,7 +88,7 @@ namespace Bindery.Test.Tests
             using (new ControlTester(textBox))
             using (var binder = Bind.Source(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).ConvertFrom<int>(Convert.ToString).UpdateControlFrom(vm => vm.IntValue);
+                binder.ToControl(textBox).Property(c => c.Text).UpdateControlFrom(vm => vm.IntValue, Convert.ToString);
                 viewModel.IntValue = 3;
                 Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));
             }
@@ -105,7 +104,7 @@ namespace Bindery.Test.Tests
             using (new ControlTester(textBox))
             using (var binder = Bind.Source(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).Convert(to:int.Parse, from:Convert.ToString).BindTo(vm => vm.IntValue);
+                binder.ToControl(textBox).Property(c => c.Text).BindTo(vm => vm.IntValue, Convert.ToString, int.Parse);
                 
                 viewModel.IntValue = 3;
                 Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));

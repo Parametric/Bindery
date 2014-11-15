@@ -1,18 +1,36 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Windows.Forms;
 
 namespace Bindery.Interfaces
 {
-    public interface IControlPropertyBinder<TSource, TControl, TProp> :
-        IControlFromSourceUpdatePropertyBinder<TSource, TControl, TProp>,
-        IControlToSourceUpdatePropertyBinder<TSource, TControl, TProp>,
-        ITwoWayUpdatePropertyBinder<TSource, TControl, TProp>
+    public interface IControlPropertyBinder<TSource, TControl, TControlProp> 
         where TSource : INotifyPropertyChanged
         where TControl : IBindableComponent
     {
-        ITwoWayUpdatePropertyBinder<TSource, TControl, TSourceProp> Convert<TSourceProp>(Func<TProp, TSourceProp> to, Func<TSourceProp, TProp> from);
-        IControlToSourceUpdatePropertyBinder<TSource, TControl, TSourceProp> ConvertTo<TSourceProp>(Func<TProp, TSourceProp> func);
-        IControlFromSourceUpdatePropertyBinder<TSource, TControl, TSourceProp> ConvertFrom<TSourceProp>(Func<TSourceProp, TProp> func);
+        IControlBinder<TSource, TControl> UpdateControlFrom(Expression<Func<TSource, TControlProp>> sourceMember);
+        IControlBinder<TSource, TControl> UpdateControlFrom<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TControlProp> convertToControlPropertyType);
+
+        IControlBinder<TSource, TControl> UpdateSource(
+            Expression<Func<TSource, TControlProp>> sourceMember, 
+            DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
+        
+        IControlBinder<TSource, TControl> UpdateSource<TSourceProp>(
+            Expression<Func<TSource, TSourceProp>> sourceMember, 
+            Func<TControlProp, TSourceProp> convertToSourcePropertyType, 
+            DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
+
+        IControlBinder<TSource, TControl> BindTo(
+            Expression<Func<TSource, TControlProp>> sourceMember,
+            ControlUpdateMode controlUpdateMode = ControlUpdateMode.OnPropertyChanged,
+            DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
+
+        IControlBinder<TSource, TControl> BindTo<TSourceProp>(
+            Expression<Func<TSource, TSourceProp>> sourceMember,
+            Func<TSourceProp, TControlProp> convertToControlPropertyType,
+            Func<TControlProp, TSourceProp> convertToSourcePropertyType,
+            ControlUpdateMode controlUpdateMode = ControlUpdateMode.OnPropertyChanged,
+            DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
     }
 }

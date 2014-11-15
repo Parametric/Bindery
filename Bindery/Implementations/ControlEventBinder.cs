@@ -20,30 +20,7 @@ namespace Bindery.Implementations
         public ControlEventBinder(ControlBinder<TSource, TControl> parent, string eventName)
         {
             _parent = parent;
-            var memberInfos = typeof (TControl).GetMember(eventName);
-            if (memberInfos.Length == 0)
-                throw new ArgumentException(string.Format("'{1}' is not a member of '{0}'.", 
-                    parent.Control.GetType().FullName, eventName));
-            var eventInfo = memberInfos[0] as EventInfo;
-            if (eventInfo==null)
-                throw new ArgumentException(string.Format("'{0}.{1}' is not an event.",
-                    parent.Control.GetType().FullName, eventName));
-            _observable = CreateObservable(eventInfo);
-        }
-
-        private IObservable<TEventArgs> CreateObservable(EventInfo eventInfo)
-        {
-            var conversion = CreateConversion(eventInfo);
-            var addHandler = CreateEventHandlerAction(eventInfo, eventInfo.GetAddMethod());
-            var removeHandler = CreateEventHandlerAction(eventInfo, eventInfo.GetRemoveMethod());
-
-            //Observable.FromEvent<THandler,TEventArgs>(Action<TEventArgs>=>THandler,THandler=>void,THandler=>void)
-            var call = Expression.Call(typeof(Observable), "FromEvent",
-                new[] {eventInfo.EventHandlerType, typeof (TEventArgs)},
-                new[] {conversion, addHandler, removeHandler});
-            var lambda = Expression.Lambda<Func<IObservable<TEventArgs>>>(call);
-            var func = lambda.Compile();
-            return func();
+            _observable = CreateObservable(parent, eventName);
         }
 
         public IControlBinder<TSource, TControl> Executes(Func<TSource, ICommand> commandMember)
@@ -54,9 +31,48 @@ namespace Bindery.Implementations
             return _parent;
         }
 
-        public IControlObservableBinder<TSource, TControl, TConverted> ConvertArgsTo<TConverted>(Func<TEventArgs, TConverted> conversion)
+        public IControlBinder<TSource, TControl> Executes<TConverted>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TConverted> conversion)
         {
-            return new ControlObservableConversionBinder<TSource, TControl, TEventArgs, TConverted>(_parent, _observable, conversion);
+            var command = commandMember(_parent.Source);
+            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(conversion(x)));
+            _parent.AddSubscription(subscription);
+            return _parent;
+        }
+
+        public IControlBinder<TSource, TControl> UpdateSource<TSourceProp>(Expression<Func<TSource, TSourceProp>> propertyMember, Func<TEventArgs, TSourceProp> conversion)
+        {
+            var propertySetter = propertyMember.GetPropertySetter(_parent.Source);
+            var subscription = _observable.Subscribe(args => propertySetter(conversion(args)));
+            _parent.AddSubscription(subscription);
+            return _parent;
+        }
+
+        private IObservable<TEventArgs> CreateObservable(ControlBinder<TSource, TControl> parent, string eventName)
+        {
+            var memberInfos = typeof(TControl).GetMember(eventName);
+            if (memberInfos.Length == 0)
+                throw new ArgumentException(string.Format("'{1}' is not a member of '{0}'.",
+                    parent.Control.GetType().FullName, eventName));
+            var eventInfo = memberInfos[0] as EventInfo;
+            if (eventInfo == null)
+                throw new ArgumentException(string.Format("'{0}.{1}' is not an event.",
+                    parent.Control.GetType().FullName, eventName));
+            return CreateObservable(eventInfo);
+        }
+
+        private IObservable<TEventArgs> CreateObservable(EventInfo eventInfo)
+        {
+            var conversion = CreateConversion(eventInfo);
+            var addHandler = CreateEventHandlerAction(eventInfo, eventInfo.GetAddMethod());
+            var removeHandler = CreateEventHandlerAction(eventInfo, eventInfo.GetRemoveMethod());
+
+            //Observable.FromEvent<THandler,TEventArgs>(Action<TEventArgs>=>THandler,THandler=>void,THandler=>void)
+            var call = Expression.Call(typeof(Observable), "FromEvent",
+                new[] { eventInfo.EventHandlerType, typeof(TEventArgs) },
+                new[] { conversion, addHandler, removeHandler });
+            var lambda = Expression.Lambda<Func<IObservable<TEventArgs>>>(call);
+            var func = lambda.Compile();
+            return func();
         }
 
         private static Expression CreateConversion(EventInfo eventInfo)

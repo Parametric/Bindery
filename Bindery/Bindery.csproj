@@ -52,11 +52,9 @@
     <Compile Include="Bind.cs" />
     <Compile Include="Extensions\CommandExtensions.cs" />
     <Compile Include="Implementations\ControlObservableBinder.cs" />
-    <Compile Include="Implementations\ControlPropertyConversionBinder.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Implementations\ControlBinder.cs" />
     <Compile Include="Implementations\ControlEventBinder.cs" />
-    <Compile Include="Implementations\ControlObservableConversionBinder.cs" />
     <Compile Include="Implementations\TargetBinder.cs" />
     <Compile Include="Implementations\TargetPropertyBinder.cs" />
     <Compile Include="Interfaces\ITargetBinder.cs" />
@@ -66,15 +64,12 @@
     <Compile Include="Interfaces\Observables\IOnNextDefined.cs" />
     <Compile Include="Implementations\SourceObservableBinder.cs" />
     <Compile Include="Interfaces\IControlEventBinder.cs" />
-    <Compile Include="Interfaces\IControlFromSourceUpdatePropertyBinder.cs" />
-    <Compile Include="Interfaces\IControlToSourceUpdatePropertyBinder.cs" />
     <Compile Include="Interfaces\IControlObservableBinder.cs" />
     <Compile Include="Interfaces\ISourceBinder.cs" />
     <Compile Include="Interfaces\IControlBinder.cs" />
     <Compile Include="Interfaces\IControlPropertyBinder.cs" />
     <Compile Include="Interfaces\ISourceObservableBinder.cs" />
     <Compile Include="Interfaces\ISourcePropertyBinder.cs" />
-    <Compile Include="Interfaces\ITwoWayUpdatePropertyBinder.cs" />
     <Compile Include="Implementations\SourceBinder.cs" />
     <Compile Include="Implementations\ControlPropertyBinder.cs" />
     <Compile Include="Implementations\SourcePropertyBinder.cs" />
