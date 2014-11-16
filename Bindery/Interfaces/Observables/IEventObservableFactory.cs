@@ -4,7 +4,7 @@ namespace Bindery.Interfaces.Observables
 {
     public interface IEventObservableFactory
     {
-        IObservable<EventArgs> Create(string eventName);
-        IObservable<TEventArgs> Create<TEventArgs>(string eventName);
+        IObservable<EventArgs> Event(string eventName);
+        IObservable<TEventArgs> Event<TEventArgs>(string eventName);
     }
 }

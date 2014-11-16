@@ -18,14 +18,14 @@ namespace Bindery.Implementations
             _propSetter = member.GetPropertySetter(_parent.Target);
         }
 
-        public ITargetBinder<TSource, TTarget> UpdateTargetFrom(Expression<Func<TSource, TProp>> sourceMember)
+        public ITargetBinder<TSource, TTarget> Source(Expression<Func<TSource, TProp>> sourceMember)
         {
             Action<TProp> propertyUpdater = value => _propSetter(value);
             ConfigureTargetPropertyUpdate(sourceMember, propertyUpdater);
             return _parent;
         }
 
-        public ITargetBinder<TSource, TTarget> UpdateTargetFrom<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TProp> conversion)
+        public ITargetBinder<TSource, TTarget> Source<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TProp> conversion)
         {
             Action<TSourceProp> propertyUpdater = value => _propSetter(conversion(value));
             ConfigureTargetPropertyUpdate(sourceMember, propertyUpdater);

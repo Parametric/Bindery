@@ -27,12 +27,12 @@ namespace Bindery.Implementations
             return new ControlPropertyBinder<TSource, TControl, TProp>(this, member);
         }
 
-        public IControlEventBinder<TSource, TControl, TEventArgs> Event<TEventArgs>(string eventName)
+        public IControlEventBinder<TSource, TControl, TEventArgs> OnEvent<TEventArgs>(string eventName)
         {
             return new ControlEventBinder<TSource, TControl, TEventArgs>(this, eventName);
         }
 
-        public IControlEventBinder<TSource, TControl, EventArgs> Event(string eventName)
+        public IControlEventBinder<TSource, TControl, EventArgs> OnEvent(string eventName)
         {
             return new ControlEventBinder<TSource, TControl, EventArgs>(this, eventName);
         }
@@ -48,7 +48,7 @@ namespace Bindery.Implementations
             return this;
         }
 
-        public IControlObservableBinder<TSource, TControl, TArg> Observe<TArg>(Func<TControl, IObservable<TArg>> observableMember)
+        public IControlObservableBinder<TSource, TControl, TArg> On<TArg>(Func<TControl, IObservable<TArg>> observableMember)
         {
             return new ControlObservableBinder<TSource, TControl, TArg>(this, observableMember(Control));
         }

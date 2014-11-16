@@ -18,10 +18,10 @@ namespace Bindery.Implementations
         public ControlEventBinder(ControlBinder<TSource, TControl> parent, string eventName)
         {
             _parent = parent;
-            _observable = EventObservable.For(parent.Control).Create<TEventArgs>(eventName);
+            _observable = Create.ObservableFor(parent.Control).Event<TEventArgs>(eventName);
         }
 
-        public IControlBinder<TSource, TControl> Executes(Func<TSource, ICommand> commandMember)
+        public IControlBinder<TSource, TControl> Execute(Func<TSource, ICommand> commandMember)
         {
             var command = commandMember(_parent.Source);
             var subscription = _observable.Subscribe(x => command.ExecuteIfValid(null));
@@ -29,7 +29,7 @@ namespace Bindery.Implementations
             return _parent;
         }
 
-        public IControlBinder<TSource, TControl> Executes<TConverted>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TConverted> conversion)
+        public IControlBinder<TSource, TControl> Execute<TConverted>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TConverted> conversion)
         {
             var command = commandMember(_parent.Source);
             var subscription = _observable.Subscribe(x => command.ExecuteIfValid(conversion(x)));
@@ -37,7 +37,7 @@ namespace Bindery.Implementations
             return _parent;
         }
 
-        public IControlBinder<TSource, TControl> UpdateSource<TSourceProp>(Expression<Func<TSource, TSourceProp>> propertyMember, Func<TEventArgs, TSourceProp> conversion)
+        public IControlBinder<TSource, TControl> Set<TSourceProp>(Expression<Func<TSource, TSourceProp>> propertyMember, Func<TEventArgs, TSourceProp> conversion)
         {
             var propertySetter = propertyMember.GetPropertySetter(_parent.Source);
             var subscription = _observable.Subscribe(args => propertySetter(conversion(args)));

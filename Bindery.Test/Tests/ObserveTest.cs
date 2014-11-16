@@ -24,9 +24,9 @@ namespace Bindery.Test.Tests
             viewModel.Command.CanExecuteCondition = vm => commandEnabled;
 
             using (var button = new TestButton())
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
-                binder.ToControl(button).Observe(c => c.MouseMoveButton).Executes(vm => vm.Command);
+                binder.Control(button).On(c => c.MouseMoveButton).Execute(vm => vm.Command);
 
                 // Act
                 if (!binderActiveDuringEvent) binder.Dispose();
@@ -47,9 +47,9 @@ namespace Bindery.Test.Tests
             var viewModel = new TestViewModel();
 
             using (var button = new TestButton())
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
-                binder.ToControl(button).Observe(c => c.MouseMoveButton).UpdateSource(vm => vm.StringValue);
+                binder.Control(button).On(c => c.MouseMoveButton).Set(vm => vm.StringValue);
 
                 // Act
                 if (!binderActiveDuringEvent) binder.Dispose();
@@ -71,7 +71,7 @@ namespace Bindery.Test.Tests
             var viewModel = new TestViewModel {MyObservable = task.ToObservable()};
             var expected = expectUpdated ? 5 : 0;
 
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 var result = 0;
                 binder.Observe(vm => vm.MyObservable)
@@ -94,7 +94,7 @@ namespace Bindery.Test.Tests
             var task = new Task<int>(() => { throw new NotImplementedException(); });
             var viewModel = new TestViewModel { MyObservable = task.ToObservable() };
 
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 binder.Observe(vm => vm.MyObservable)
                     .OnNext(arg => { })
@@ -117,7 +117,7 @@ namespace Bindery.Test.Tests
             var viewModel = new TestViewModel { MyObservable = task.ToObservable() };
             const int expected = 5;
 
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 var result = 0;
                 binder.Observe(vm => vm.MyObservable)

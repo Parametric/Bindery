@@ -16,12 +16,12 @@ namespace Bindery.Test.Tests
             var viewModel = new TestViewModel();
 
             using (var textBox = new TextBox())
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 const string originalValue = "value #1";
                 const string updatedValue = "value #2";
                 viewModel.StringValue = originalValue;
-                binder.ToTarget(textBox).Property(c => c.Text).UpdateTargetFrom(vm => vm.StringValue);
+                binder.Target(textBox).Property(c => c.Text).Source(vm => vm.StringValue);
                 if (!binderActiveDuringEvent)
                     binder.Dispose();
 
@@ -41,13 +41,13 @@ namespace Bindery.Test.Tests
             var viewModel = new TestViewModel();
 
             using (var textBox = new TextBox())
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 const int originalValue = 1;
                 const int updatedValue = 2;
                 viewModel.IntValue = originalValue;
                 Func<int, string> conversion = Convert.ToString;
-                binder.ToTarget(textBox).Property(c => c.Text).UpdateTargetFrom(vm => vm.IntValue, conversion);
+                binder.Target(textBox).Property(c => c.Text).Source(vm => vm.IntValue, conversion);
                 if (!binderActiveDuringEvent)
                     binder.Dispose();
 

@@ -17,9 +17,9 @@ namespace Bindery.Test.Tests
             var textBox = new TextBox();
 
             using (new ControlTester(textBox))
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).BindTo(vm => vm.StringValue);
+                binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.StringValue);
                 if (!binderActiveDuringEvent)
                     binder.Dispose();
 
@@ -42,9 +42,9 @@ namespace Bindery.Test.Tests
             var textBox = new TextBox();
 
             using (new ControlTester(textBox))
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).UpdateSource(vm => vm.StringValue);
+                binder.Control(textBox).Property(c => c.Text).Set(vm => vm.StringValue);
                 if (!binderActiveDuringEvent)
                     binder.Dispose();
 
@@ -65,9 +65,9 @@ namespace Bindery.Test.Tests
             var textBox = new TextBox();
 
             using (new ControlTester(textBox))
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).UpdateControlFrom(vm => vm.StringValue);
+                binder.Control(textBox).Property(c => c.Text).Get(vm => vm.StringValue);
                 if (!binderActiveDuringEvent)
                     binder.Dispose();
 
@@ -87,9 +87,9 @@ namespace Bindery.Test.Tests
             var textBox = new TextBox();
 
             using (new ControlTester(textBox))
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).UpdateSource(vm => vm.IntValue, Convert.ToInt32);
+                binder.Control(textBox).Property(c => c.Text).Set(vm => vm.IntValue, Convert.ToInt32);
                 textBox.Text = "3";
                 Assert.That(viewModel.IntValue, Is.EqualTo(Convert.ToInt32(textBox.Text)));
             }
@@ -103,9 +103,9 @@ namespace Bindery.Test.Tests
             var textBox = new TextBox();
 
             using (new ControlTester(textBox))
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).UpdateControlFrom(vm => vm.IntValue, Convert.ToString);
+                binder.Control(textBox).Property(c => c.Text).Get(vm => vm.IntValue, Convert.ToString);
                 viewModel.IntValue = 3;
                 Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));
             }
@@ -119,9 +119,9 @@ namespace Bindery.Test.Tests
             var textBox = new TextBox();
 
             using (new ControlTester(textBox))
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
-                binder.ToControl(textBox).Property(c => c.Text).BindTo(vm => vm.IntValue, Convert.ToString, int.Parse);
+                binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.IntValue, Convert.ToString, int.Parse);
                 
                 viewModel.IntValue = 3;
                 Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));

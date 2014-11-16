@@ -21,13 +21,13 @@ namespace Bindery.Implementations
             _observable = observable;
         }
 
-        public IControlBinder<TSource, TControl> Executes(Func<TSource, ICommand> commandMember)
+        public IControlBinder<TSource, TControl> Execute(Func<TSource, ICommand> commandMember)
         {
             ConfigureCommandExecution(commandMember, x => x);
             return _parent;
         }
 
-        public IControlBinder<TSource, TControl> Executes<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> conversion)
+        public IControlBinder<TSource, TControl> Execute<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> conversion)
         {
             ConfigureCommandExecution(commandMember, conversion);
             return _parent;
@@ -40,14 +40,14 @@ namespace Bindery.Implementations
             _parent.AddSubscription(subscription);
         }
 
-        public IControlBinder<TSource, TControl> UpdateSource(Expression<Func<TSource, TArg>> member)
+        public IControlBinder<TSource, TControl> Set(Expression<Func<TSource, TArg>> member)
         {
             var onNext = member.GetPropertySetter(_parent.Source);
             _parent.AddSubscription(_observable.Subscribe(onNext));
             return _parent;
         }
 
-        public IControlBinder<TSource, TControl> UpdateSource<TSourceProp>(Expression<Func<TSource, TSourceProp>> member, Func<TArg,TSourceProp> conversion)
+        public IControlBinder<TSource, TControl> Set<TSourceProp>(Expression<Func<TSource, TSourceProp>> member, Func<TArg,TSourceProp> conversion)
         {
             var propertySetter = member.GetPropertySetter(_parent.Source);
             Action<TArg> onNext = args => propertySetter(conversion(args));

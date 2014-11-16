@@ -9,24 +9,24 @@ namespace Bindery.Interfaces
         where TSource : INotifyPropertyChanged
         where TControl : IBindableComponent
     {
-        IControlBinder<TSource, TControl> UpdateControlFrom(Expression<Func<TSource, TControlProp>> sourceMember);
-        IControlBinder<TSource, TControl> UpdateControlFrom<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TControlProp> convertToControlPropertyType);
+        IControlBinder<TSource, TControl> Get(Expression<Func<TSource, TControlProp>> sourceMember);
+        IControlBinder<TSource, TControl> Get<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TControlProp> convertToControlPropertyType);
 
-        IControlBinder<TSource, TControl> UpdateSource(
+        IControlBinder<TSource, TControl> Set(
             Expression<Func<TSource, TControlProp>> sourceMember, 
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
         
-        IControlBinder<TSource, TControl> UpdateSource<TSourceProp>(
+        IControlBinder<TSource, TControl> Set<TSourceProp>(
             Expression<Func<TSource, TSourceProp>> sourceMember, 
             Func<TControlProp, TSourceProp> convertToSourcePropertyType, 
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
 
-        IControlBinder<TSource, TControl> BindTo(
+        IControlBinder<TSource, TControl> Bind(
             Expression<Func<TSource, TControlProp>> sourceMember,
             ControlUpdateMode controlUpdateMode = ControlUpdateMode.OnPropertyChanged,
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged);
 
-        IControlBinder<TSource, TControl> BindTo<TSourceProp>(
+        IControlBinder<TSource, TControl> Bind<TSourceProp>(
             Expression<Func<TSource, TSourceProp>> sourceMember,
             Func<TSourceProp, TControlProp> convertToControlPropertyType,
             Func<TControlProp, TSourceProp> convertToSourcePropertyType,

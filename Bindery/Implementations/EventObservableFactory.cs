@@ -15,12 +15,12 @@ namespace Bindery.Implementations
             _obj = obj;
         }
 
-        public IObservable<EventArgs> Create(string eventName)
+        public IObservable<EventArgs> Event(string eventName)
         {
             return EventAsObservable<EventArgs>(_obj, eventName);
         }
         
-        public IObservable<TEventArgs> Create<TEventArgs>(string eventName)
+        public IObservable<TEventArgs> Event<TEventArgs>(string eventName)
         {
             return EventAsObservable<TEventArgs>(_obj, eventName);
         }

@@ -13,7 +13,7 @@ namespace Bindery.Test.Tests
             var viewModel = new TestViewModel();
             var callCount = 0;
             var setValue = 0;
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 binder.Property(vm => vm.IntValue).OnChanged(x =>
                 {
@@ -34,7 +34,7 @@ namespace Bindery.Test.Tests
             // Arrange
             var viewModel = new TestViewModel();
             var callCount = 0;
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
 
@@ -50,7 +50,7 @@ namespace Bindery.Test.Tests
             // Arrange
             var viewModel = new TestViewModel {IntValue=3};
             var callCount = 0;
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
                 // Act
@@ -65,7 +65,7 @@ namespace Bindery.Test.Tests
         {
             var viewModel = new TestViewModel();
             var callCount = 0;
-            using (var binder = Bind.Source(viewModel))
+            using (var binder = Create.Binder(viewModel))
             {
                 binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
             }

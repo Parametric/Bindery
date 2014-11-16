@@ -26,12 +26,12 @@ namespace Bindery.Implementations
         }
 
 
-        public IControlBinder<TSource, TControl> ToControl<TControl>(TControl control) where TControl : IBindableComponent
+        public IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent
         {
             return new ControlBinder<TSource, TControl>(this, control);
         }
 
-        public ITargetBinder<TSource, TTarget> ToTarget<TTarget>(TTarget target) where TTarget : class
+        public ITargetBinder<TSource, TTarget> Target<TTarget>(TTarget target) where TTarget : class
         {
             return new TargetBinder<TSource, TTarget>(this, target);
         }
