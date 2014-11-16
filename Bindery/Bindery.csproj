@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="Bind.cs" />
     <Compile Include="Extensions\CommandExtensions.cs" />
+    <Compile Include="Implementations\EventObservableFactory.cs" />
+    <Compile Include="Interfaces\Observables\IEventObservableFactory.cs" />
     <Compile Include="Implementations\ControlObservableBinder.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Implementations\ControlBinder.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Implementations\ControlPropertyBinder.cs" />
     <Compile Include="Implementations\SourcePropertyBinder.cs" />
     <Compile Include="Interfaces\Observables\ISubscriptionComplete.cs" />
+    <Compile Include="EventObservable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

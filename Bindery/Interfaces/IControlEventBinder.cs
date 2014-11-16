@@ -11,7 +11,8 @@ namespace Bindery.Interfaces
         where TControl : IBindableComponent
     {
         IControlBinder<TSource, TControl> Executes(Func<TSource, ICommand> commandMember);
-        IControlBinder<TSource, TControl> Executes<TConverted>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TConverted> conversion);
+        IControlBinder<TSource, TControl> Executes<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TCommandArg> conversion);
         IControlBinder<TSource, TControl> UpdateSource<TSourceProp>(Expression<Func<TSource, TSourceProp>> propertyMember, Func<TEventArgs, TSourceProp> conversion);
+        IObservable<TEventArgs> AsObservable();
     }
 }

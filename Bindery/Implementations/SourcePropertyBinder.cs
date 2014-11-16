@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Reactive.Linq;
 using Bindery.Extensions;
 using Bindery.Interfaces;
 

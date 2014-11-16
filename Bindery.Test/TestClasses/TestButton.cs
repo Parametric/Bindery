@@ -10,11 +10,11 @@ namespace Bindery.Test.TestClasses
 
         public TestButton()
         {
-            MouseMoveButton = Observable.FromEvent<MouseEventHandler, MouseEventArgs>(
-                argsAction => (sender, e) => argsAction(e),
-                addHandler => this.MouseMove += addHandler,
-                removeHandler => this.MouseMove -= removeHandler).Select(arg => Convert.ToString(arg.Button));
+            var factory = EventObservable.For(this);
+            MouseMoveButton = factory.Create<MouseEventArgs>("MouseMove").Select(arg => Convert.ToString(arg.Button));
+            ClickObservable = factory.Create("Click");
         }
+
 
         protected virtual void OnTest(TestEventArgs e)
         {
@@ -33,5 +33,6 @@ namespace Bindery.Test.TestClasses
         }
 
         public IObservable<string> MouseMoveButton { get; private set; }
+        public IObservable<EventArgs> ClickObservable { get; private set; }
     }
 }
