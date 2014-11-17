@@ -8,7 +8,7 @@ namespace Bindery.Interfaces
 {
     public interface IControlObservableBinder<TSource, TControl, TArg>
         where TSource : INotifyPropertyChanged
-        where TControl : IBindableComponent
+        where TControl : IBindableComponent 
     {
         IControlBinder<TSource, TControl> Execute(Func<TSource, ICommand> commandMember);
         IControlBinder<TSource, TControl> Execute<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> conversion);

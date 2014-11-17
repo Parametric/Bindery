@@ -7,8 +7,8 @@ using System.Windows.Input;
 namespace Bindery.Interfaces
 {
     public interface IControlEventBinder<TSource, TControl, out TEventArgs>
+        where TControl : IBindableComponent 
         where TSource : INotifyPropertyChanged
-        where TControl : IBindableComponent
     {
         IControlBinder<TSource, TControl> Execute(Func<TSource, ICommand> commandMember);
         IControlBinder<TSource, TControl> Execute<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TCommandArg> conversion);

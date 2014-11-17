@@ -8,17 +8,13 @@ namespace Bindery.Interfaces
 {
     public interface IControlBinder<TSource, TControl>
         where TSource : INotifyPropertyChanged
-        where TControl : IBindableComponent
+        where TControl : IBindableComponent 
     {
-        IControlPropertyBinder<TSource, TControl, TProp> Property<TProp>(Expression<Func<TControl, TProp>> member);
-
+         IControlPropertyBinder<TSource, TControl, TProp> Property<TProp>(Expression<Func<TControl, TProp>> member);
         IControlEventBinder<TSource, TControl, EventArgs> OnEvent(string eventName);
-
         IControlEventBinder<TSource, TControl, TEventArgs> OnEvent<TEventArgs>(string eventName);
-
         IControlBinder<TSource, TControl> OnClick(Func<TSource, ICommand> commandMember);
-
-        IControlObservableBinder<TSource, TControl, TArg> On<TArg>(Func<TControl, IObservable<TArg>> observableMember);
+         IControlObservableBinder<TSource, TControl, TArg> On<TArg>(Func<TControl, IObservable<TArg>> observableMember);
     }
 
 }

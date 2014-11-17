@@ -1,10 +1,10 @@
 using System.ComponentModel;
+using Bindery.Interfaces.Basic;
 
 namespace Bindery.Interfaces.Observables
 {
     public interface ISubscriptionComplete<TSource> 
-        where TSource : INotifyPropertyChanged
     {
-        ISourceBinder<TSource> Subscribe();
+        IBasicSourceBinder<TSource> Subscribe();
     }
 }

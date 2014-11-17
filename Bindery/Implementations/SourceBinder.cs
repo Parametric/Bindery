@@ -1,32 +1,26 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
-using System.Windows.Forms;
+using Bindery.Implementations.Basic;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class SourceBinder<TSource> : ISourceBinder<TSource> where TSource : INotifyPropertyChanged
+    internal class SourceBinder<TSource> : BasicSourceBinder<TSource>, ISourceBinder<TSource> 
+        where TSource : INotifyPropertyChanged
     {
-        public TSource Source { get; private set; }
         private readonly IObservable<PropertyChangedEventArgs> _propertyChangedObservable;
 
-        private readonly List<IDisposable> _subscriptions;
-
-        public SourceBinder(TSource obj)
+        public SourceBinder(TSource source) :base(source)
         {
-            Source = obj;
             _propertyChangedObservable = Observable.FromEvent<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 argsAction => (sender, e) => argsAction(e),
-                handler => Source.PropertyChanged += handler,
-                handler => Source.PropertyChanged -= handler);
-            _subscriptions = new List<IDisposable>();
+                handler => source.PropertyChanged += handler,
+                handler => source.PropertyChanged -= handler);
         }
-
-
-        public IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent
+        
+        IControlBinder<TSource, TControl> ISourceBinder<TSource>.Control<TControl>(TControl control)
         {
             return new ControlBinder<TSource, TControl>(this, control);
         }
@@ -41,19 +35,9 @@ namespace Bindery.Implementations
             return new SourcePropertyBinder<TSource, TProp>(this, member);
         }
 
-        public ISourceObservableBinder<TSource, TArg> Observe<TArg>(Func<TSource, IObservable<TArg>> observableMember)
+        ISourceObservableBinder<TSource, TArg> ISourceBinder<TSource>.Observe<TArg>(Func<TSource, IObservable<TArg>> observableMember)
         {
             return new SourceObservableBinder<TSource, TArg>(this, observableMember);
-        }
-
-        public void Dispose()
-        {
-            _subscriptions.ForEach(x=>x.Dispose());
-        }
-
-        public void AddSubscription(IDisposable subscription)
-        {
-            _subscriptions.Add(subscription);
         }
 
         public IObservable<TProp> GetPropertyChangedValueObservable<TProp>(string memberName, Func<TSource, TProp> memberAccessor)

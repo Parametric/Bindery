@@ -1,7 +1,8 @@
 using System;
-using System.ComponentModel;
 using System.Threading;
+using Bindery.Implementations.Basic;
 using Bindery.Interfaces;
+using Bindery.Interfaces.Basic;
 using Bindery.Interfaces.Observables;
 
 namespace Bindery.Implementations
@@ -11,16 +12,15 @@ namespace Bindery.Implementations
         IOnNextDefined<TSource>, 
         IOnErrorDefined<TSource>, 
         IOnCompleteDefined<TSource> 
-        where TSource : INotifyPropertyChanged
     {
-        private readonly SourceBinder<TSource> _parent;
+        private readonly BasicSourceBinder<TSource> _parent;
         private readonly IObservable<TArg> _observable;
         private Action<TArg> _onNext;
         private Action<Exception> _onError;
         private Action _onComplete;
         private CancellationToken _cancellationToken;
 
-        public SourceObservableBinder(SourceBinder<TSource> parent, Func<TSource, IObservable<TArg>> observableMember)
+        public SourceObservableBinder(BasicSourceBinder<TSource> parent, Func<TSource, IObservable<TArg>> observableMember)
         {
             _parent = parent;
             _observable = observableMember(_parent.Source);
@@ -50,7 +50,7 @@ namespace Bindery.Implementations
             return this;
         }
 
-        public ISourceBinder<TSource> Subscribe()
+        public IBasicSourceBinder<TSource> Subscribe()
         {
             if (_cancellationToken == default(CancellationToken))
             {

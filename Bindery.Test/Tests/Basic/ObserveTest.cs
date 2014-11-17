@@ -3,25 +3,25 @@ using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bindery.Interfaces;
+using Bindery.Interfaces.Basic;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
-namespace Bindery.Test.Tests
+namespace Bindery.Test.Tests.Basic
 {
     [TestFixture]
     public class ObserveTest
     {
-        private TestViewModel _viewModel;
+        private TestBasicViewModel _viewModel;
         private TestButton _button;
-        private ISourceBinder<TestViewModel> _binder;
+        private IBasicSourceBinder<TestBasicViewModel> _binder;
 
         [SetUp]
         public void BeforeEach()
         {
-            _viewModel = new TestViewModel();
+            _viewModel = new TestBasicViewModel();
             _button = new TestButton();
-            _binder = Create.Binder(_viewModel);
+            _binder = Create.BasicBinder(_viewModel);
         }
 
         [TearDown]

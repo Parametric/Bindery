@@ -1,40 +1,34 @@
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Reactive.Disposables;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Bindery.Implementations.Basic;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class ControlBinder<TSource, TControl> : IControlBinder<TSource, TControl> 
+    internal class ControlBinder<TSource, TControl> : BasicControlBinder<TSource, TControl>, IControlBinder<TSource, TControl>
         where TSource : INotifyPropertyChanged
         where TControl : IBindableComponent
     {
-        private readonly SourceBinder<TSource> _sourceBinder;
-
-        public TControl Control { get; private set; }
-
-        public ControlBinder(SourceBinder<TSource> sourceBinder, TControl control)
+        public ControlBinder(SourceBinder<TSource> sourceBinder, TControl control) : base(sourceBinder, control)
         {
-            _sourceBinder = sourceBinder;
-            Control = control;
         }
 
-        public IControlPropertyBinder<TSource, TControl, TProp> Property<TProp>(Expression<Func<TControl, TProp>> member)
+        IControlPropertyBinder<TSource, TControl, TProp> IControlBinder<TSource, TControl>.Property<TProp>(Expression<Func<TControl, TProp>> member)
         {
             return new ControlPropertyBinder<TSource, TControl, TProp>(this, member);
         }
 
-        public IControlEventBinder<TSource, TControl, TEventArgs> OnEvent<TEventArgs>(string eventName)
-        {
-            return new ControlEventBinder<TSource, TControl, TEventArgs>(this, eventName);
-        }
-
-        public IControlEventBinder<TSource, TControl, EventArgs> OnEvent(string eventName)
+        IControlEventBinder<TSource, TControl, EventArgs> IControlBinder<TSource, TControl>.OnEvent(string eventName)
         {
             return new ControlEventBinder<TSource, TControl, EventArgs>(this, eventName);
+        }
+
+        IControlEventBinder<TSource, TControl, TEventArgs> IControlBinder<TSource, TControl>.OnEvent<TEventArgs>(string eventName)
+        {
+            return new ControlEventBinder<TSource, TControl, TEventArgs>(this, eventName);
         }
 
         public IControlBinder<TSource, TControl> OnClick(Func<TSource, ICommand> commandMember)
@@ -48,50 +42,9 @@ namespace Bindery.Implementations
             return this;
         }
 
-        public IControlObservableBinder<TSource, TControl, TArg> On<TArg>(Func<TControl, IObservable<TArg>> observableMember)
+        IControlObservableBinder<TSource, TControl, TArg> IControlBinder<TSource, TControl>.On<TArg>(Func<TControl, IObservable<TArg>> observableMember)
         {
-            return new ControlObservableBinder<TSource, TControl, TArg>(this, observableMember(Control));
-        }
-
-        public TSource Source
-        {
-            get { return _sourceBinder.Source; }
-        }
-
-
-        public void AddDataBinding(Binding binding, ConvertEventHandler formatHandler = null, ConvertEventHandler parseHandler = null)
-        {
-            if (formatHandler != null)
-                binding.Format += formatHandler;
-            if (parseHandler != null)
-                binding.Parse += parseHandler;
-            Control.DataBindings.Add(binding);
-
-            var subscription = Disposable.Create(()=> RemoveDataBinding(binding, formatHandler, parseHandler));
-            AddSubscription(subscription);
-        }
-
-        private void RemoveDataBinding(Binding binding, ConvertEventHandler formatHandler, ConvertEventHandler parseHandler)
-        {
-            Control.DataBindings.Remove(binding);
-            if (formatHandler != null)
-                binding.Format -= formatHandler;
-            if (parseHandler != null)
-                binding.Parse -= parseHandler;
-        }
-
-        internal Binding CreateBinding(string controlPropertyName, string sourcePropertyName, ControlUpdateMode controlUpdateMode, DataSourceUpdateMode dataSourceUpdateMode)
-        {
-            return new Binding(controlPropertyName, Source, sourcePropertyName)
-            {
-                ControlUpdateMode = controlUpdateMode,
-                DataSourceUpdateMode = dataSourceUpdateMode
-            };
-        }
-
-        public void AddSubscription(IDisposable subscription)
-        {
-            _sourceBinder.AddSubscription(subscription);
+            return new ControlObservableBinder<TSource,TControl,TArg>(this,observableMember(Control));
         }
     }
 }

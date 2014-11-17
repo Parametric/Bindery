@@ -3,56 +3,42 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 using System.Windows.Input;
-using Bindery.Extensions;
+using Bindery.Implementations.Basic;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class ControlObservableBinder<TSource,TControl,TArg> : IControlObservableBinder<TSource,TControl,TArg> 
-        where TControl : IBindableComponent
+    internal class ControlObservableBinder<TSource, TControl, TArg>
+        : BasicControlObservableBinder<TSource, TControl, TArg>,
+        IControlObservableBinder<TSource, TControl, TArg>
         where TSource : INotifyPropertyChanged
+        where TControl : IBindableComponent
     {
-        private readonly ControlBinder<TSource, TControl> _parent;
-        private readonly IObservable<TArg> _observable;
 
-        public ControlObservableBinder(ControlBinder<TSource, TControl> parent, IObservable<TArg> observable)
+        public ControlObservableBinder(BasicControlBinder<TSource, TControl> parent, IObservable<TArg> observable)
+            : base(parent, observable)
         {
-            _parent = parent;
-            _observable = observable;
         }
 
-        public IControlBinder<TSource, TControl> Execute(Func<TSource, ICommand> commandMember)
+
+        IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Execute(Func<TSource, ICommand> commandMember)
         {
-            ConfigureCommandExecution(commandMember, x => x);
-            return _parent;
+            return (IControlBinder<TSource, TControl>)Execute(commandMember);
         }
 
-        public IControlBinder<TSource, TControl> Execute<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> conversion)
+        IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Execute<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> conversion)
         {
-            ConfigureCommandExecution(commandMember, conversion);
-            return _parent;
+            return (IControlBinder<TSource, TControl>)Execute(commandMember, conversion);
         }
 
-        private void ConfigureCommandExecution<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> createCommandArg)
+        IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Set(Expression<Func<TSource, TArg>> member)
         {
-            var command = commandMember(_parent.Source);
-            var subscription = _observable.Subscribe(args => command.ExecuteIfValid(createCommandArg(args)));
-            _parent.AddSubscription(subscription);
+            return (IControlBinder<TSource, TControl>)Set(member);
         }
 
-        public IControlBinder<TSource, TControl> Set(Expression<Func<TSource, TArg>> member)
+        IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Set<TSourceProp>(Expression<Func<TSource, TSourceProp>> member, Func<TArg, TSourceProp> conversion)
         {
-            var onNext = member.GetPropertySetter(_parent.Source);
-            _parent.AddSubscription(_observable.Subscribe(onNext));
-            return _parent;
-        }
-
-        public IControlBinder<TSource, TControl> Set<TSourceProp>(Expression<Func<TSource, TSourceProp>> member, Func<TArg,TSourceProp> conversion)
-        {
-            var propertySetter = member.GetPropertySetter(_parent.Source);
-            Action<TArg> onNext = args => propertySetter(conversion(args));
-            _parent.AddSubscription(_observable.Subscribe(onNext));
-            return _parent;
+            return (IControlBinder<TSource, TControl>)Set(member, conversion);
         }
     }
 }

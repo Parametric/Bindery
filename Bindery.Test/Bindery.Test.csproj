@@ -52,10 +52,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestClasses\TestBasicCommand.cs" />
+    <Compile Include="TestClasses\TestBasicViewModel.cs" />
     <Compile Include="TestClasses\TestButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TestClasses\TestEventArgs.cs" />
+    <Compile Include="Tests\Basic\BindingTest.cs" />
+    <Compile Include="Tests\Basic\EventTest.cs" />
+    <Compile Include="Tests\Basic\ObserveTest.cs" />
     <Compile Include="Tests\BindingTest.cs" />
     <Compile Include="TestClasses\ControlTester.cs" />
     <Compile Include="Tests\EventTest.cs" />
@@ -77,6 +82,7 @@
       <Name>Bindery</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

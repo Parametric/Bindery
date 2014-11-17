@@ -50,7 +50,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\CommandExtensions.cs" />
+    <Compile Include="Implementations\Basic\BasicControlBinder.cs" />
+    <Compile Include="Implementations\Basic\BasicControlEventBinder.cs" />
+    <Compile Include="Implementations\Basic\BasicControlObservableBinder.cs" />
+    <Compile Include="Implementations\Basic\BasicControlPropertyBinder.cs" />
+    <Compile Include="Implementations\Basic\BasicSourceBinder.cs" />
     <Compile Include="Implementations\EventObservableFactory.cs" />
+    <Compile Include="Interfaces\Basic\IBasicControlBinder.cs" />
+    <Compile Include="Interfaces\Basic\IBasicControlEventBinder.cs" />
+    <Compile Include="Interfaces\Basic\IBasicControlObservableBinder.cs" />
+    <Compile Include="Interfaces\Basic\IBasicControlPropertyBinder.cs" />
+    <Compile Include="Interfaces\Basic\IBasicSourceBinder.cs" />
     <Compile Include="Interfaces\Observables\IEventObservableFactory.cs" />
     <Compile Include="Implementations\ControlObservableBinder.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />

@@ -5,7 +5,6 @@ using System.Threading;
 namespace Bindery.Interfaces.Observables
 {
     public interface IOnNextDefined<TSource> : ISubscriptionComplete<TSource>
-        where TSource : INotifyPropertyChanged
     {
         IOnErrorDefined<TSource> OnError(Action<Exception> onError);
         IOnCompleteDefined<TSource> OnComplete(Action onComplete);
