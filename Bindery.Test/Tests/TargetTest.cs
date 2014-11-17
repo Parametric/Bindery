@@ -36,7 +36,7 @@ namespace Bindery.Test.Tests
             const string originalValue = "value #1";
             const string updatedValue = "value #2";
             _viewModel.StringValue = originalValue;
-            _binder.Target(_textBox).Property(c => c.Text).Source(vm => vm.StringValue);
+            _binder.Target(_textBox).Property(c => c.Text).Get(vm => vm.StringValue);
             var expected = originalValue;
             Assert.That(_textBox.Text, Is.EqualTo(expected), "Should immediately update target property to source value");
             if (!binderActiveDuringEvent)
@@ -59,7 +59,7 @@ namespace Bindery.Test.Tests
             const int updatedValue = 2;
             _viewModel.IntValue = originalValue;
             Func<int, string> conversion = Convert.ToString;
-            _binder.Target(_textBox).Property(c => c.Text).Source(vm => vm.IntValue, conversion);
+            _binder.Target(_textBox).Property(c => c.Text).Get(vm => vm.IntValue, conversion);
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
 

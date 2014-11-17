@@ -8,7 +8,6 @@ using Bindery.Interfaces;
 namespace Bindery.Implementations
 {
     internal class TargetPropertyBinder<TSource, TTarget, TProp> : ITargetPropertyBinder<TSource,TTarget,TProp> 
-        where TSource : INotifyPropertyChanged
     {
         private readonly TargetBinder<TSource, TTarget> _parent;
         private readonly Action<TProp> _propSetter;
@@ -19,14 +18,14 @@ namespace Bindery.Implementations
             _propSetter = member.GetPropertySetter(_parent.Target);
         }
 
-        public ITargetBinder<TSource, TTarget> Source(Expression<Func<TSource, TProp>> sourceMember)
+        public ITargetBinder<TSource, TTarget> Get(Expression<Func<TSource, TProp>> sourceMember)
         {
             Action<TProp> propertyUpdater = value => _propSetter(value);
             ConfigureTargetPropertyUpdate(sourceMember, propertyUpdater);
             return _parent;
         }
 
-        public ITargetBinder<TSource, TTarget> Source<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TProp> conversion)
+        public ITargetBinder<TSource, TTarget> Get<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TProp> conversion)
         {
             Action<TSourceProp> propertyUpdater = value => _propSetter(conversion(value));
             ConfigureTargetPropertyUpdate(sourceMember, propertyUpdater);
@@ -48,7 +47,11 @@ namespace Bindery.Implementations
 
         private IObservable<TSourceProp> CreateObservable<TSourceProp>(Func<TSource, TSourceProp> sourceAccessor, string sourcePropertyName)
         {
-            return _parent.Source.CreatePropertyChangedObservable()
+            var notifyPropertyChanged = _parent.Source as INotifyPropertyChanged;
+            if (notifyPropertyChanged == null)
+                throw new NotSupportedException(string.Format("Source type '{0}' does not implement {1}.",
+                    typeof (TSource), typeof (INotifyPropertyChanged)));
+            return notifyPropertyChanged.CreatePropertyChangedObservable()
                 .Where(args => args.PropertyName == sourcePropertyName)
                 .Select(x => sourceAccessor(_parent.Source));
         }

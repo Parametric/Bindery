@@ -5,7 +5,7 @@ namespace Bindery.Interfaces
 {
     public interface ITargetPropertyBinder<TSource, TTarget, TProp>
     {
-        ITargetBinder<TSource, TTarget> Source(Expression<Func<TSource, TProp>> sourceMember);
-        ITargetBinder<TSource, TTarget> Source<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TProp> conversion);
+        ITargetBinder<TSource, TTarget> Get(Expression<Func<TSource, TProp>> sourceMember);
+        ITargetBinder<TSource, TTarget> Get<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TProp> conversion);
     }
 }

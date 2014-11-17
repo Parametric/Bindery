@@ -56,6 +56,7 @@
     <Compile Include="Implementations\Basic\BasicControlObservableBinder.cs" />
     <Compile Include="Implementations\Basic\BasicControlPropertyBinder.cs" />
     <Compile Include="Implementations\Basic\BasicSourceBinder.cs" />
+    <Compile Include="Implementations\TargetEventBinder.cs" />
     <Compile Include="Implementations\EventObservableFactory.cs" />
     <Compile Include="Interfaces\Basic\IBasicControlBinder.cs" />
     <Compile Include="Interfaces\Basic\IBasicControlEventBinder.cs" />
