@@ -87,7 +87,9 @@
     <Compile Include="Implementations\SourcePropertyBinder.cs" />
     <Compile Include="Interfaces\Observables\ISubscriptionComplete.cs" />
     <Compile Include="Create.cs" />
+    <Compile Include="Interfaces\ITrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Implementations\Trigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

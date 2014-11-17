@@ -72,6 +72,7 @@
     <Compile Include="TestClasses\TestCommand.cs" />
     <Compile Include="TestClasses\TestViewModel.cs" />
     <Compile Include="Tests\TargetTest.cs" />
+    <Compile Include="Tests\TriggerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
