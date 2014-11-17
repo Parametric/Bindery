@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Reactive.Linq;
 using Bindery.Extensions;
 using Bindery.Interfaces;
 
@@ -34,14 +35,22 @@ namespace Bindery.Implementations
 
         private void ConfigureTargetPropertyUpdate<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Action<TSourceProp> updateProperty)
         {
+            var sourcePropertyName = sourceMember.GetAccessorName();
             // Update target with source value immediately
             var sourceAccessor = sourceMember.Compile();
             var sourceValue = sourceAccessor(_parent.Source);
             updateProperty(sourceValue);
             // Update target when source property changes
-            var observable = _parent.GetSourcePropertyChangedValueObservable(sourceMember.GetAccessorName(), sourceAccessor);
+            var observable = CreateObservable(sourceAccessor, sourcePropertyName);
             var subscription = observable.Subscribe(updateProperty);
             _parent.AddSubscription(subscription);
+        }
+
+        private IObservable<TSourceProp> CreateObservable<TSourceProp>(Func<TSource, TSourceProp> sourceAccessor, string sourcePropertyName)
+        {
+            return _parent.Source.CreatePropertyChangedObservable()
+                .Where(args => args.PropertyName == sourcePropertyName)
+                .Select(x => sourceAccessor(_parent.Source));
         }
     }
 }

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\CommandExtensions.cs" />
+    <Compile Include="Extensions\NotifyPropertyChangedExtensions.cs" />
     <Compile Include="Implementations\Basic\BasicControlBinder.cs" />
     <Compile Include="Implementations\Basic\BasicControlEventBinder.cs" />
     <Compile Include="Implementations\Basic\BasicControlObservableBinder.cs" />

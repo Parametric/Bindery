@@ -28,11 +28,6 @@ namespace Bindery.Implementations
             return new TargetPropertyBinder<TSource, TTarget, TProp>(this, member);
         }
 
-        public IObservable<TProp> GetSourcePropertyChangedValueObservable<TProp>(string memberName,Func<TSource, TProp> memberAccessor)
-        {
-            return _sourceBinder.GetPropertyChangedValueObservable(memberName, memberAccessor);
-        }
-
         public void AddSubscription(IDisposable subscription)
         {
             _sourceBinder.AddSubscription(subscription);
