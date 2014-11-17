@@ -11,11 +11,13 @@ namespace Bindery.Test.Tests
         private TestViewModel _viewModel;
         private Button _button;
         private ISourceBinder<TestViewModel> _binder;
+        private TestCommand _command;
 
         [SetUp]
         public void BeforeEach()
         {
             _viewModel = new TestViewModel();
+            _command = new TestCommand(_viewModel);
             _binder = Create.Binder(_viewModel);
             _button = new Button();
         }
@@ -32,8 +34,8 @@ namespace Bindery.Test.Tests
         {
             // Arrange
             var executedCount = 0;
-            _viewModel.Command.ExecuteAction = vm => executedCount++;
-            _binder.Control(_button).OnClick(vm => vm.Command);
+            _command.ExecuteAction = vm => executedCount++;
+            _binder.Control(_button).OnClick(_command);
 
             // Act
             _button.PerformClick();
@@ -47,11 +49,11 @@ namespace Bindery.Test.Tests
         public void EnableIsUpdatedBasedOnCanExecute()
         {
             // Arrange
-            _binder.Control(_button).OnClick(vm => vm.Command);
-
-            _viewModel.Command.CanExecuteCondition = vm => vm.IntValue >= 0;
+            _command.CanExecuteCondition = vm => vm.IntValue > 0;
 
             // Act & Assert
+            _binder.Control(_button).OnClick(_command);
+            Assert.That(_button.Enabled, Is.False, "Enabled should be set based off initial condition");
             _viewModel.IntValue = 5;
             Assert.That(_button.Enabled, Is.True);
             _viewModel.IntValue = -1;

@@ -7,11 +7,8 @@ namespace Bindery.Test.TestClasses
     {
         public TestBasicViewModel()
         {
-            Command = new TestBasicCommand(this);
             MyObservable = Observable.Return(5);
         }
-
-        public TestBasicCommand Command { get; set; }
 
         public int IntValue { get; set; }
 

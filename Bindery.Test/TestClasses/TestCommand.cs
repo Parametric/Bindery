@@ -5,12 +5,12 @@ namespace Bindery.Test.TestClasses
 {
     public class TestCommand : ICommand
     {
-        private readonly TestViewModel _viewModel;
+        public TestViewModel ViewModel { get; private set; }
 
         public TestCommand(TestViewModel viewModel)
         {
-            _viewModel = viewModel;
-            _viewModel.PropertyChanged += (sender, e) => OnCanExecuteChanged();
+            ViewModel = viewModel;
+            ViewModel.PropertyChanged += (sender, e) => OnCanExecuteChanged();
             ExecuteAction = parm => { };
             CanExecuteCondition = vm => true;
         }
@@ -20,7 +20,7 @@ namespace Bindery.Test.TestClasses
 
         public bool CanExecute(object parameter)
         {
-            return CanExecuteCondition(_viewModel);
+            return CanExecuteCondition(ViewModel);
         }
 
         public void Execute(object parameter)

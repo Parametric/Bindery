@@ -10,7 +10,6 @@ namespace Bindery.Test.TestClasses
     {
         public TestViewModel()
         {
-            Command = new TestCommand(this);
             MyObservable = Observable.Return(5);
         }
 
@@ -38,8 +37,6 @@ namespace Bindery.Test.TestClasses
                 OnPropertyChanged();
             }
         }
-
-        public TestCommand Command { get; set; }
 
         public IObservable<int> MyObservable { get; set; }
 

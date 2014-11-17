@@ -20,17 +20,15 @@ namespace Bindery.Implementations.Basic
             _observable = Create.ObservableFor(parent.Control).Event<TEventArgs>(eventName);
         }
 
-        public IBasicControlBinder<TSource, TControl> Execute(Func<TSource, ICommand> commandMember)
+        public IBasicControlBinder<TSource, TControl> Execute(ICommand command)
         {
-            var command = commandMember(_parent.Source);
             var subscription = _observable.Subscribe(x => command.ExecuteIfValid(null));
             _parent.AddSubscription(subscription);
             return _parent;
         }
 
-        public IBasicControlBinder<TSource, TControl> Execute<TConverted>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TConverted> conversion)
+        public IBasicControlBinder<TSource, TControl> Execute<TConverted>(ICommand command, Func<TEventArgs, TConverted> conversion)
         {
-            var command = commandMember(_parent.Source);
             var subscription = _observable.Subscribe(x => command.ExecuteIfValid(conversion(x)));
             _parent.AddSubscription(subscription);
             return _parent;

@@ -12,11 +12,13 @@ namespace Bindery.Test.Tests.Basic
         private TestBasicViewModel _viewModel;
         private TestButton _button;
         private IBasicSourceBinder<TestBasicViewModel> _binder;
+        private TestBasicCommand _command;
 
         [SetUp]
         public void BeforeEach()
         {
             _viewModel = new TestBasicViewModel();
+            _command = new TestBasicCommand(_viewModel);
             _button = new TestButton();
             _binder = Create.BasicBinder(_viewModel);
         }
@@ -36,10 +38,10 @@ namespace Bindery.Test.Tests.Basic
         {
             // Arrange
             var executedCount = 0;
-            _viewModel.Command.ExecuteAction = vm => executedCount++;
-            _viewModel.Command.CanExecuteCondition = vm => commandEnabled;
+            _command.ExecuteAction = vm => executedCount++;
+            _command.CanExecuteCondition = vm => commandEnabled;
 
-            _binder.Control(_button).OnEvent("Click").Execute(vm => vm.Command);
+            _binder.Control(_button).OnEvent("Click").Execute(_command);
 
             // Act
             if (!binderActiveDuringEvent)
@@ -56,8 +58,8 @@ namespace Bindery.Test.Tests.Basic
         {
             // Arrange
             var executedCount = 0;
-            _viewModel.Command.ExecuteAction = vm => executedCount++;
-            _binder.Control(_button).OnEvent<TestEventArgs>("Test").Execute(vm => vm.Command);
+            _command.ExecuteAction = vm => executedCount++;
+            _binder.Control(_button).OnEvent<TestEventArgs>("Test").Execute(_command);
 
             // Act
             _button.PerformTest(new TestEventArgs());
@@ -71,8 +73,8 @@ namespace Bindery.Test.Tests.Basic
         {
             // Arrange
             var executedCount = 0;
-            _viewModel.Command.ExecuteAction = vm => executedCount++;
-            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Execute(vm => vm.Command);
+            _command.ExecuteAction = vm => executedCount++;
+            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Execute(_command);
 
             // Act
             _button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
@@ -89,10 +91,10 @@ namespace Bindery.Test.Tests.Basic
         {
             // Arrange
             var x = 0;
-            _viewModel.Command.ExecuteAction = parm => { x = parm; };
-            _viewModel.Command.CanExecuteCondition = vm => commandEnabled;
+            _command.ExecuteAction = parm => { x = parm; };
+            _command.CanExecuteCondition = vm => commandEnabled;
 
-            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Execute(vm => vm.Command, args => args.X);
+            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Execute(_command, args => args.X);
 
             // Act
             if (!binderActiveDuringEvent) _binder.Dispose();
@@ -126,7 +128,7 @@ namespace Bindery.Test.Tests.Basic
         {
             // Act
             var ex = Assert.Throws<ArgumentException>(
-                () => _binder.Control(_button).OnEvent("BadName").Execute(vm => vm.Command));
+                () => _binder.Control(_button).OnEvent("BadName").Execute(_command));
             Assert.That(ex.Message, Is.EqualTo("'BadName' is not a member of 'Bindery.Test.TestClasses.TestButton'."));
         }
 
@@ -134,7 +136,7 @@ namespace Bindery.Test.Tests.Basic
         public void EventNameIsNonEventMember()
         {
             var ex = Assert.Throws<ArgumentException>(
-                () => _binder.Control(_button).OnEvent("Text").Execute(vm => vm.Command));
+                () => _binder.Control(_button).OnEvent("Text").Execute(_command));
             Assert.That(ex.Message, Is.EqualTo("'Bindery.Test.TestClasses.TestButton.Text' is not an event."));
         }
 
@@ -142,7 +144,7 @@ namespace Bindery.Test.Tests.Basic
         public void WrongEventArgSpecified()
         {
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => _binder.Control(_button).OnEvent<MouseEventArgs>("Click").Execute(vm => vm.Command));
+            var ex = Assert.Throws<ArgumentException>(() => _binder.Control(_button).OnEvent<MouseEventArgs>("Click").Execute(_command));
             Assert.That(ex.Message, Is.EqualTo("ParameterExpression of type 'System.Windows.Forms.MouseEventArgs' cannot be used for delegate parameter of type 'System.EventArgs'"));
         }
     }

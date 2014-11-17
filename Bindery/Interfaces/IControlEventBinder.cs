@@ -10,8 +10,8 @@ namespace Bindery.Interfaces
         where TControl : IBindableComponent 
         where TSource : INotifyPropertyChanged
     {
-        IControlBinder<TSource, TControl> Execute(Func<TSource, ICommand> commandMember);
-        IControlBinder<TSource, TControl> Execute<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TCommandArg> conversion);
+        IControlBinder<TSource, TControl> Execute(ICommand command);
+        IControlBinder<TSource, TControl> Execute<TCommandArg>(ICommand command, Func<TEventArgs, TCommandArg> conversion);
         IControlBinder<TSource, TControl> Set<TSourceProp>(Expression<Func<TSource, TSourceProp>> propertyMember, Func<TEventArgs, TSourceProp> conversion);
         IObservable<TEventArgs> AsObservable();
     }

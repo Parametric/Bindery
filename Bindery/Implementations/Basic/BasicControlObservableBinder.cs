@@ -20,23 +20,18 @@ namespace Bindery.Implementations.Basic
             _observable = observable;
         }
 
-        public IBasicControlBinder<TSource, TControl> Execute(Func<TSource, ICommand> commandMember)
+        public IBasicControlBinder<TSource, TControl> Execute(ICommand command)
         {
-            ConfigureCommandExecution(commandMember, x => x);
-            return _parent;
-        }
-
-        public IBasicControlBinder<TSource, TControl> Execute<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> conversion)
-        {
-            ConfigureCommandExecution(commandMember, conversion);
-            return _parent;
-        }
-
-        private void ConfigureCommandExecution<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> createCommandArg)
-        {
-            var command = commandMember(_parent.Source);
-            var subscription = _observable.Subscribe(args => command.ExecuteIfValid(createCommandArg(args)));
+            var subscription = _observable.Subscribe(args => command.ExecuteIfValid(args));
             _parent.AddSubscription(subscription);
+            return _parent;
+        }
+
+        public IBasicControlBinder<TSource, TControl> Execute<TCommandArg>(ICommand command, Func<TArg, TCommandArg> conversion)
+        {
+            var subscription = _observable.Subscribe(args => command.ExecuteIfValid(conversion(args)));
+            _parent.AddSubscription(subscription);
+            return _parent;
         }
 
         public IBasicControlBinder<TSource, TControl> Set(Expression<Func<TSource, TArg>> member)

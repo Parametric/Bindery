@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Bindery.Interfaces;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
@@ -8,29 +9,45 @@ namespace Bindery.Test.Tests
     [TestFixture]
     public class BindingTest
     {
+        private TestViewModel _viewModel;
+        private TextBox _textBox;
+        private ControlTester _controlTester;
+        private ISourceBinder<TestViewModel> _binder;
+
+        [SetUp]
+        public void BeforeEach()
+        {
+            _viewModel = new TestViewModel();
+            _binder = Create.Binder(_viewModel);
+            _textBox = new TextBox();
+            _controlTester = new ControlTester(_textBox);
+        }
+
+        [TearDown]
+        public void AfterEach()
+        {
+            _binder.Dispose();
+            _textBox.Dispose();
+            _controlTester.Dispose();
+        }
+
         [TestCase(true, true)]
         [TestCase(false, false)]
         public void TwoWayBinding(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            var viewModel = new TestViewModel();
-            var textBox = new TextBox();
+            _binder.Control(_textBox).Property(c => c.Text).Bind(vm => vm.StringValue);
+            if (!binderActiveDuringEvent)
+                _binder.Dispose();
 
-            using (new ControlTester(textBox))
-            using (var binder = Create.Binder(viewModel))
-            {
-                binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.StringValue);
-                if (!binderActiveDuringEvent)
-                    binder.Dispose();
+            // Act & Assert
+            _textBox.Text = "value #1";
+            var expected = expectUpdated ? _textBox.Text : null;
+            Assert.That(_viewModel.StringValue, Is.EqualTo(expected));
 
-                textBox.Text = "value #1";
-                var expected = expectUpdated ? textBox.Text : null;
-                Assert.That(viewModel.StringValue, Is.EqualTo(expected));
-
-                viewModel.StringValue = "value #2";
-                expected = expectUpdated ? viewModel.StringValue : "value #1";
-                Assert.That(textBox.Text, Is.EqualTo(expected));
-            }
+            _viewModel.StringValue = "value #2";
+            expected = expectUpdated ? _viewModel.StringValue : "value #1";
+            Assert.That(_textBox.Text, Is.EqualTo(expected));
         }
 
         [TestCase(true, true)]
@@ -38,22 +55,16 @@ namespace Bindery.Test.Tests
         public void OneWayBindingTowardsSource(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            var viewModel = new TestViewModel();
-            var textBox = new TextBox();
+            _binder.Control(_textBox).Property(c => c.Text).Set(vm => vm.StringValue);
+            if (!binderActiveDuringEvent)
+                _binder.Dispose();
 
-            using (new ControlTester(textBox))
-            using (var binder = Create.Binder(viewModel))
-            {
-                binder.Control(textBox).Property(c => c.Text).Set(vm => vm.StringValue);
-                if (!binderActiveDuringEvent)
-                    binder.Dispose();
-
-                textBox.Text = "value #1";
-                var expected = expectUpdated ? textBox.Text : string.Empty;
-                Assert.That(viewModel.StringValue, Is.EqualTo(expected));
-                viewModel.StringValue = "value #2";
-                Assert.That(textBox.Text, Is.Not.EqualTo(viewModel.StringValue));
-            }
+            // Act & Assert
+            _textBox.Text = "value #1";
+            var expected = expectUpdated ? _textBox.Text : string.Empty;
+            Assert.That(_viewModel.StringValue, Is.EqualTo(expected));
+            _viewModel.StringValue = "value #2";
+            Assert.That(_textBox.Text, Is.Not.EqualTo(_viewModel.StringValue));
         }
 
         [TestCase(true, true)]
@@ -61,74 +72,44 @@ namespace Bindery.Test.Tests
         public void OneWayBindingTowardsControl(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            var viewModel = new TestViewModel();
-            var textBox = new TextBox();
+            _binder.Control(_textBox).Property(c => c.Text).Get(vm => vm.StringValue);
+            if (!binderActiveDuringEvent)
+                _binder.Dispose();
 
-            using (new ControlTester(textBox))
-            using (var binder = Create.Binder(viewModel))
-            {
-                binder.Control(textBox).Property(c => c.Text).Get(vm => vm.StringValue);
-                if (!binderActiveDuringEvent)
-                    binder.Dispose();
-
-                textBox.Text = "value #1";
-                Assert.That(viewModel.StringValue, Is.Not.EqualTo(textBox.Text));
-                viewModel.StringValue = "value #2";
-                string expected = expectUpdated ? viewModel.StringValue : "value #1";
-                Assert.That(textBox.Text, Is.EqualTo(expected));
-            }
+            // Act & Assert
+            _textBox.Text = "value #1";
+            Assert.That(_viewModel.StringValue, Is.Not.EqualTo(_textBox.Text));
+            _viewModel.StringValue = "value #2";
+            var expected = expectUpdated ? _viewModel.StringValue : "value #1";
+            Assert.That(_textBox.Text, Is.EqualTo(expected));
         }
         
         [Test]
         public void UpdateSourceWithConversion()
         {
-            // Arrange
-            var viewModel = new TestViewModel();
-            var textBox = new TextBox();
-
-            using (new ControlTester(textBox))
-            using (var binder = Create.Binder(viewModel))
-            {
-                binder.Control(textBox).Property(c => c.Text).Set(vm => vm.IntValue, Convert.ToInt32);
-                textBox.Text = "3";
-                Assert.That(viewModel.IntValue, Is.EqualTo(Convert.ToInt32(textBox.Text)));
-            }
+            _binder.Control(_textBox).Property(c => c.Text).Set(vm => vm.IntValue, Convert.ToInt32);
+            _textBox.Text = "3";
+            Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_textBox.Text)));
         }
 
         [Test]
         public void UpdateControlWithConversion()
         {
-            // Arrange
-            var viewModel = new TestViewModel();
-            var textBox = new TextBox();
-
-            using (new ControlTester(textBox))
-            using (var binder = Create.Binder(viewModel))
-            {
-                binder.Control(textBox).Property(c => c.Text).Get(vm => vm.IntValue, Convert.ToString);
-                viewModel.IntValue = 3;
-                Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));
-            }
+            _binder.Control(_textBox).Property(c => c.Text).Get(vm => vm.IntValue, Convert.ToString);
+            _viewModel.IntValue = 3;
+            Assert.That(_textBox.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
         }
 
         [Test]
         public void TwoWayBindingWithConversion()
         {
-            // Arrange
-            var viewModel = new TestViewModel();
-            var textBox = new TextBox();
-
-            using (new ControlTester(textBox))
-            using (var binder = Create.Binder(viewModel))
-            {
-                binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.IntValue, Convert.ToString, int.Parse);
+            _binder.Control(_textBox).Property(c => c.Text).Bind(vm => vm.IntValue, Convert.ToString, int.Parse);
                 
-                viewModel.IntValue = 3;
-                Assert.That(textBox.Text, Is.EqualTo(Convert.ToString(viewModel.IntValue)));
+            _viewModel.IntValue = 3;
+            Assert.That(_textBox.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
 
-                textBox.Text = "30";
-                Assert.That(viewModel.IntValue, Is.EqualTo(Convert.ToInt32(textBox.Text)));
-            }
+            _textBox.Text = "30";
+            Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_textBox.Text)));
         }
     }
 }

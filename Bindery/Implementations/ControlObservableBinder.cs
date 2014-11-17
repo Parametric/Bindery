@@ -21,14 +21,14 @@ namespace Bindery.Implementations
         }
 
 
-        IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Execute(Func<TSource, ICommand> commandMember)
+        IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Execute(ICommand command)
         {
-            return (IControlBinder<TSource, TControl>)Execute(commandMember);
+            return (IControlBinder<TSource, TControl>)Execute(command);
         }
 
-        IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Execute<TCommandArg>(Func<TSource, ICommand> commandMember, Func<TArg, TCommandArg> conversion)
+        IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Execute<TCommandArg>(ICommand command, Func<TArg, TCommandArg> conversion)
         {
-            return (IControlBinder<TSource, TControl>)Execute(commandMember, conversion);
+            return (IControlBinder<TSource, TControl>)Execute(command, conversion);
         }
 
         IControlBinder<TSource, TControl> IControlObservableBinder<TSource, TControl, TArg>.Set(Expression<Func<TSource, TArg>> member)

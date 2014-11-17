@@ -31,14 +31,14 @@ namespace Bindery.Implementations
             return new ControlEventBinder<TSource, TControl, TEventArgs>(this, eventName);
         }
 
-        public IControlBinder<TSource, TControl> OnClick(Func<TSource, ICommand> commandMember)
+        public IControlBinder<TSource, TControl> OnClick(ICommand command)
         {
             var control = Control as Control;
             if (control==null)
                 throw new NotSupportedException("The control must inherit from System.Windows.Form.Control in order use OnClick()");
-            var command = commandMember(Source);
             control.Click += (sender, e) => command.Execute(null);
             command.CanExecuteChanged += (sender, e) => control.Enabled = command.CanExecute(null);
+            control.Enabled = command.CanExecute(null);
             return this;
         }
 

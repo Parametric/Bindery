@@ -18,14 +18,14 @@ namespace Bindery.Implementations
         {
         }
 
-        IControlBinder<TSource, TControl> IControlEventBinder<TSource, TControl, TEventArgs>.Execute(Func<TSource, ICommand> commandMember)
+        IControlBinder<TSource, TControl> IControlEventBinder<TSource, TControl, TEventArgs>.Execute(ICommand command)
         {
-            return (IControlBinder<TSource, TControl>) Execute(commandMember);
+            return (IControlBinder<TSource, TControl>) Execute(command);
         }
 
-        IControlBinder<TSource, TControl> IControlEventBinder<TSource, TControl, TEventArgs>.Execute<TConverted>(Func<TSource, ICommand> commandMember, Func<TEventArgs, TConverted> conversion)
+        IControlBinder<TSource, TControl> IControlEventBinder<TSource, TControl, TEventArgs>.Execute<TConverted>(ICommand command, Func<TEventArgs, TConverted> conversion)
         {
-            return (IControlBinder<TSource, TControl>)Execute(commandMember, conversion);
+            return (IControlBinder<TSource, TControl>)Execute(command, conversion);
         }
 
         IControlBinder<TSource, TControl> IControlEventBinder<TSource, TControl, TEventArgs>.Set<TSourceProp>(Expression<Func<TSource, TSourceProp>> propertyMember, Func<TEventArgs, TSourceProp> conversion)

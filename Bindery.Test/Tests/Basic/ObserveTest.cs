@@ -15,11 +15,13 @@ namespace Bindery.Test.Tests.Basic
         private TestBasicViewModel _viewModel;
         private TestButton _button;
         private IBasicSourceBinder<TestBasicViewModel> _binder;
+        private TestBasicCommand _command;
 
         [SetUp]
         public void BeforeEach()
         {
             _viewModel = new TestBasicViewModel();
+            _command = new TestBasicCommand(_viewModel);
             _button = new TestButton();
             _binder = Create.BasicBinder(_viewModel);
         }
@@ -39,9 +41,9 @@ namespace Bindery.Test.Tests.Basic
         {
             // Arrange
             string mouseMoveButton = null;
-            _viewModel.Command.ExecuteAction = parm => { mouseMoveButton = parm; };
-            _viewModel.Command.CanExecuteCondition = vm => commandEnabled;
-            _binder.Control(_button).On(c => c.MouseMoveButton).Execute(vm => vm.Command);
+            _command.ExecuteAction = parm => { mouseMoveButton = parm; };
+            _command.CanExecuteCondition = vm => commandEnabled;
+            _binder.Control(_button).On(c => c.MouseMoveButton).Execute(_command);
 
             // Act
             if (!binderActiveDuringEvent) _binder.Dispose();
