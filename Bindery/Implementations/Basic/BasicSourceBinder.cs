@@ -37,8 +37,22 @@ namespace Bindery.Implementations.Basic
         public void Dispose()
         {
             if (_disposed) return;
-            _subscriptions.ForEach(x => x.Dispose());
+            _subscriptions.ForEach(x => TryDispose(x));
             _disposed = true;
+        }
+
+        private static bool TryDispose(IDisposable x)
+        {
+            try
+            {
+                x.Dispose();
+                return true;
+            }
+            catch (Exception)
+            {
+                // Disposal can fail accessing old window handles
+                return false;
+            }
         }
     }
 }

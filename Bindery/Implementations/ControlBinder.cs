@@ -33,12 +33,18 @@ namespace Bindery.Implementations
 
         public IControlBinder<TSource, TControl> OnClick(ICommand command)
         {
+            return OnClick(command, null);
+        }
+
+        public IControlBinder<TSource, TControl> OnClick(ICommand command, Func<object> getParameter)
+        {
             var control = Control as Control;
-            if (control==null)
+            if (control == null)
                 throw new NotSupportedException("The control must inherit from System.Windows.Form.Control in order use OnClick()");
-            control.Click += (sender, e) => command.Execute(null);
-            command.CanExecuteChanged += (sender, e) => control.Enabled = command.CanExecute(null);
-            control.Enabled = command.CanExecute(null);
+            var parameter = getParameter == null ? null : getParameter();
+            control.Click += (sender, e) => command.Execute(parameter);
+            command.CanExecuteChanged += (sender, e) => control.Enabled = command.CanExecute(parameter);
+            control.Enabled = command.CanExecute(parameter);
             return this;
         }
 

@@ -24,9 +24,5 @@ namespace Bindery
             return new BasicSourceBinder<T>(source);
         }
 
-        public static ITrigger<T> Trigger<T>()
-        {
-            return new Trigger<T>();
-        }
     }
 }

@@ -74,7 +74,6 @@
     <Compile Include="TestClasses\TestViewModel.cs" />
     <Compile Include="Tests\SubPropertyTest.cs" />
     <Compile Include="Tests\TargetTest.cs" />
-    <Compile Include="Tests\TriggerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
