@@ -32,9 +32,10 @@ namespace Bindery.Implementations
 
         private IObservable<TProp> CreateObservable(Expression<Func<TSource, TProp>> member)
         {
+            var sourceAccessor = member.Compile();
             return _sourceBinder.Source.CreatePropertyChangedObservable()
                 .Where(args => args.PropertyName == member.GetAccessorName())
-                .Select(x => member.Compile()(_sourceBinder.Source));
+                .Select(x => sourceAccessor(_sourceBinder.Source));
         }
     }
 }

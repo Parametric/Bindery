@@ -11,6 +11,13 @@ namespace Bindery.Extensions
             if (member == null)
                 throw new ArgumentException("Expression is not a member access", "expression");
             var dataMember = member.Member.Name;
+            while (true)
+            {
+                member = member.Expression as MemberExpression;
+                if (member == null)
+                    break;
+                dataMember = member.Member.Name + "." + dataMember;
+            }
             return dataMember;
         }
 

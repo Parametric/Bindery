@@ -11,6 +11,7 @@ namespace Bindery.Test.TestClasses
         public TestViewModel()
         {
             MyObservable = Observable.Return(5);
+            ComplexValue = new Inner();
         }
 
         private int _intValue;
@@ -38,6 +39,8 @@ namespace Bindery.Test.TestClasses
             }
         }
 
+        public Inner ComplexValue { get; private set; }
+
         public IObservable<int> MyObservable { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -47,6 +50,31 @@ namespace Bindery.Test.TestClasses
         {
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public class Inner : INotifyPropertyChanged
+        {
+            private decimal _decValue;
+
+            public decimal DecValue
+            {
+                get { return _decValue; }
+                set
+                {
+                    if (value == _decValue) return;
+                    _decValue = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            [Annotations.NotifyPropertyChangedInvocator]
+            protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            {
+                var handler = PropertyChanged;
+                if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

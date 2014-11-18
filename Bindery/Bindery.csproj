@@ -63,6 +63,7 @@
     <Compile Include="Interfaces\Basic\IBasicControlObservableBinder.cs" />
     <Compile Include="Interfaces\Basic\IBasicControlPropertyBinder.cs" />
     <Compile Include="Interfaces\Basic\IBasicSourceBinder.cs" />
+    <Compile Include="Interfaces\ITargetEventBinder.cs" />
     <Compile Include="Interfaces\Observables\IEventObservableFactory.cs" />
     <Compile Include="Implementations\ControlObservableBinder.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
