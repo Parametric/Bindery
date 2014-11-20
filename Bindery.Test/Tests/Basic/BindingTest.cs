@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Bindery.Interfaces.Basic;
+using Bindery.Interfaces;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
@@ -12,14 +12,14 @@ namespace Bindery.Test.Tests.Basic
         private TestBasicViewModel _viewModel;
         private TextBox _textBox;
         private ControlTester _controlTester;
-        private IBasicSourceBinder<TestBasicViewModel> _binder;
+        private ISourceBinder<TestBasicViewModel> _binder;
 
         [SetUp]
         public void BeforeEach()
         {
             // Arrange
             _viewModel = new TestBasicViewModel();
-            _binder = Create.BasicBinder(_viewModel);
+            _binder = Create.Binder(_viewModel);
             _textBox = new TextBox();
             _controlTester = new ControlTester(_textBox);
         }

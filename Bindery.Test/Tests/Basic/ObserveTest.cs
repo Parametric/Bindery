@@ -3,7 +3,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bindery.Interfaces.Basic;
+using Bindery.Interfaces;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
@@ -14,7 +14,7 @@ namespace Bindery.Test.Tests.Basic
     {
         private TestBasicViewModel _viewModel;
         private TestButton _button;
-        private IBasicSourceBinder<TestBasicViewModel> _binder;
+        private ISourceBinder<TestBasicViewModel> _binder;
         private TestBasicCommand _command;
 
         [SetUp]
@@ -23,7 +23,7 @@ namespace Bindery.Test.Tests.Basic
             _viewModel = new TestBasicViewModel();
             _command = new TestBasicCommand(_viewModel);
             _button = new TestButton();
-            _binder = Create.BasicBinder(_viewModel);
+            _binder = Create.Binder(_viewModel);
         }
 
         [TearDown]
@@ -43,7 +43,7 @@ namespace Bindery.Test.Tests.Basic
             string mouseMoveButton = null;
             _command.ExecuteAction = parm => { mouseMoveButton = parm; };
             _command.CanExecuteCondition = vm => commandEnabled;
-            _binder.Control(_button).On(c => c.MouseMoveButton).Execute(_command);
+            _binder.Control(_button).Observe(c => c.MouseMoveButton).Execute(_command);
 
             // Act
             if (!binderActiveDuringEvent) _binder.Dispose();
@@ -60,7 +60,7 @@ namespace Bindery.Test.Tests.Basic
         public void ObserveControlAndSetSourceValue(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            _binder.Control(_button).On(c => c.MouseMoveButton).Set(vm => vm.StringValue);
+            _binder.Control(_button).Observe(c => c.MouseMoveButton).Set(vm => vm.StringValue);
             if (!binderActiveDuringEvent) _binder.Dispose();
 
             // Act
