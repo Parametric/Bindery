@@ -29,7 +29,7 @@ namespace Bindery.Test.Tests
             // Arrange
             var callCount = 0;
             var setValue = 0;
-            _binder.Property(vm => vm.IntValue).OnChanged(x =>
+            _binder.Property(vm => vm.IntValue).Subscribe(x =>
             {
                 setValue = x;
                 callCount++;
@@ -48,7 +48,7 @@ namespace Bindery.Test.Tests
         {
             // Arrange
             var callCount = 0;
-            _binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
+            _binder.Property(vm => vm.IntValue).Subscribe(x => callCount++);
 
             // Act
             _viewModel.StringValue = "3";
@@ -60,7 +60,7 @@ namespace Bindery.Test.Tests
             // Arrange
             _viewModel.IntValue = 3;
             var callCount = 0;
-            _binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
+            _binder.Property(vm => vm.IntValue).Subscribe(x => callCount++);
 
             // Act
             _viewModel.IntValue = _viewModel.IntValue;
@@ -74,7 +74,7 @@ namespace Bindery.Test.Tests
         {
             // Arrange
             var callCount = 0;
-            _binder.Property(vm => vm.IntValue).OnChanged(x => callCount++);
+            _binder.Property(vm => vm.IntValue).Subscribe(x => callCount++);
             _binder.Dispose();
 
             // Act

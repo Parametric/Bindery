@@ -82,7 +82,52 @@ namespace Bindery.Test.Tests
             // Assert
             Assert.That(executedCount, Is.EqualTo(1));
         }
+        
+        [TestCase(true,true,true)]
+        [TestCase(false,false,false)]
+        [TestCase(true,false, false)]
+        [TestCase(false,true, false)]
+        public void ExecuteCommandWithConstantParameter(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
+        {
+            // Arrange
+            var x = 0;
+            const int newX = 7;
+            _command.ExecuteAction = parm => { x = parm; };
+            _command.CanExecuteCondition = vm => commandEnabled;
+            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Execute(_command, newX);
 
+            // Act
+            if (!binderActiveDuringEvent) _binder.Dispose();
+            _button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+
+            var expectedX = expectUpdated ? newX : 0;
+
+            // Assert
+            Assert.That(x, Is.EqualTo(expectedX));
+        }
+
+        [TestCase(true, true, true)]
+        [TestCase(false, false, false)]
+        [TestCase(true, false, false)]
+        [TestCase(false, true, false)]
+        public void ExecuteCommandWithCalculatedParameter(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
+        {
+            // Arrange
+            var x = 0;
+            const int newX = 7;
+            _command.ExecuteAction = parm => { x = parm; };
+            _command.CanExecuteCondition = vm => commandEnabled;
+            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Execute(_command, () => newX);
+
+            // Act
+            if (!binderActiveDuringEvent) _binder.Dispose();
+            _button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
+
+            var expectedX = expectUpdated ? newX : 0;
+
+            // Assert
+            Assert.That(x, Is.EqualTo(expectedX));
+        }
 
         [TestCase(true,true,true)]
         [TestCase(false,false,false)]

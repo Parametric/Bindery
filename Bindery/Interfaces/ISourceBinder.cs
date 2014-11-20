@@ -8,7 +8,7 @@ namespace Bindery.Interfaces
     {
         IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent;
         ITargetBinder<TSource, TTarget> Target<TTarget>(TTarget target) where TTarget : class;
-        ISourcePropertyBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member);
+        IObservableBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member);
         IObservableBinder<TSource, TArg> Observe<TArg>(IObservable<TArg> observable);
         IObservableBinder<TSource, TArg> Observe<TArg>(Func<TSource, IObservable<TArg>> observableMember);
     }

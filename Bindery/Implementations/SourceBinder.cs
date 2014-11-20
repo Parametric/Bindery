@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Reactive.Linq;
+using Bindery.Extensions;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
@@ -27,9 +30,17 @@ namespace Bindery.Implementations
             return new TargetBinder<TSource, TTarget>(this, target);
         }
 
-        public ISourcePropertyBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member)
+        public IObservableBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member)
         {
-            return new SourcePropertyBinder<TSource, TProp>(this, member);
+            var source = Source;
+            var notifyPropertyChanged = source as INotifyPropertyChanged;
+            if (notifyPropertyChanged == null)
+                throw new NotSupportedException();
+            var memberAccessor = member.Compile();
+            var observable = notifyPropertyChanged.CreatePropertyChangedObservable()
+                .Where(args => args.PropertyName == member.GetAccessorName())
+                .Select(x => memberAccessor(source));
+            return new ObservableBinder<TSource, TProp>(this, observable);
         }
 
         IObservableBinder<TSource, TArg> ISourceBinder<TSource>.Observe<TArg>(IObservable<TArg> observable)

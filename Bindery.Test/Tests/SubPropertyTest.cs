@@ -13,6 +13,7 @@ namespace Bindery.Test.Tests
         private TextBox _textBox;
         private ControlTester _controlTester;
         private ISourceBinder<TestViewModel> _binder;
+        private TestTarget _target;
 
         [SetUp]
         public void BeforeEach()
@@ -21,6 +22,7 @@ namespace Bindery.Test.Tests
             _binder = Create.Binder(_viewModel);
             _textBox = new TextBox();
             _controlTester = new ControlTester(_textBox);
+            _target = new TestTarget();
         }
 
         [TearDown]
@@ -51,23 +53,29 @@ namespace Bindery.Test.Tests
         }
 
         [Test]
-        public void ActionIsCalledWhenPropertyIsChanged()
+        public void SetTargetSubProperty()
         {
             // Arrange
-            var callCount = 0;
-            var setValue = 0m;
-            _binder.Property(vm => vm.ComplexValue.DecValue).OnChanged(x =>
-            {
-                setValue = x;
-                callCount++;
-            });
+            _binder.Target(_target).Property(x => x.Info.A).Get(vm => vm.IntValue);
 
             // Act
-            _viewModel.ComplexValue.DecValue = 3;
+            _viewModel.IntValue = 3;
 
             // Assert
-            Assert.That(callCount, Is.EqualTo(1));
-            Assert.That(setValue, Is.EqualTo(3));
+            Assert.That(_target.Info.A, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void SetTargetSubPropertyWithAccessThroughParameterlessMethod()
+        {
+            // Arrange
+            _binder.Target(_target).Property(x => x.GetInfo().A).Get(vm => vm.IntValue);
+
+            // Act
+            _viewModel.IntValue = 3;
+
+            // Assert
+            Assert.That(_target.Info.A, Is.EqualTo(3));
         }
 
     }

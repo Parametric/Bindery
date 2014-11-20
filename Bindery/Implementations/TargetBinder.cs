@@ -35,7 +35,7 @@ namespace Bindery.Implementations
         public IObservableBinder<TSource, TEventArgs> OnEvent<TEventArgs>(string eventName)
         {
             var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);
-            return new ObservableBinder<TSource, TEventArgs>(_sourceBinder,observable);
+            return new ObservableBinder<TSource, TEventArgs>(_sourceBinder, observable);
         }
 
         public IObservableBinder<TSource, TArg> Observe<TArg>(Func<TTarget, IObservable<TArg>> observableMember)

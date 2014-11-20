@@ -59,6 +59,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TestClasses\TestEventArgs.cs" />
+    <Compile Include="TestClasses\TestTarget.cs" />
     <Compile Include="Tests\Basic\BindingTest.cs" />
     <Compile Include="Tests\Basic\EventTest.cs" />
     <Compile Include="Tests\Basic\ObserveTest.cs" />

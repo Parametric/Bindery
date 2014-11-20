@@ -70,7 +70,6 @@
     <Compile Include="Interfaces\ISourcePropertyBinder.cs" />
     <Compile Include="Implementations\SourceBinder.cs" />
     <Compile Include="Implementations\ControlPropertyBinder.cs" />
-    <Compile Include="Implementations\SourcePropertyBinder.cs" />
     <Compile Include="Interfaces\Observables\ISubscriptionComplete.cs" />
     <Compile Include="Create.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

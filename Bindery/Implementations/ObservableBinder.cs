@@ -51,14 +51,28 @@ namespace Bindery.Implementations
 
         public ISourceBinder<TSource> Execute(ICommand command)
         {
-            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(null));
+            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(x));
             _parent.AddSubscription(subscription);
             return _parent;
         }
 
-        public ISourceBinder<TSource> Execute<TCommandArg>(ICommand command, Func<TArg, TCommandArg> conversion)
+        public ISourceBinder<TSource> Execute(ICommand command, object commandParameter)
         {
-            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(conversion(x)));
+            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(commandParameter));
+            _parent.AddSubscription(subscription);
+            return _parent;
+        }
+
+        public ISourceBinder<TSource> Execute(ICommand command, Func<object> getCommandParameter)
+        {
+            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(getCommandParameter()));
+            _parent.AddSubscription(subscription);
+            return _parent;
+        }
+
+        public ISourceBinder<TSource> Execute(ICommand command, Func<TArg, object> toCommandParameter)
+        {
+            var subscription = _observable.Subscribe(arg => command.ExecuteIfValid(toCommandParameter(arg)));
             _parent.AddSubscription(subscription);
             return _parent;
         }

@@ -113,7 +113,7 @@ namespace Bindery.Test.Tests.Basic
         public void ConvertEventArgsAndUpdateSource(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Set(vm => vm.StringValue, Convert.ToString);
+            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Transform(o=>o.Select(e=>e.Button)).Set(vm => vm.StringValue, x=>x.ToString());
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
 
