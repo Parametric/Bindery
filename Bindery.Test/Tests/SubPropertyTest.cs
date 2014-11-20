@@ -50,5 +50,26 @@ namespace Bindery.Test.Tests
             Assert.That(_textBox.Text, Is.EqualTo(expected));
         }
 
+        [Test]
+        public void ActionIsCalledWhenSourcePropertyIsChanged()
+        {
+            // Arrange
+            var callCount = 0;
+            var setValue = 0m;
+            _binder.Property(vm => vm.ComplexValue.DecValue).OnChanged(x =>
+            {
+                setValue = x;
+                callCount++;
+            });
+
+            // Act
+            _viewModel.ComplexValue.DecValue = 3;
+
+            // Assert
+            Assert.That(callCount, Is.EqualTo(1));
+            Assert.That(setValue, Is.EqualTo(3));
+        }
+
+
     }
 }
