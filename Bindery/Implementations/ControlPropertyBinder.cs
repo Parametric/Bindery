@@ -1,23 +1,24 @@
 using System;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 using Bindery.Extensions;
-using Bindery.Implementations.Basic;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class ControlPropertyBinder<TSource, TControl, TControlProp>
-        : BasicControlPropertyBinder<TSource, TControl, TControlProp>, 
+    internal class ControlPropertyBinder<TSource, TControl, TControlProp> :
         IControlPropertyBinder<TSource, TControl, TControlProp> 
-        where TSource : INotifyPropertyChanged 
         where TControl : IBindableComponent
     {
+        public ControlBinder<TSource, TControl> Parent { get; private set; }
+        public string MemberName { get; private set; }
+
         public ControlPropertyBinder(ControlBinder<TSource, TControl> parent, Expression<Func<TControl, TControlProp>> member)
-            :base(parent,member)
         {
+            Parent = parent;
+            MemberName = member.GetAccessorName();
         }
+
 
         public IControlBinder<TSource, TControl> Bind(
             Expression<Func<TSource, TControlProp>> sourceMember,
@@ -26,7 +27,7 @@ namespace Bindery.Implementations
         {
             var binding = Parent.CreateBinding(MemberName, sourceMember.GetAccessorName(), controlUpdateMode, dataSourceUpdateMode);
             Parent.AddDataBinding(binding);
-            return (IControlBinder<TSource, TControl>) Parent;
+            return Parent;
         }
 
         public IControlBinder<TSource, TControl> Bind<TSourceProp>(
@@ -40,14 +41,14 @@ namespace Bindery.Implementations
             ConvertEventHandler formatHandler = (sender, e) => e.Value = convertToControlPropertyType((TSourceProp)e.Value);
             ConvertEventHandler parseHandler = (sender, e) => e.Value = convertToSourcePropertyType((TControlProp)e.Value);
             Parent.AddDataBinding(binding, formatHandler, parseHandler);
-            return (IControlBinder<TSource, TControl>) Parent;
+            return Parent;
         }
 
         public IControlBinder<TSource, TControl> Get(Expression<Func<TSource, TControlProp>> sourceMember)
         {
             var binding = Parent.CreateBinding(MemberName, sourceMember.GetAccessorName(), ControlUpdateMode.OnPropertyChanged, DataSourceUpdateMode.Never);
             Parent.AddDataBinding(binding);
-            return (IControlBinder<TSource, TControl>) Parent;
+            return Parent;
         }
 
         public IControlBinder<TSource, TControl> Get<TSourceProp>(
@@ -57,7 +58,23 @@ namespace Bindery.Implementations
             var binding = Parent.CreateBinding(MemberName, sourceMember.GetAccessorName(), ControlUpdateMode.OnPropertyChanged, DataSourceUpdateMode.Never);
             ConvertEventHandler formatHandler = (sender, e) => e.Value = convertToControlPropertyType((TSourceProp) e.Value);
             Parent.AddDataBinding(binding, formatHandler);
-            return (IControlBinder<TSource, TControl>) Parent;
+            return Parent;
         }
+
+        public IControlBinder<TSource, TControl> Set(Expression<Func<TSource, TControlProp>> sourceMember, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
+        {
+            var binding = Parent.CreateBinding(MemberName, sourceMember.GetAccessorName(), ControlUpdateMode.Never, dataSourceUpdateMode);
+            Parent.AddDataBinding(binding);
+            return Parent;
+        }
+
+        public IControlBinder<TSource, TControl> Set<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TControlProp, TSourceProp> convertToSourcePropertyType, DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
+        {
+            var binding = Parent.CreateBinding(MemberName, sourceMember.GetAccessorName(), ControlUpdateMode.Never, dataSourceUpdateMode);
+            ConvertEventHandler parseHandler = (sender, e) => e.Value = convertToSourcePropertyType((TControlProp)e.Value);
+            Parent.AddDataBinding(binding, parseHandler: parseHandler);
+            return Parent;
+        }
+
     }
 }

@@ -1,8 +1,5 @@
-﻿using System.ComponentModel;
-using Bindery.Implementations;
-using Bindery.Implementations.Basic;
+﻿using Bindery.Implementations;
 using Bindery.Interfaces;
-using Bindery.Interfaces.Basic;
 using Bindery.Interfaces.Observables;
 
 namespace Bindery
@@ -14,19 +11,9 @@ namespace Bindery
             return new EventObservableFactory<T>(obj);
         }
 
-        public static ISourceBinder<T> Binder<T>(T source) where T : INotifyPropertyChanged
+        public static ISourceBinder<T> Binder<T>(T source)
         {
             return new SourceBinder<T>(source);
-        }
-
-        public static IBasicSourceBinder<T> BasicBinder<T>(T source)
-        {
-            return new BasicSourceBinder<T>(source);
-        }
-
-        public static ITrigger<T> Trigger<T>()
-        {
-            return new Trigger<T>();
         }
     }
 }

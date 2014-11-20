@@ -51,24 +51,10 @@
   <ItemGroup>
     <Compile Include="Extensions\CommandExtensions.cs" />
     <Compile Include="Extensions\NotifyPropertyChangedExtensions.cs" />
-    <Compile Include="Implementations\Basic\BasicControlBinder.cs" />
-    <Compile Include="Implementations\Basic\BasicControlEventBinder.cs" />
-    <Compile Include="Implementations\Basic\BasicControlObservableBinder.cs" />
-    <Compile Include="Implementations\Basic\BasicControlPropertyBinder.cs" />
-    <Compile Include="Implementations\Basic\BasicSourceBinder.cs" />
-    <Compile Include="Implementations\TargetEventBinder.cs" />
     <Compile Include="Implementations\EventObservableFactory.cs" />
-    <Compile Include="Interfaces\Basic\IBasicControlBinder.cs" />
-    <Compile Include="Interfaces\Basic\IBasicControlEventBinder.cs" />
-    <Compile Include="Interfaces\Basic\IBasicControlObservableBinder.cs" />
-    <Compile Include="Interfaces\Basic\IBasicControlPropertyBinder.cs" />
-    <Compile Include="Interfaces\Basic\IBasicSourceBinder.cs" />
-    <Compile Include="Interfaces\ITargetEventBinder.cs" />
     <Compile Include="Interfaces\Observables\IEventObservableFactory.cs" />
-    <Compile Include="Implementations\ControlObservableBinder.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Implementations\ControlBinder.cs" />
-    <Compile Include="Implementations\ControlEventBinder.cs" />
     <Compile Include="Implementations\TargetBinder.cs" />
     <Compile Include="Implementations\TargetPropertyBinder.cs" />
     <Compile Include="Interfaces\ITargetBinder.cs" />
@@ -76,22 +62,18 @@
     <Compile Include="Interfaces\Observables\IOnCompleteDefined.cs" />
     <Compile Include="Interfaces\Observables\IOnErrorDefined.cs" />
     <Compile Include="Interfaces\Observables\IOnNextDefined.cs" />
-    <Compile Include="Implementations\SourceObservableBinder.cs" />
-    <Compile Include="Interfaces\IControlEventBinder.cs" />
-    <Compile Include="Interfaces\IControlObservableBinder.cs" />
+    <Compile Include="Implementations\ObservableBinder.cs" />
     <Compile Include="Interfaces\ISourceBinder.cs" />
     <Compile Include="Interfaces\IControlBinder.cs" />
     <Compile Include="Interfaces\IControlPropertyBinder.cs" />
-    <Compile Include="Interfaces\ISourceObservableBinder.cs" />
+    <Compile Include="Interfaces\IObservableBinder.cs" />
     <Compile Include="Interfaces\ISourcePropertyBinder.cs" />
     <Compile Include="Implementations\SourceBinder.cs" />
     <Compile Include="Implementations\ControlPropertyBinder.cs" />
     <Compile Include="Implementations\SourcePropertyBinder.cs" />
     <Compile Include="Interfaces\Observables\ISubscriptionComplete.cs" />
     <Compile Include="Create.cs" />
-    <Compile Include="Interfaces\ITrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Implementations\Trigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

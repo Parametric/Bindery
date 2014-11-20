@@ -7,7 +7,7 @@ using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
-    internal class SourcePropertyBinder<TSource, TProp> : ISourcePropertyBinder<TSource, TProp> where TSource : INotifyPropertyChanged
+    internal class SourcePropertyBinder<TSource, TProp> : ISourcePropertyBinder<TSource, TProp>
     {
         private readonly SourceBinder<TSource> _sourceBinder;
         private readonly IObservable<TProp> _observable;
@@ -32,10 +32,13 @@ namespace Bindery.Implementations
 
         private IObservable<TProp> CreateObservable(Expression<Func<TSource, TProp>> member)
         {
-            var sourceAccessor = member.Compile();
-            return _sourceBinder.Source.CreatePropertyChangedObservable()
+            var source = _sourceBinder.Source;
+            var notifyPropertyChanged = source as INotifyPropertyChanged;
+            if (notifyPropertyChanged==null)
+                throw new NotSupportedException();
+            return notifyPropertyChanged.CreatePropertyChangedObservable()
                 .Where(args => args.PropertyName == member.GetAccessorName())
-                .Select(x => sourceAccessor(_sourceBinder.Source));
+                .Select(x => member.Compile()(source));
         }
     }
 }

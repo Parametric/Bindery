@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Linq.Expressions;
-using Bindery.Implementations.Basic;
 using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {
     internal class TargetBinder<TSource, TTarget> : ITargetBinder<TSource, TTarget>
     {
-        private readonly BasicSourceBinder<TSource> _sourceBinder;
+        private readonly SourceBinder<TSource> _sourceBinder;
 
         public TTarget Target { get; private set; }
 
-        public TargetBinder(BasicSourceBinder<TSource> sourceBinder, TTarget target)
+        public TargetBinder(SourceBinder<TSource> sourceBinder, TTarget target)
         {
             _sourceBinder = sourceBinder;
             Target = target;
@@ -27,14 +26,22 @@ namespace Bindery.Implementations
             return new TargetPropertyBinder<TSource, TTarget, TProp>(this, member);
         }
 
-        public ITargetEventBinder<TSource, TTarget, EventArgs> OnEvent(string eventName)
+        public IObservableBinder<TSource, EventArgs> OnEvent(string eventName)
         {
-            return new TargetEventBinder<TSource, TTarget, EventArgs>(this, eventName);
+            var observable = Create.ObservableFor(Target).Event(eventName);
+            return new ObservableBinder<TSource, EventArgs>(_sourceBinder, observable);
         }
 
-        public ITargetEventBinder<TSource, TTarget, TEventArgs> OnEvent<TEventArgs>(string eventName)
+        public IObservableBinder<TSource, TEventArgs> OnEvent<TEventArgs>(string eventName)
         {
-            return new TargetEventBinder<TSource, TTarget, TEventArgs>(this, eventName);
+            var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);
+            return new ObservableBinder<TSource, TEventArgs>(_sourceBinder,observable);
+        }
+
+        public IObservableBinder<TSource, TArg> Observe<TArg>(Func<TTarget, IObservable<TArg>> observableMember)
+        {
+            var observable = observableMember(Target);
+            return new ObservableBinder<TSource, TArg>(_sourceBinder, observable);
         }
 
         public void AddSubscription(IDisposable subscription)

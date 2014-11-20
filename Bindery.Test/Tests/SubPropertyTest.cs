@@ -51,7 +51,7 @@ namespace Bindery.Test.Tests
         }
 
         [Test]
-        public void ActionIsCalledWhenSourcePropertyIsChanged()
+        public void ActionIsCalledWhenPropertyIsChanged()
         {
             // Arrange
             var callCount = 0;
@@ -69,7 +69,6 @@ namespace Bindery.Test.Tests
             Assert.That(callCount, Is.EqualTo(1));
             Assert.That(setValue, Is.EqualTo(3));
         }
-
 
     }
 }
