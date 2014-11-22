@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using Bindery.Expressions;
 
 namespace Bindery.Extensions
 {
@@ -26,47 +29,28 @@ namespace Bindery.Extensions
             var member = expression.Body as MemberExpression;
             if (member == null)
                 throw new ArgumentException("Expression is not a member access", "expression");
-            var assignTo = GetObjectToAssignTo(obj, member);
+            var lambdaParameter = expression.Parameters.Single();
+            var assignTo = GetObjectToAssignTo(obj, member, lambdaParameter);
             var value = Expression.Parameter(typeof(TR), "value");
             var property = Expression.Property(assignTo, member.Member.Name);
             var assign = Expression.Assign(property, value);
             return Expression.Lambda<Action<TR>>(assign, value).Compile();
         }
 
-        private static Expression GetObjectToAssignTo<T>(T obj, MemberExpression member)
+        private static Expression GetObjectToAssignTo<T>(T obj, MemberExpression member, ParameterExpression lambdaParameter)
         {
             if (member.Expression is ParameterExpression)
                 return Expression.Constant(obj);
 
-            var root = FindRootParameterExpression<T>(member);
             var subMember = member.Expression;
-            var getSubMember = Expression.Lambda(Expression.GetFuncType(typeof(T), subMember.Type), subMember, root);
+            var getSubMember = Expression.Lambda(Expression.GetFuncType(typeof(T), subMember.Type), subMember, lambdaParameter);
             var assignTo = Expression.Invoke(getSubMember, Expression.Constant(obj));
             return assignTo;
         }
 
-        private static ParameterExpression FindRootParameterExpression<T>(MemberExpression member)
+        public static List<NotifyPropertySource> GetNotifyPropertyChangedSources<TIn, TOut>(TIn objIn, Expression<Func<TIn, TOut>> exp)
         {
-            var parent = member.Expression;
-            while (!(parent is ParameterExpression))
-            {
-                if (parent is MemberExpression)
-                {
-                    parent = ((MemberExpression) parent).Expression;
-                    continue;
-                }
-                if (parent is MethodCallExpression)
-                {
-                    parent = ((MethodCallExpression) parent).Object;
-                    continue;
-                }
-                throw new InvalidOperationException(string.Format("Unexpected expression type '{0}'.",
-                    member.Expression.GetType().Name));
-            }
-            var root = parent as ParameterExpression;
-            if (root == null)
-                throw new InvalidOperationException("Could not find root parameter expression.");
-            return root;
+            return new NotifyPropertyChangedExpressionAnalyzer().GetSources(objIn, exp);
         }
     }
 }

@@ -111,5 +111,25 @@ namespace Bindery.Test.Tests
             _textBox.Text = "30";
             Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_textBox.Text)));
         }
+        
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void TwoWayBindingWithMultiPartSource(bool binderActiveDuringEvent, bool expectUpdated)
+        {
+            // Arrange
+            _binder.Control(_textBox).Property(c => c.Text).Bind(vm => vm.ComplexValue.DecValue, Convert.ToString, Convert.ToDecimal);
+            if (!binderActiveDuringEvent)
+                _binder.Dispose();
+
+            // Act & Assert
+            _textBox.Text = "10.5";
+            var expected = expectUpdated ? _textBox.Text : null;
+            Assert.That(_viewModel.ComplexValue.DecValue, Is.EqualTo(Convert.ToDecimal(expected)));
+
+            _viewModel.ComplexValue.DecValue = -33.3m;
+            expected = expectUpdated ? "-33.3" : "10.5";
+            Assert.That(_textBox.Text, Is.EqualTo(expected));
+        }
+
     }
 }

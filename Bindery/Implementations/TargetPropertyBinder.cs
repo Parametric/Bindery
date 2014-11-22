@@ -1,7 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
+using Bindery.Expressions;
 using Bindery.Extensions;
 using Bindery.Interfaces;
 
@@ -18,42 +19,28 @@ namespace Bindery.Implementations
             _propSetter = member.GetPropertySetter(_parent.Target);
         }
 
-        public ITargetBinder<TSource, TTarget> Get(Expression<Func<TSource, TProp>> sourceMember)
+        public ITargetBinder<TSource, TTarget> Get(Expression<Func<TSource, TProp>> sourceExpression)
         {
             Action<TProp> propertyUpdater = value => _propSetter(value);
-            ConfigureTargetPropertyUpdate(sourceMember, propertyUpdater);
+            ConfigureTargetPropertyUpdate(sourceExpression, propertyUpdater);
             return _parent;
         }
 
-        public ITargetBinder<TSource, TTarget> Get<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Func<TSourceProp, TProp> conversion)
+        private void ConfigureTargetPropertyUpdate<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceExpression, Action<TSourceProp> updateProperty)
         {
-            Action<TSourceProp> propertyUpdater = value => _propSetter(conversion(value));
-            ConfigureTargetPropertyUpdate(sourceMember, propertyUpdater);
-            return _parent;
-        }
-
-        private void ConfigureTargetPropertyUpdate<TSourceProp>(Expression<Func<TSource, TSourceProp>> sourceMember, Action<TSourceProp> updateProperty)
-        {
-            var sourcePropertyName = sourceMember.GetAccessorName();
             // Update target with source value immediately
-            var sourceAccessor = sourceMember.Compile();
+            var sourceAccessor = sourceExpression.Compile();
             var sourceValue = sourceAccessor(_parent.Source);
             updateProperty(sourceValue);
-            // Update target when source property changes
-            var observable = CreateObservable(sourceAccessor, sourcePropertyName);
-            var subscription = observable.Subscribe(updateProperty);
-            _parent.AddSubscription(subscription);
-        }
 
-        private IObservable<TSourceProp> CreateObservable<TSourceProp>(Func<TSource, TSourceProp> sourceAccessor, string sourcePropertyName)
-        {
-            var notifyPropertyChanged = _parent.Source as INotifyPropertyChanged;
-            if (notifyPropertyChanged == null)
-                throw new NotSupportedException(string.Format("Source type '{0}' does not implement {1}.",
-                    typeof (TSource), typeof (INotifyPropertyChanged)));
-            return notifyPropertyChanged.CreatePropertyChangedObservable()
-                .Where(args => args.PropertyName == sourcePropertyName)
-                .Select(x => sourceAccessor(_parent.Source));
+            // Update target when source property changes
+            var notificationSources = new NotifyPropertyChangedExpressionAnalyzer().GetSources(_parent.Source, sourceExpression).ToList();
+            if (!notificationSources.Any())
+                throw new ArgumentException("At least one object defined in the expression must implement INotifyPropertyChanged.");
+            var observables = notificationSources.Select(source => source.Object.CreatePropertyChangedObservable(source.PropertyNames)
+                .Select(x => sourceAccessor(_parent.Source)));
+            var subscriptions = observables.Select(observable => observable.Subscribe(updateProperty));
+            subscriptions.ToList().ForEach(sub => _parent.AddSubscription(sub));
         }
     }
 }
