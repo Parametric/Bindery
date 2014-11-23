@@ -22,6 +22,12 @@ namespace Bindery.Interfaces
         /// <returns>A target binder</returns>
         ITargetBinder<TSource, TTarget> Target<TTarget>(TTarget target) where TTarget : class;
 
+        /// <summary>
+        /// Bind to a source property, where the source implements INotifyPropertyChanged
+        /// </summary>
+        /// <typeparam name="TProp">The type of the property</typeparam>
+        /// <param name="member">The source property</param>
+        /// <returns>An observer for the property value</returns>
         IObservableBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member);
 
         IObservableBinder<TSource, TArg> Observe<TArg>(IObservable<TArg> observable);

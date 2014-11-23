@@ -60,11 +60,9 @@
     </Compile>
     <Compile Include="TestClasses\TestEventArgs.cs" />
     <Compile Include="TestClasses\TestTarget.cs" />
-    <Compile Include="Tests\Basic\BindingTest.cs" />
-    <Compile Include="Tests\Basic\EventTest.cs" />
-    <Compile Include="Tests\Basic\ObserveTest.cs" />
     <Compile Include="Tests\BindingTest.cs" />
     <Compile Include="TestClasses\ControlTester.cs" />
+    <Compile Include="Tests\BindingWithFormCreationTest.cs" />
     <Compile Include="Tests\EventTest.cs" />
     <Compile Include="Tests\ObserveTest.cs" />
     <Compile Include="Tests\OnClickTest.cs" />
