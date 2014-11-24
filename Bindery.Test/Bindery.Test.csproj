@@ -53,8 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\Annotations1.cs" />
-    <Compile Include="TestClasses\TestBasicCommand.cs" />
-    <Compile Include="TestClasses\TestBasicViewModel.cs" />
     <Compile Include="TestClasses\TestButton.cs">
       <SubType>Component</SubType>
     </Compile>
