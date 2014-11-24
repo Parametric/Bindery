@@ -10,14 +10,10 @@ namespace Bindery.Expressions
     /// </summary>
     public abstract class ExpressionVisitor
     {
-        protected ExpressionVisitor()
-        {
-        }
-
         protected virtual Expression Visit(Expression exp)
         {
             if (exp == null)
-                return exp;
+                return null;
             switch (exp.NodeType)
             {
                 case ExpressionType.Negate:
@@ -125,10 +121,9 @@ namespace Bindery.Expressions
             var conversion = Visit(b.Conversion);
             if (left != b.Left || right != b.Right || conversion != b.Conversion)
             {
-                if (b.NodeType == ExpressionType.Coalesce && b.Conversion != null)
-                    return Expression.Coalesce(left, right, conversion as LambdaExpression);
-                else
-                    return Expression.MakeBinary(b.NodeType, left, right, b.IsLiftedToNull, b.Method);
+                return b.NodeType == ExpressionType.Coalesce && b.Conversion != null
+                    ? Expression.Coalesce(left, right, conversion as LambdaExpression)
+                    : Expression.MakeBinary(b.NodeType, left, right, b.IsLiftedToNull, b.Method);
             }
             return b;
         }
@@ -343,14 +338,9 @@ namespace Bindery.Expressions
             IEnumerable<Expression> exprs = VisitExpressionList(na.Expressions);
             if (exprs != na.Expressions)
             {
-                if (na.NodeType == ExpressionType.NewArrayInit)
-                {
-                    return Expression.NewArrayInit(na.Type.GetElementType(), exprs);
-                }
-                else
-                {
-                    return Expression.NewArrayBounds(na.Type.GetElementType(), exprs);
-                }
+                return na.NodeType == ExpressionType.NewArrayInit 
+                    ? Expression.NewArrayInit(na.Type.GetElementType(), exprs) 
+                    : Expression.NewArrayBounds(na.Type.GetElementType(), exprs);
             }
             return na;
         }

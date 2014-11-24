@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Bindery.Interfaces;
+using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {

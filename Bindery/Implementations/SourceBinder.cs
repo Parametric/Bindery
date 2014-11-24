@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reactive.Linq;
 using Bindery.Extensions;
 using Bindery.Interfaces;
+using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {
@@ -46,11 +47,6 @@ namespace Bindery.Implementations
         IObservableBinder<TSource, TArg> ISourceBinder<TSource>.Observe<TArg>(IObservable<TArg> observable)
         {
             return new ObservableBinder<TSource, TArg>(this, observable);
-        }
-
-        IObservableBinder<TSource, TArg> ISourceBinder<TSource>.Observe<TArg>(Func<TSource, IObservable<TArg>> observableMember)
-        {
-            return new ObservableBinder<TSource, TArg>(this, observableMember);
         }
 
         public void Dispose()

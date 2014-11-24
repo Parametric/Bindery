@@ -48,7 +48,7 @@ namespace Bindery.Extensions
             return assignTo;
         }
 
-        public static List<NotifyPropertySource> GetNotifyPropertyChangedSources<TIn, TOut>(TIn objIn, Expression<Func<TIn, TOut>> exp)
+        public static List<NotifyPropertySource> GetNotifyPropertyChangedSources<TIn, TOut>(this TIn objIn, Expression<Func<TIn, TOut>> exp)
         {
             return new NotifyPropertyChangedExpressionAnalyzer().GetSources(objIn, exp);
         }

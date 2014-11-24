@@ -26,15 +26,16 @@ namespace Bindery.Expressions
         {
             var memberAccess = (MemberExpression)base.VisitMemberAccess(m);
             var objExp = memberAccess.Expression;
-            if (typeof (INotifyPropertyChanged).IsAssignableFrom(objExp.Type))
-            {
-                var del = Expression.Lambda(Expression.GetFuncType(_objIn.GetType(), objExp.Type), objExp, _param).Compile();
-                var obj = del.DynamicInvoke(_objIn) as INotifyPropertyChanged;
-                var source = _sources.SingleOrDefault(x => x.Object == obj);
-                if (source == null)
-                    _sources.Add(source = new NotifyPropertySource(obj));
-                source.PropertyNames.Add(memberAccess.Member.Name);
-            }
+            if (!typeof (INotifyPropertyChanged).IsAssignableFrom(objExp.Type)) 
+                return memberAccess;
+
+            var lambdaType = Expression.GetFuncType(_objIn.GetType(), objExp.Type);
+            var del = Expression.Lambda(lambdaType, objExp, _param).Compile();
+            var obj = del.DynamicInvoke(_objIn) as INotifyPropertyChanged;
+            var source = _sources.SingleOrDefault(x => x.Object == obj);
+            if (source == null)
+                _sources.Add(source = new NotifyPropertySource(obj));
+            source.PropertyNames.Add(memberAccess.Member.Name);
             return memberAccess;
         }
     }

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bindery.Interfaces;
+using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
@@ -81,10 +82,8 @@ namespace Bindery.Test.Tests
 
             var result = 0;
             var complete = false;
-            _binder.Observe(vm => vm.MyObservable)
-                .OnNext(arg => result = arg)
-                .OnComplete(() => complete = true)
-                .Subscribe();
+            _binder.Observe(_viewModel.MyObservable)
+                .Subscribe(ctx => ctx.OnNext(arg => result = arg).OnComplete(() => complete = true));
             if (!binderActiveDuringEvent) 
                 _binder.Dispose();
 
@@ -105,21 +104,18 @@ namespace Bindery.Test.Tests
         public void ObserveSourceWithException()
         {
             // Arrange
-            var task = new Task<int>(() => { throw new NotImplementedException(); });
+            var task = new Task<int>(() => { throw new InvalidOperationException(); });
             _viewModel.MyObservable = task.ToObservable();
 
             Exception thrown = null;
-            _binder.Observe(vm => vm.MyObservable)
-                .OnNext(arg => { })
-                .OnError(ex=> thrown = ex)
-                .Subscribe();
+            _binder.Observe(_viewModel.MyObservable).Subscribe(ctx=>ctx.OnNext(arg => { }).OnError(ex=> thrown = ex));
 
             // Act
             task.Start();
             ConditionalWait(() => task.IsFaulted && thrown != null);
 
             // Assert
-            Assert.That(thrown, Is.InstanceOf<NotImplementedException>());
+            Assert.That(thrown, Is.InstanceOf<InvalidOperationException>());
         }
 
         [Test]
@@ -133,10 +129,7 @@ namespace Bindery.Test.Tests
             const int expected = 5;
 
             var result = 0;
-            _binder.Observe(vm => vm.MyObservable)
-                .OnNext(arg => result = arg)
-                .CancellationToken(tokenSource.Token)
-                .Subscribe();
+            _binder.Observe(_viewModel.MyObservable).Subscribe(ctx => ctx.OnNext(arg => result = arg).CancellationToken(tokenSource.Token));
 
             // Act
             task.Start();

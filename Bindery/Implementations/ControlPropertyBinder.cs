@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Windows.Forms;
 using Bindery.Extensions;
 using Bindery.Interfaces;
+using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {

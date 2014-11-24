@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Bindery.Interfaces
+namespace Bindery.Interfaces.Binders
 {
     public interface ITargetBinder<TSource, TTarget>
     {

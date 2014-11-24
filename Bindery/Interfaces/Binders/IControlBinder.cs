@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Windows.Forms;
 using System.Windows.Input;
 
-namespace Bindery.Interfaces
+namespace Bindery.Interfaces.Binders
 {
     public interface IControlBinder<TSource, TControl>
         where TControl : IBindableComponent

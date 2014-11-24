@@ -1,25 +1,17 @@
 using System;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Windows.Input;
 using Bindery.Extensions;
 using Bindery.Interfaces;
-using Bindery.Interfaces.Observables;
+using Bindery.Interfaces.Binders;
+using Bindery.Interfaces.Subscriptions;
 
 namespace Bindery.Implementations
 {
-    internal class ObservableBinder<TSource, TArg> : 
-        IObservableBinder<TSource,TArg>, 
-        IOnNextDefined<TSource>, 
-        IOnErrorDefined<TSource>, 
-        IOnCompleteDefined<TSource> 
+    internal class ObservableBinder<TSource, TArg> : IObservableBinder<TSource,TArg> 
     {
         private readonly SourceBinder<TSource> _parent;
         private readonly IObservable<TArg> _observable;
-        private Action<TArg> _onNext;
-        private Action<Exception> _onError;
-        private Action _onComplete;
-        private CancellationToken _cancellationToken;
 
         public ObservableBinder(SourceBinder<TSource> parent, Func<TSource, IObservable<TArg>> observableMember)
             : this(parent, observableMember(parent.Source))
@@ -32,12 +24,6 @@ namespace Bindery.Implementations
             _observable = observable;
         }
 
-        public IOnNextDefined<TSource> OnNext(Action<TArg> onNext)
-        {
-            _onNext = onNext;
-            return this;
-        }
-
         public IObservableBinder<TSource, TOut> Transform<TOut>(Func<IObservable<TArg>, IObservable<TOut>> transform)
         {
             return new ObservableBinder<TSource, TOut>(_parent, transform(_observable));
@@ -45,8 +31,18 @@ namespace Bindery.Implementations
 
         public ISourceBinder<TSource> Subscribe(Action<TArg> action)
         {
-            _onNext = action;
-            return Subscribe();
+            _parent.AddSubscription(_observable.Subscribe(action));
+            return _parent;
+        }
+
+        public ISourceBinder<TSource> Subscribe(Func<ISubscriptionContext<TArg>, ISubscriptionComplete> subscription)
+        {
+            var context = new SubscriptionContext<TArg>();
+            subscription(context);
+            var disposable = context.Subscribe(_observable);
+            if (disposable != null)
+                _parent.AddSubscription(disposable);
+            return _parent;
         }
 
         public ISourceBinder<TSource> Execute(ICommand command)
@@ -91,69 +87,6 @@ namespace Bindery.Implementations
             var subscription = _observable.Subscribe(arg => propertySetter(conversion(arg)));
             _parent.AddSubscription(subscription);
             return _parent;
-        }
-
-        public IOnErrorDefined<TSource> OnError(Action<Exception> onError)
-        {
-            _onError = onError;
-            return this;
-        }
-
-        public IOnCompleteDefined<TSource> OnComplete(Action onComplete)
-        {
-            _onComplete = onComplete;
-            return this;
-        }
-
-        public ISubscriptionComplete<TSource> CancellationToken(CancellationToken token)
-        {
-            _cancellationToken = token;
-            return this;
-        }
-
-        public ISourceBinder<TSource> Subscribe()
-        {
-            if (_cancellationToken == default(CancellationToken))
-            {
-                var subscription = CreateSubscription();
-                _parent.AddSubscription(subscription);
-            }
-            else
-            {
-                SubscribeWithCancellationToken();
-            }
-            return _parent;
-        }
-
-        private IDisposable CreateSubscription()
-        {
-            return _onError != null && _onComplete != null
-                ? _observable.Subscribe(_onNext, _onError, _onComplete)
-                : _onError != null
-                    ? _observable.Subscribe(_onNext, _onError)
-                    : _onComplete != null
-                        ? _observable.Subscribe(_onNext, _onComplete)
-                        : _observable.Subscribe(_onNext);
-        }
-
-        private void SubscribeWithCancellationToken()
-        {
-            if (_onError != null && _onComplete != null)
-            {
-                _observable.Subscribe(_onNext, _onError, _onComplete, _cancellationToken);
-                return;
-            }
-            if (_onError != null)
-            {
-                _observable.Subscribe(_onNext, _onError, _cancellationToken);
-                return;
-            }
-            if (_onComplete != null)
-            {
-                _observable.Subscribe(_onNext, _onComplete, _cancellationToken);
-                return;
-            }
-            _observable.Subscribe(_onNext, _cancellationToken);
         }
 
     }

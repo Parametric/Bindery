@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Windows.Forms;
 
-namespace Bindery.Interfaces
+namespace Bindery.Interfaces.Binders
 {
     public interface IControlPropertyBinder<TSource, TControl, TControlProp> 
         where TControl : IBindableComponent

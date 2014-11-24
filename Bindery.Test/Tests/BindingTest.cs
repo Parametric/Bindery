@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Bindery.Interfaces;
+using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
@@ -10,7 +11,7 @@ namespace Bindery.Test.Tests
     public class BindingTest
     {
         private TestViewModel _viewModel;
-        private TextBox _textBox;
+        private UserControl _userControl;
         private ISourceBinder<TestViewModel> _binder;
 
         [SetUp]
@@ -18,120 +19,115 @@ namespace Bindery.Test.Tests
         {
             _viewModel = new TestViewModel();
             _binder = Create.Binder(_viewModel);
-            _textBox = new TextBox();
+            _userControl = new UserControl();
+            _userControl.CreateControl();
         }
 
         [TearDown]
         public void AfterEach()
         {
             _binder.Dispose();
-            _textBox.Dispose();
+            _userControl.Dispose();
         }
 
         [TestCase(true, true)]
         [TestCase(false, false)]
         public void TwoWayBinding(bool binderActiveDuringEvent, bool expectUpdated)
         {
-            // Act
-            _binder.Control(_textBox).Property(c => c.Text).Bind(vm => vm.StringValue);
+            // Arrange
+            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.StringValue);
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
 
-            // Assert
-            if (!expectUpdated)
-            {
-                Assert.That(_textBox.DataBindings.Count, Is.EqualTo(0));
-            }
-            else
-            {
-                var binding = _textBox.DataBindings[0];
-                Assert.That(binding.PropertyName, Is.EqualTo("Text"));
-                Assert.That(binding.DataSource, Is.EqualTo(_viewModel));
-                Assert.That(binding.BindingMemberInfo.BindingMember, Is.EqualTo("StringValue"));
-                Assert.That(binding.BindingMemberInfo.BindingField, Is.EqualTo("StringValue"));
-                Assert.That(binding.ControlUpdateMode, Is.EqualTo(ControlUpdateMode.OnPropertyChanged));
-                Assert.That(binding.DataSourceUpdateMode, Is.EqualTo(DataSourceUpdateMode.OnPropertyChanged));
-            }
+            // Act & Assert
+            _userControl.Text = "value #1";
+            var expected = expectUpdated ? _userControl.Text : null;
+            Assert.That(_viewModel.StringValue, Is.EqualTo(expected));
+
+            _viewModel.StringValue = "value #2";
+            expected = expectUpdated ? _viewModel.StringValue : "value #1";
+            Assert.That(_userControl.Text, Is.EqualTo(expected));
         }
 
         [TestCase(true, true)]
         [TestCase(false, false)]
         public void OneWayBindingTowardsSource(bool binderActiveDuringEvent, bool expectUpdated)
         {
-            // Act
-            _binder.Control(_textBox).Property(c => c.Text).Set(vm => vm.StringValue);
+            // Arrange
+            _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.StringValue);
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
 
-            // Assert
-            if (!expectUpdated)
-            {
-                Assert.That(_textBox.DataBindings.Count, Is.EqualTo(0));
-            }
-            else
-            {
-                var binding = _textBox.DataBindings[0];
-                Assert.That(binding.PropertyName, Is.EqualTo("Text"));
-                Assert.That(binding.DataSource, Is.EqualTo(_viewModel));
-                Assert.That(binding.BindingMemberInfo.BindingMember, Is.EqualTo("StringValue"));
-                Assert.That(binding.BindingMemberInfo.BindingField, Is.EqualTo("StringValue"));
-                Assert.That(binding.ControlUpdateMode, Is.EqualTo(ControlUpdateMode.Never));
-                Assert.That(binding.DataSourceUpdateMode, Is.EqualTo(DataSourceUpdateMode.OnPropertyChanged));
-            }
+            // Act & Assert
+            _userControl.Text = "value #1";
+            var expected = expectUpdated ? _userControl.Text : string.Empty;
+            Assert.That(_viewModel.StringValue, Is.EqualTo(expected));
+            _viewModel.StringValue = "value #2";
+            Assert.That(_userControl.Text, Is.Not.EqualTo(_viewModel.StringValue));
         }
 
         [TestCase(true, true)]
         [TestCase(false, false)]
         public void OneWayBindingTowardsControl(bool binderActiveDuringEvent, bool expectUpdated)
         {
-            // Act
-            _binder.Control(_textBox).Property(c => c.Text).Get(vm => vm.StringValue);
+            // Arrange
+            _binder.Control(_userControl).Property(c => c.Text).Get(vm => vm.StringValue);
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
 
-            // Assert
-            if (!expectUpdated)
-            {
-                Assert.That(_textBox.DataBindings.Count, Is.EqualTo(0));
-            }
-            else
-            {
-                var binding = _textBox.DataBindings[0];
-                Assert.That(binding.PropertyName, Is.EqualTo("Text"));
-                Assert.That(binding.DataSource, Is.EqualTo(_viewModel));
-                Assert.That(binding.BindingMemberInfo.BindingMember, Is.EqualTo("StringValue"));
-                Assert.That(binding.BindingMemberInfo.BindingField, Is.EqualTo("StringValue"));
-                Assert.That(binding.ControlUpdateMode, Is.EqualTo(ControlUpdateMode.OnPropertyChanged));
-                Assert.That(binding.DataSourceUpdateMode, Is.EqualTo(DataSourceUpdateMode.Never));
-            }
+            // Act & Assert
+            _userControl.Text = "value #1";
+            Assert.That(_viewModel.StringValue, Is.Not.EqualTo(_userControl.Text));
+            _viewModel.StringValue = "value #2";
+            var expected = expectUpdated ? _viewModel.StringValue : "value #1";
+            Assert.That(_userControl.Text, Is.EqualTo(expected));
         }
         
+        [Test]
+        public void UpdateSourceWithConversion()
+        {
+            _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.IntValue, Convert.ToInt32);
+            _userControl.Text = "3";
+            Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_userControl.Text)));
+        }
+
+        [Test]
+        public void UpdateControlWithConversion()
+        {
+            _binder.Control(_userControl).Property(c => c.Text).Get(vm => vm.IntValue, Convert.ToString);
+            _viewModel.IntValue = 3;
+            Assert.That(_userControl.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
+        }
+
+        [Test]
+        public void TwoWayBindingWithConversion()
+        {
+            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.IntValue, Convert.ToString, int.Parse);
+                
+            _viewModel.IntValue = 3;
+            Assert.That(_userControl.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
+
+            _userControl.Text = "30";
+            Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_userControl.Text)));
+        }
         
         [TestCase(true, true)]
         [TestCase(false, false)]
         public void TwoWayBindingWithMultiPartSource(bool binderActiveDuringEvent, bool expectUpdated)
         {
-            // Act
-            _binder.Control(_textBox).Property(c => c.Text).Bind(vm => vm.ComplexValue.DecValue, Convert.ToString, Convert.ToDecimal);
+            // Arrange
+            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.ComplexValue.DecValue, Convert.ToString, Convert.ToDecimal);
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
 
-            // Assert
-            if (!expectUpdated)
-            {
-                Assert.That(_textBox.DataBindings.Count, Is.EqualTo(0));
-            }
-            else
-            {
-                var binding = _textBox.DataBindings[0];
-                Assert.That(binding.PropertyName, Is.EqualTo("Text"));
-                Assert.That(binding.DataSource, Is.EqualTo(_viewModel));
-                Assert.That(binding.BindingMemberInfo.BindingMember, Is.EqualTo("ComplexValue.DecValue"));
-                Assert.That(binding.BindingMemberInfo.BindingPath, Is.EqualTo("ComplexValue"));
-                Assert.That(binding.BindingMemberInfo.BindingField, Is.EqualTo("DecValue"));
-                Assert.That(binding.ControlUpdateMode, Is.EqualTo(ControlUpdateMode.OnPropertyChanged));
-                Assert.That(binding.DataSourceUpdateMode, Is.EqualTo(DataSourceUpdateMode.OnPropertyChanged));
-            }
+            // Act & Assert
+            _userControl.Text = "10.5";
+            var expected = expectUpdated ? _userControl.Text : null;
+            Assert.That(_viewModel.ComplexValue.DecValue, Is.EqualTo(Convert.ToDecimal(expected)));
+
+            _viewModel.ComplexValue.DecValue = -33.3m;
+            expected = expectUpdated ? "-33.3" : "10.5";
+            Assert.That(_userControl.Text, Is.EqualTo(expected));
         }
 
     }

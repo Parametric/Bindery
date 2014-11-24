@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 using System.Reflection;
-using Bindery.Interfaces.Observables;
+using Bindery.Interfaces;
 
 namespace Bindery.Implementations
 {

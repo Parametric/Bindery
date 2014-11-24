@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Bindery.Interfaces.Observables
+namespace Bindery.Interfaces
 {
     public interface IEventObservableFactory
     {

@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
-using Bindery.Expressions;
 using Bindery.Extensions;
 using Bindery.Interfaces;
+using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {
@@ -34,7 +34,7 @@ namespace Bindery.Implementations
             updateProperty(sourceValue);
 
             // Update target when source property changes
-            var notificationSources = new NotifyPropertyChangedExpressionAnalyzer().GetSources(_parent.Source, sourceExpression).ToList();
+            var notificationSources = _parent.Source.GetNotifyPropertyChangedSources(sourceExpression).ToList();
             if (!notificationSources.Any())
                 throw new ArgumentException("At least one object defined in the expression must implement INotifyPropertyChanged.");
             var observables = notificationSources.Select(source => source.Object.CreatePropertyChangedObservable(source.PropertyNames)

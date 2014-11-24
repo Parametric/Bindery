@@ -1,4 +1,5 @@
 ﻿using Bindery.Interfaces;
+using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 

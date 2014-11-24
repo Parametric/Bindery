@@ -1,6 +1,6 @@
 ﻿using Bindery.Implementations;
 using Bindery.Interfaces;
-using Bindery.Interfaces.Observables;
+using Bindery.Interfaces.Binders;
 
 namespace Bindery
 {

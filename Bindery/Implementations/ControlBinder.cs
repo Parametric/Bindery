@@ -4,6 +4,7 @@ using System.Reactive.Disposables;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Bindery.Interfaces;
+using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {
