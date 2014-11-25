@@ -3,7 +3,6 @@ using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
@@ -13,11 +12,6 @@ namespace Bindery.Test.Tests
     [TestFixture]
     public class ObserveTest
     {
-        private TestViewModel _viewModel;
-        private TestButton _button;
-        private ISourceBinder<TestViewModel> _binder;
-        private TestCommand _command;
-
         [SetUp]
         public void BeforeEach()
         {
@@ -33,6 +27,11 @@ namespace Bindery.Test.Tests
             _binder.Dispose();
             _button.Dispose();
         }
+
+        private TestViewModel _viewModel;
+        private TestButton _button;
+        private ISourceBinder<TestViewModel> _binder;
+        private TestCommand _command;
 
         [TestCase(true, true, true)]
         [TestCase(false, false, false)]
@@ -77,14 +76,14 @@ namespace Bindery.Test.Tests
         public void ObserveSourceAndTakeAction(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            var task = new Task<int>(()=>5);
+            var task = new Task<int>(() => 5);
             _viewModel.MyObservable = task.ToObservable();
 
             var result = 0;
             var complete = false;
             _binder.Observe(_viewModel.MyObservable)
                 .Subscribe(ctx => ctx.OnNext(arg => result = arg).OnComplete(() => complete = true));
-            if (!binderActiveDuringEvent) 
+            if (!binderActiveDuringEvent)
                 _binder.Dispose();
 
             // Act
@@ -93,49 +92,11 @@ namespace Bindery.Test.Tests
 
             var expectedComplete = expectUpdated;
             var expectedResult = expectUpdated ? 5 : 0;
-            ConditionalWait(()=>complete==expectedComplete && result==expectedResult);
+            ConditionalWait(() => complete == expectedComplete && result == expectedResult);
 
             // Assert
             Assert.That(result, Is.EqualTo(expectedResult));
             Assert.That(complete, Is.EqualTo(expectedComplete));
-        }
-
-        [Test]
-        public void ObserveSourceWithException()
-        {
-            // Arrange
-            var task = new Task<int>(() => { throw new InvalidOperationException(); });
-            _viewModel.MyObservable = task.ToObservable();
-
-            Exception thrown = null;
-            _binder.Observe(_viewModel.MyObservable).Subscribe(ctx=>ctx.OnNext(arg => { }).OnError(ex=> thrown = ex));
-
-            // Act
-            task.Start();
-            ConditionalWait(() => task.IsFaulted && thrown != null);
-
-            // Assert
-            Assert.That(thrown, Is.InstanceOf<InvalidOperationException>());
-        }
-
-        [Test]
-        public void ObserveSourceWithCancellation()
-        {
-            // Arrange
-            var tokenSource = new CancellationTokenSource();
-            var ct = tokenSource.Token;
-            var task = new Task<int>(() => { Thread.Sleep(TimeSpan.FromMilliseconds(10)); ct.ThrowIfCancellationRequested(); return 5; }, tokenSource.Token);
-            _viewModel.MyObservable = task.ToObservable();
-            const int expected = 5;
-
-            var result = 0;
-            _binder.Observe(_viewModel.MyObservable).Subscribe(ctx => ctx.OnNext(arg => result = arg).CancellationToken(tokenSource.Token));
-
-            // Act
-            task.Start();
-            tokenSource.Cancel();
-            Assert.Throws<OperationCanceledException>(() => task.Wait(tokenSource.Token));
-            Assert.That(result, Is.Not.EqualTo(expected));
         }
 
         private static void ConditionalWait(Func<bool> condition)
@@ -150,5 +111,47 @@ namespace Bindery.Test.Tests
             Assert.That(condition(), Is.True, "Failed to meet condition before timeout.");
         }
 
+        [Test]
+        public void ObserveSourceWithCancellation()
+        {
+            // Arrange
+            var tokenSource = new CancellationTokenSource();
+            var ct = tokenSource.Token;
+            var task = new Task<int>(() =>
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(10));
+                ct.ThrowIfCancellationRequested();
+                return 5;
+            }, tokenSource.Token);
+            _viewModel.MyObservable = task.ToObservable();
+            const int expected = 5;
+
+            var result = 0;
+            _binder.Observe(_viewModel.MyObservable).Subscribe(ctx => ctx.OnNext(arg => result = arg).CancellationToken(tokenSource.Token));
+
+            // Act
+            task.Start();
+            tokenSource.Cancel();
+            Assert.Throws<OperationCanceledException>(() => task.Wait(tokenSource.Token));
+            Assert.That(result, Is.Not.EqualTo(expected));
+        }
+
+        [Test]
+        public void ObserveSourceWithException()
+        {
+            // Arrange
+            var task = new Task<int>(() => { throw new InvalidOperationException(); });
+            _viewModel.MyObservable = task.ToObservable();
+
+            Exception thrown = null;
+            _binder.Observe(_viewModel.MyObservable).Subscribe(ctx => ctx.OnNext(arg => { }).OnError(ex => thrown = ex));
+
+            // Act
+            task.Start();
+            ConditionalWait(() => task.IsFaulted && thrown != null);
+
+            // Assert
+            Assert.That(thrown, Is.InstanceOf<InvalidOperationException>());
+        }
     }
 }

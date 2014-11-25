@@ -8,14 +8,14 @@ namespace Bindery.Test.TestClasses
 {
     public class TestViewModel : INotifyPropertyChanged
     {
+        private int _intValue;
+        private string _stringValue;
+
         public TestViewModel()
         {
             MyObservable = Observable.Return(5);
             ComplexValue = new Inner();
         }
-
-        private int _intValue;
-        private string _stringValue;
 
         public int IntValue
         {

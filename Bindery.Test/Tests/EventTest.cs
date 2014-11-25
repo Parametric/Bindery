@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
@@ -9,10 +8,10 @@ namespace Bindery.Test.Tests
 {
     public class EventTest
     {
-        private TestViewModel _viewModel;
-        private TestButton _button;
         private ISourceBinder<TestViewModel> _binder;
+        private TestButton _button;
         private TestCommand _command;
+        private TestViewModel _viewModel;
 
         [SetUp]
         public void BeforeEach()
@@ -83,11 +82,11 @@ namespace Bindery.Test.Tests
             // Assert
             Assert.That(executedCount, Is.EqualTo(1));
         }
-        
-        [TestCase(true,true,true)]
-        [TestCase(false,false,false)]
-        [TestCase(true,false, false)]
-        [TestCase(false,true, false)]
+
+        [TestCase(true, true, true)]
+        [TestCase(false, false, false)]
+        [TestCase(true, false, false)]
+        [TestCase(false, true, false)]
         public void ExecuteCommandWithConstantParameter(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
@@ -130,10 +129,10 @@ namespace Bindery.Test.Tests
             Assert.That(x, Is.EqualTo(expectedX));
         }
 
-        [TestCase(true,true,true)]
-        [TestCase(false,false,false)]
-        [TestCase(true,false, false)]
-        [TestCase(false,true, false)]
+        [TestCase(true, true, true)]
+        [TestCase(false, false, false)]
+        [TestCase(true, false, false)]
+        [TestCase(false, true, false)]
         public void ConvertEventArgsAndSendToCommand(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
@@ -187,7 +186,9 @@ namespace Bindery.Test.Tests
         public void WrongEventArgSpecified()
         {
             var ex = Assert.Throws<ArgumentException>(() => _binder.Control(_button).OnEvent<MouseEventArgs>("Click").Execute(_command));
-            Assert.That(ex.Message, Is.EqualTo("ParameterExpression of type 'System.Windows.Forms.MouseEventArgs' cannot be used for delegate parameter of type 'System.EventArgs'"));
+            Assert.That(ex.Message,
+                Is.EqualTo(
+                    "ParameterExpression of type 'System.Windows.Forms.MouseEventArgs' cannot be used for delegate parameter of type 'System.EventArgs'"));
         }
     }
 }

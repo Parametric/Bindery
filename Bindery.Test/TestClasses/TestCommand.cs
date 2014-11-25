@@ -5,8 +5,6 @@ namespace Bindery.Test.TestClasses
 {
     public class TestCommand : ICommand
     {
-        public TestViewModel ViewModel { get; private set; }
-
         public TestCommand(TestViewModel viewModel)
         {
             ViewModel = viewModel;
@@ -14,6 +12,8 @@ namespace Bindery.Test.TestClasses
             ExecuteAction = parm => { };
             CanExecuteCondition = vm => true;
         }
+
+        public TestViewModel ViewModel { get; private set; }
 
         public Func<TestViewModel, bool> CanExecuteCondition { get; set; }
         public Action<dynamic> ExecuteAction { get; set; }
@@ -32,7 +32,7 @@ namespace Bindery.Test.TestClasses
 
         protected virtual void OnCanExecuteChanged()
         {
-            EventHandler handler = CanExecuteChanged;
+            var handler = CanExecuteChanged;
             if (handler != null) handler(this, EventArgs.Empty);
         }
     }

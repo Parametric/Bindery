@@ -6,13 +6,15 @@ namespace Bindery.Test.TestClasses
 {
     public class TestButton : Button
     {
-        public event EventHandler<TestEventArgs> Test;
-
         public TestButton()
         {
             MouseMoveButton = Create.ObservableFor(this).Event<MouseEventArgs>("MouseMove").Select(arg => Convert.ToString(arg.Button));
             ClickObservable = Create.ObservableFor(this).Event("Click");
         }
+
+        public IObservable<string> MouseMoveButton { get; private set; }
+        public IObservable<EventArgs> ClickObservable { get; private set; }
+        public event EventHandler<TestEventArgs> Test;
 
 
         protected virtual void OnTest(TestEventArgs e)
@@ -30,8 +32,5 @@ namespace Bindery.Test.TestClasses
         {
             base.OnMouseMove(e);
         }
-
-        public IObservable<string> MouseMoveButton { get; private set; }
-        public IObservable<EventArgs> ClickObservable { get; private set; }
     }
 }

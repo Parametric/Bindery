@@ -11,17 +11,16 @@
 
         public InfoContainer Info { get; private set; }
 
+        public InfoContainer GetInfo()
+        {
+            return Info;
+        }
+
         public class InfoContainer
         {
             public int A { get; set; }
 
             public int B { get; set; }
         }
-
-        public InfoContainer GetInfo()
-        {
-            return Info;
-        }
     }
-
 }

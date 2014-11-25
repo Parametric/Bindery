@@ -1,5 +1,4 @@
-﻿using Bindery.Interfaces;
-using Bindery.Interfaces.Binders;
+﻿using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
 
@@ -8,9 +7,6 @@ namespace Bindery.Test.Tests
     [TestFixture]
     public class OnPropertyChangedTest
     {
-        private TestViewModel _viewModel;
-        private ISourceBinder<TestViewModel> _binder;
-
         [SetUp]
         public void BeforeEach()
         {
@@ -23,6 +19,9 @@ namespace Bindery.Test.Tests
         {
             _binder.Dispose();
         }
+
+        private TestViewModel _viewModel;
+        private ISourceBinder<TestViewModel> _binder;
 
         [Test]
         public void ActionIsCalledWhenPropertyIsChanged()
@@ -42,6 +41,21 @@ namespace Bindery.Test.Tests
             // Assert
             Assert.That(callCount, Is.EqualTo(1));
             Assert.That(setValue, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void ActionIsNotCalledAfterSourceIsDisposed()
+        {
+            // Arrange
+            var callCount = 0;
+            _binder.Property(vm => vm.IntValue).Subscribe(x => callCount++);
+            _binder.Dispose();
+
+            // Act
+            _viewModel.IntValue = 3;
+
+            // Assert
+            Assert.That(callCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -65,21 +79,6 @@ namespace Bindery.Test.Tests
 
             // Act
             _viewModel.IntValue = _viewModel.IntValue;
-
-            // Assert
-            Assert.That(callCount, Is.EqualTo(0));
-        }
-
-        [Test]
-        public void ActionIsNotCalledAfterSourceIsDisposed()
-        {
-            // Arrange
-            var callCount = 0;
-            _binder.Property(vm => vm.IntValue).Subscribe(x => callCount++);
-            _binder.Dispose();
-
-            // Act
-            _viewModel.IntValue = 3;
 
             // Assert
             Assert.That(callCount, Is.EqualTo(0));

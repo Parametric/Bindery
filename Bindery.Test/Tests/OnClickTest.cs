@@ -1,5 +1,4 @@
 ﻿using System.Windows.Forms;
-using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
@@ -9,11 +8,6 @@ namespace Bindery.Test.Tests
     [TestFixture]
     public class OnClickTest
     {
-        private TestViewModel _viewModel;
-        private Button _button;
-        private ISourceBinder<TestViewModel> _binder;
-        private TestCommand _command;
-
         [SetUp]
         public void BeforeEach()
         {
@@ -29,6 +23,11 @@ namespace Bindery.Test.Tests
             _binder.Dispose();
             _button.Dispose();
         }
+
+        private TestViewModel _viewModel;
+        private Button _button;
+        private ISourceBinder<TestViewModel> _binder;
+        private TestCommand _command;
 
         [Test]
         public void ClickingTheControlExecutesTheCommand()

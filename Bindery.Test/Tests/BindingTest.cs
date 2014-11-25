@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
 using NUnit.Framework;
@@ -10,10 +9,6 @@ namespace Bindery.Test.Tests
     [TestFixture]
     public class BindingTest
     {
-        private TestViewModel _viewModel;
-        private UserControl _userControl;
-        private ISourceBinder<TestViewModel> _binder;
-
         [SetUp]
         public void BeforeEach()
         {
@@ -29,6 +24,10 @@ namespace Bindery.Test.Tests
             _binder.Dispose();
             _userControl.Dispose();
         }
+
+        private TestViewModel _viewModel;
+        private UserControl _userControl;
+        private ISourceBinder<TestViewModel> _binder;
 
         [TestCase(true, true)]
         [TestCase(false, false)]
@@ -82,35 +81,7 @@ namespace Bindery.Test.Tests
             var expected = expectUpdated ? _viewModel.StringValue : "value #1";
             Assert.That(_userControl.Text, Is.EqualTo(expected));
         }
-        
-        [Test]
-        public void UpdateSourceWithConversion()
-        {
-            _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.IntValue, Convert.ToInt32);
-            _userControl.Text = "3";
-            Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_userControl.Text)));
-        }
 
-        [Test]
-        public void UpdateControlWithConversion()
-        {
-            _binder.Control(_userControl).Property(c => c.Text).Get(vm => vm.IntValue, Convert.ToString);
-            _viewModel.IntValue = 3;
-            Assert.That(_userControl.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
-        }
-
-        [Test]
-        public void TwoWayBindingWithConversion()
-        {
-            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.IntValue, Convert.ToString, int.Parse);
-                
-            _viewModel.IntValue = 3;
-            Assert.That(_userControl.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
-
-            _userControl.Text = "30";
-            Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_userControl.Text)));
-        }
-        
         [TestCase(true, true)]
         [TestCase(false, false)]
         public void TwoWayBindingWithMultiPartSource(bool binderActiveDuringEvent, bool expectUpdated)
@@ -130,5 +101,32 @@ namespace Bindery.Test.Tests
             Assert.That(_userControl.Text, Is.EqualTo(expected));
         }
 
+        [Test]
+        public void TwoWayBindingWithConversion()
+        {
+            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.IntValue, Convert.ToString, int.Parse);
+
+            _viewModel.IntValue = 3;
+            Assert.That(_userControl.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
+
+            _userControl.Text = "30";
+            Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_userControl.Text)));
+        }
+
+        [Test]
+        public void UpdateControlWithConversion()
+        {
+            _binder.Control(_userControl).Property(c => c.Text).Get(vm => vm.IntValue, Convert.ToString);
+            _viewModel.IntValue = 3;
+            Assert.That(_userControl.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
+        }
+
+        [Test]
+        public void UpdateSourceWithConversion()
+        {
+            _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.IntValue, Convert.ToInt32);
+            _userControl.Text = "3";
+            Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_userControl.Text)));
+        }
     }
 }
