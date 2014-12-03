@@ -65,25 +65,10 @@ namespace Bindery.Implementations
             return _parent;
         }
 
-        public ISourceBinder<TSource> Execute(ICommand command, Func<TArg, object> toCommandParameter)
-        {
-            var subscription = _observable.Subscribe(arg => command.ExecuteIfValid(toCommandParameter(arg)));
-            _parent.AddSubscription(subscription);
-            return _parent;
-        }
-
         public ISourceBinder<TSource> Set(Expression<Func<TSource, TArg>> member)
         {
             var propertySetter = member.GetPropertySetter(_parent.Source);
             var subscription = _observable.Subscribe(propertySetter);
-            _parent.AddSubscription(subscription);
-            return _parent;
-        }
-
-        public ISourceBinder<TSource> Set<TProp>(Expression<Func<TSource, TProp>> member, Func<TArg, TProp> conversion)
-        {
-            var propertySetter = member.GetPropertySetter(_parent.Source);
-            var subscription = _observable.Subscribe(arg => propertySetter(conversion(arg)));
             _parent.AddSubscription(subscription);
             return _parent;
         }

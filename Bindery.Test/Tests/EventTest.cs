@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Windows.Forms;
 using Bindery.Interfaces.Binders;
 using Bindery.Test.TestClasses;
@@ -139,7 +140,10 @@ namespace Bindery.Test.Tests
             var x = 0;
             _command.ExecuteAction = parm => { x = parm; };
             _command.CanExecuteCondition = vm => commandEnabled;
-            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Execute(_command, args => args.X);
+            _binder.Control(_button)
+                .OnEvent<MouseEventArgs>("MouseMove")
+                .Transform(o => o.Select(e => e.X))
+                .Execute(_command);
 
             // Act
             if (!binderActiveDuringEvent) _binder.Dispose();
@@ -157,7 +161,9 @@ namespace Bindery.Test.Tests
         public void ConvertEventArgsAndUpdateSource(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove").Set(vm => vm.StringValue, args => Convert.ToString(args.Button));
+            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove")
+                .Transform(o => o.Select(e => Convert.ToString(e.Button)))
+                .Set(vm => vm.StringValue);
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
             _button.PerformMouseMove(new MouseEventArgs(MouseButtons.Right, 0, 0, 0, 0));
