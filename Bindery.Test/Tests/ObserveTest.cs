@@ -43,7 +43,7 @@ namespace Bindery.Test.Tests
             string mouseMoveButton = null;
             _command.ExecuteAction = parm => { mouseMoveButton = parm; };
             _command.CanExecuteCondition = vm => commandEnabled;
-            _binder.Control(_button).Observe(c => c.MouseMoveButton).Execute(_command);
+            _binder.Observe(_button.MouseMoveButton).Execute(_command);
 
             // Act
             if (!binderActiveDuringEvent) _binder.Dispose();
@@ -60,7 +60,7 @@ namespace Bindery.Test.Tests
         public void ObserveControlAndSetSourceValue(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            _binder.Control(_button).Observe(c => c.MouseMoveButton).Set(vm => vm.StringValue);
+            _binder.Observe(_button.MouseMoveButton).Set(vm => vm.StringValue);
             if (!binderActiveDuringEvent) _binder.Dispose();
 
             // Act

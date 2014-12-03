@@ -38,12 +38,6 @@ namespace Bindery.Implementations
             return new ObservableBinder<TSource, TEventArgs>(_sourceBinder, observable);
         }
 
-        public IObservableBinder<TSource, TArg> Observe<TArg>(Func<TTarget, IObservable<TArg>> observableMember)
-        {
-            var observable = observableMember(Target);
-            return new ObservableBinder<TSource, TArg>(_sourceBinder, observable);
-        }
-
         public void AddSubscription(IDisposable subscription)
         {
             _sourceBinder.AddSubscription(subscription);
