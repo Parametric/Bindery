@@ -10,18 +10,18 @@ namespace Bindery.Implementations
     internal class ControlBinder<TSource, TControl> : IControlBinder<TSource, TControl>
         where TControl : IBindableComponent
     {
+        private readonly SourceBinder<TSource> _sourceBinder;
+        private readonly TControl _control;
+
         public ControlBinder(SourceBinder<TSource> sourceBinder, TControl control)
         {
-            SourceBinder = sourceBinder;
-            Control = control;
+            _sourceBinder = sourceBinder;
+            _control = control;
         }
-
-        public SourceBinder<TSource> SourceBinder { get; private set; }
-        public TControl Control { get; private set; }
 
         public TSource Source
         {
-            get { return SourceBinder.Source; }
+            get { return _sourceBinder.Source; }
         }
 
         IControlPropertyBinder<TSource, TControl, TProp> IControlBinder<TSource, TControl>.Property<TProp>(Expression<Func<TControl, TProp>> member)
@@ -31,14 +31,14 @@ namespace Bindery.Implementations
 
         IObservableBinder<TSource, EventArgs> IControlBinder<TSource, TControl>.OnEvent(string eventName)
         {
-            var observable = Create.ObservableFor(Control).Event(eventName);
-            return new ObservableBinder<TSource, EventArgs>(SourceBinder, observable);
+            var observable = Create.ObservableFor(_control).Event(eventName);
+            return new ObservableBinder<TSource, EventArgs>(_sourceBinder, observable);
         }
 
         IObservableBinder<TSource, TEventArgs> IControlBinder<TSource, TControl>.OnEvent<TEventArgs>(string eventName)
         {
-            var observable = Create.ObservableFor(Control).Event<TEventArgs>(eventName);
-            return new ObservableBinder<TSource, TEventArgs>(SourceBinder, observable);
+            var observable = Create.ObservableFor(_control).Event<TEventArgs>(eventName);
+            return new ObservableBinder<TSource, TEventArgs>(_sourceBinder, observable);
         }
 
         public IControlBinder<TSource, TControl> OnClick(ICommand command)
@@ -48,7 +48,7 @@ namespace Bindery.Implementations
 
         public IControlBinder<TSource, TControl> OnClick(ICommand command, Func<object> getParameter)
         {
-            var control = Control as Control;
+            var control = _control as Control;
             if (control == null)
                 throw new NotSupportedException("The control must inherit from System.Windows.Form.Control in order use OnClick()");
             var parameter = getParameter == null ? null : getParameter();
@@ -60,8 +60,8 @@ namespace Bindery.Implementations
 
         public IObservableBinder<TSource, TArg> Observe<TArg>(Func<TControl, IObservable<TArg>> observableMember)
         {
-            var observable = observableMember(Control);
-            return new ObservableBinder<TSource, TArg>(SourceBinder, observable);
+            var observable = observableMember(_control);
+            return new ObservableBinder<TSource, TArg>(_sourceBinder, observable);
         }
 
         public void AddDataBinding(Binding binding, ConvertEventHandler formatHandler = null, ConvertEventHandler parseHandler = null)
@@ -70,7 +70,7 @@ namespace Bindery.Implementations
                 binding.Format += formatHandler;
             if (parseHandler != null)
                 binding.Parse += parseHandler;
-            Control.DataBindings.Add(binding);
+            _control.DataBindings.Add(binding);
 
             var subscription = Disposable.Create(() => RemoveDataBinding(binding, formatHandler, parseHandler));
             AddSubscription(subscription);
@@ -78,7 +78,7 @@ namespace Bindery.Implementations
 
         private void RemoveDataBinding(Binding binding, ConvertEventHandler formatHandler, ConvertEventHandler parseHandler)
         {
-            Control.DataBindings.Remove(binding);
+            _control.DataBindings.Remove(binding);
             if (formatHandler != null)
                 binding.Format -= formatHandler;
             if (parseHandler != null)
@@ -97,7 +97,7 @@ namespace Bindery.Implementations
 
         public void AddSubscription(IDisposable subscription)
         {
-            SourceBinder.AddSubscription(subscription);
+            _sourceBinder.AddSubscription(subscription);
         }
     }
 }
