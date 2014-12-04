@@ -43,7 +43,7 @@ binder.Control(textBox).Property(c => c.Text).Set(vm => vm.Name);
 </code></pre>
 
 ##### Bind a control's Click event to a command
-This also "binds" the control's Enabled property to the command's CanExecute method.
+This also "binds" the control's `Enabled` property to the command's `CanExecute` method.
 <pre><code>ICommand command = new CommandImplementation(viewModel);
 binder.Control(textBox).OnClick(command);
 </code></pre>
@@ -57,8 +57,7 @@ binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
 </code></pre>
 
 ##### Bind a control's event arguments to a view model property
-<pre><code>ICommand command = new CommandImplementation(viewModel);
-binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
+<pre><code>binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Transform(o => o.Select(e => new MyCoord{X = e.X, Y = e.Y}))
   .Set(vm => vm.CurrentMouseCoords);
 </code></pre>
@@ -87,7 +86,7 @@ Non-control targets support a limited set of binding options. Two-way binding an
 </code></pre>
 
 ### CommandBase ###
-CommandBase is an abstract implementation of ICommand designed to be useful for MVVM command implementation.
+CommandBase is an abstract implementation of `System.Windows.Input.ICommand` designed to be useful for MVVM command implementation.
 
 * `Execute()` is abstract and must be implemented by an inheriting class.
 * `CanExecute()` is implemented to return `true` but can be overridden by an inheriting class.
