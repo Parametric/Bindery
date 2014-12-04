@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Bindery.WinForms</id>
+    <version>$version$</version>
+    <authors>Parametric Portfolio Associates</authors>
+    <owners>Parametric Portfolio Associates</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>WinForms MVVM binding library</description>
+    <copyright>Copyright 2014</copyright>
+    <tags>MVVM Binding WinForms</tags>
+    <dependencies>
+      <dependency id="Bindery.Core" version="$version" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Bindery.WinForms\bin\Release\Bindery.WinForms.dll" target="lib/net45" />
+    <file src="Bindery.WinForms\bin\Release\Bindery.WinForms.pdb" target="lib/net45" />
+    <file src="Bindery.WinForms\bin\Release\Bindery.WinForms.XML" target="lib/net45" />
+  </files>
+</package>

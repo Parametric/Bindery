@@ -15,8 +15,8 @@ Projects
 Assumptions
 -----------
 * A view model is a binding source, an object of any type. Full binding functionality requires a view model to properly implement `System.ComponentModel.INotifyPropertyChanged`.
-* A target is a binding target, an object of any type. Targets only support limited binding functionality.
-* A control is target that implements `System.Windows.Forms.IBindableComponent`. Controls support the full range of binding functionality.
+* A target is a binding target, an object of any type. A target only supports a limited set of binding functionality.
+* A control is a target that implements `System.Windows.Forms.IBindableComponent`. A control supports the full range of binding functionality.
 * A command is an object that implements `System.Windows.Input.ICommand`.
 
 Code Examples

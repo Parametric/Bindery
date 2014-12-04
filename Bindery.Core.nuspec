@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Bindery.Core</id>
+    <version>$version$</version>
+    <authors>Parametric Portfolio Associates</authors>
+    <owners>Parametric Portfolio Associates</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Core MVVM binding library</description>
+    <copyright>Copyright 2014</copyright>
+    <tags>MVVM Binding</tags>
+    <dependencies>
+      <dependency id="Rx-Linq" version="2.2.5" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Bindery.Core\bin\Release\Bindery.Core.dll" target="lib/net45" />
+    <file src="Bindery.Core\bin\Release\Bindery.Core.pdb" target="lib/net45" />
+    <file src="Bindery.Core\bin\Release\Bindery.Core.XML" target="lib/net45" />
+  </files>
+</package>
