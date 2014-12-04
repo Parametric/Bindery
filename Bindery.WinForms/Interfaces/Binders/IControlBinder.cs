@@ -14,7 +14,7 @@ namespace Bindery.Interfaces.Binders
         where TControl : IBindableComponent
     {
         /// <summary>
-        /// Bind one of the control's properties
+        ///     Bind one of the control's properties
         /// </summary>
         /// <typeparam name="TProp">The property's type</typeparam>
         /// <param name="member">Expression that specifies the control's property</param>
@@ -22,7 +22,7 @@ namespace Bindery.Interfaces.Binders
         new IControlPropertyBinder<TSource, TControl, TProp> Property<TProp>(Expression<Func<TControl, TProp>> member);
 
         /// <summary>
-        /// Bind the control's Click event to a command
+        ///     Bind the control's Click event to a command
         /// </summary>
         /// <param name="command">The command</param>
         /// <param name="parameter">(optional) The parameter passed to ICommand.Execute</param>
@@ -32,10 +32,13 @@ namespace Bindery.Interfaces.Binders
         IControlBinder<TSource, TControl> OnClick(ICommand command, object parameter = null);
 
         /// <summary>
-        /// Bind the control's Click event to a command
+        ///     Bind the control's Click event to a command
         /// </summary>
         /// <param name="command">The command</param>
-        /// <param name="getParameter">A function that determines the parameter passed to ICommand.Execute, evaluated at the time the Click event occurs</param>
+        /// <param name="getParameter">
+        ///     A function that determines the parameter passed to ICommand.Execute, evaluated at the time
+        ///     the Click event occurs
+        /// </param>
         /// <returns>The control binder</returns>
         /// <remarks>The control's Enabled property will also be bound to ICommand.CanExecute</remarks>
         /// <exception cref="NotSupportedException">TControl must inherit from System.Windows.Form.Control</exception>

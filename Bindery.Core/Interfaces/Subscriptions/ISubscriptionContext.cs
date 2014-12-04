@@ -2,8 +2,17 @@
 
 namespace Bindery.Interfaces.Subscriptions
 {
-    public interface ISubscriptionContext<out TArg>
+    /// <summary>
+    ///     An observable subscription context
+    /// </summary>
+    /// <typeparam name="T">The observable type</typeparam>
+    public interface ISubscriptionContext<out T>
     {
-        IOnNextDefined OnNext(Action<TArg> action);
+        /// <summary>
+        ///     Define the action to call on IObserver.OnNext
+        /// </summary>
+        /// <param name="action">The action</param>
+        /// <returns>The next step in the subscription syntax</returns>
+        IOnNextDefined OnNext(Action<T> action);
     }
 }
