@@ -19,28 +19,34 @@ Full binding functionality requires view models to properly implement INotifyPro
 Code Examples
 -------------
 ### Binding
-#### Create a root binder for the view model.
+##### Create a root binder for the view model
 <pre><code>var binder = Create.Binder(viewModel);</code></pre>
 
-#### Remove all bindings and dispose of all subcriptions created by a binder.
-<pre><code>binder.Dispose();</code></pre>
+##### Dispose of a binder
 
-#### Bind a view model property to a control property.
-<pre><code>binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.Name); // Two-way binding
-binder.Control(form).Property(c => c.UseWaitCursor).Get(vm => vm.IsBusy); // One-way binding from source to control
-binder.Control(textBox).Property(c => c.Text).Set(vm => vm.Name); // One-way binding from control to source
+<pre><code>// This removes all bindings and disposes of all subcriptions created by the binder
+binder.Dispose();</code></pre>
+
+##### Bind a view model property to a control property
+<pre><code>// Two-way binding
+binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.Name); 
+// One-way binding from source to control
+binder.Control(form).Property(c => c.UseWaitCursor).Get(vm => vm.IsBusy); 
+// One-way binding from control to source
+binder.Control(textBox).Property(c => c.Text).Set(vm => vm.Name); 
 </code></pre>
 
-#### Set up a conversion when the view model property's type is different than the control property's type.
+##### Set up binding conversion
 <pre><code>binder.Control(textBox).Property(c => c.Text).Get(vm => vm.Age, Convert.ToString);
 </code></pre>
 
-#### Bind a control's Click event to a command. This also "binds" the control's Enabled property to the command's CanExecute method.
+##### Bind a control's Click event to a command
+This also "binds" the control's Enabled property to the command's CanExecute method.
 <pre><code>ICommand command = new CommandImplementation(viewModel);
 binder.Control(textBox).OnClick(command);
 </code></pre>
 
-#### Bind a control's event to a command.
+##### Bind a control's event to a command
 <pre><code>ICommand command = new CommandImplementation(viewModel);
 binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Transform(o => o.Where(e => e.Button==MouseButtons.Left).Select(e => new {e.X, e.Y})) 
@@ -48,23 +54,25 @@ binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Execute(command);
 </code></pre>
 
-#### Bind a control's event arguments to a view model property.
+##### Bind a control's event arguments to a view model property
 <pre><code>ICommand command = new CommandImplementation(viewModel);
 binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Transform(o => o.Select(e => new MyCoord{X = e.X, Y = e.Y}))
   .Set(vm => vm.CurrentMouseCoords);
 </code></pre>
 
-#### Bind to a non-control target object. Non-control targets support a limited set of binding options. Two-way binding and one-way binding from target to source are not supported.
-<pre><code>binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);</code></pre>
+##### Bind to a non-control target object
+<pre><code>// Non-control targets support a limited set of binding options
+// Two-way binding and one-way binding from target to source are not supported
+binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);</code></pre>
 
-#### Trigger an action when a view model property changes.
+##### Trigger an action when a view model property changes
 <pre><code>binder.OnPropertyChanged(vm => vm.ErrorMessage).Subscribe(msg => DisplayErrorDialog(msg));</code></pre>
 
-#### Subscribe to an observable to execute a command.
+##### Subscribe to an observable to execute a command
 <pre><code>binder.Observe(viewModel.Observable).Execute(command);</code></pre>
 
-#### Subscribe to an observable with full subscription support.
+##### Subscribe to an observable with full subscription support
 <pre><code>binder.Observe(viewModel.Observable).Subscribe(
   ctx=>ctx.OnNext(oVal => OnNextAction(oVal))
        .OnError(ex => HandleException(ex))
@@ -73,7 +81,8 @@ binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
 
 ### Event to observable conversion
 <pre><code>IObservable&lt;string&gt; mouseMoveButtons =
-  Create.ObservableFor(form).Event&lt;MouseEventArgs&gt;("MouseMove").Select(e => Convert.ToString(e.Button));
+  Create.ObservableFor(form).Event&lt;MouseEventArgs&gt;("MouseMove")
+       .Select(e => Convert.ToString(e.Button));
 </code></pre>
 
 ### CommandBase ###
