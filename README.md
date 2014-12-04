@@ -5,16 +5,19 @@ Bindery aims to support fluent MVVM binding definition for WinForms applications
 Projects
 --------
 * **Bindery.Core:** 
-  * Contains the static Create factory class 
-  * Contains CommandBase (an abstract base implementation of ICommand)
-  * Dependent on the Rx-Linq package
+  * Contains the static `Create` factory class 
+  * Contains `CommandBase` (an abstract base implementation of ICommand)
+  * Dependent on the `Rx-Linq` package
 * **Bindery.WinForms:** 
-  * Contains an extension method for ISourceBinder that allows bindings to WinForms controls to be created
-  * Dependent on Bindery.Core and System.Windows.Forms.
+  * Contains an extension method for `ISourceBinder` that allows bindings to WinForms controls to be created
+  * Dependent on `Bindery.Core` and `System.Windows.Forms`.
 
 Assumptions
 -----------
-Full binding functionality requires view models to properly implement INotifyPropertyChanged.
+* A view model is a binding source, an object of any type. Full binding functionality requires a view model to properly implement `System.ComponentModel.INotifyPropertyChanged`.
+* A target is a binding target, an object of any type. Targets only support limited binding functionality.
+* A control is target that implements `System.Windows.Forms.IBindableComponent`. Controls support the full range of binding functionality.
+* A command is an object that implements `System.Windows.Input.ICommand`.
 
 Code Examples
 -------------
@@ -23,9 +26,8 @@ Code Examples
 <pre><code>var binder = Create.Binder(viewModel);</code></pre>
 
 ##### Dispose of a binder
-
-<pre><code>// This removes all bindings and disposes of all subcriptions created by the binder
-binder.Dispose();</code></pre>
+Diposing of a binder removes all bindings and disposes of all subcriptions created by the binder.
+<pre><code>binder.Dispose();</code></pre>
 
 ##### Bind a view model property to a control property
 <pre><code>// Two-way binding
@@ -62,9 +64,8 @@ binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
 </code></pre>
 
 ##### Bind to a non-control target object
-<pre><code>// Non-control targets support a limited set of binding options
-// Two-way binding and one-way binding from target to source are not supported
-binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);</code></pre>
+Non-control targets support a limited set of binding options. Two-way binding and one-way binding from target to source are not supported.
+<pre><code>binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);</code></pre>
 
 ##### Trigger an action when a view model property changes
 <pre><code>binder.OnPropertyChanged(vm => vm.ErrorMessage).Subscribe(msg => DisplayErrorDialog(msg));</code></pre>
@@ -88,7 +89,7 @@ binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);</code></pre>
 ### CommandBase ###
 CommandBase is an abstract implementation of ICommand designed to be useful for MVVM command implementation.
 
-* Execute() is abstract and must be implemented by an inheriting class.
-* CanExecute() is implemented to return true but can be overridden by an inheriting class.
-* The CanExecuteChanged event has a protected OnCanExecuteChanged() invocator method.
-* A new ObserveCanExecuteChanges() method creates an IObservable<bool> that publishes the value of CanExecute() each time it changes, assuming the CanExecuteChanged event is triggered properly.
+* `Execute()` is abstract and must be implemented by an inheriting class.
+* `CanExecute()` is implemented to return `true` but can be overridden by an inheriting class.
+* The `CanExecuteChanged` event has a protected `OnCanExecuteChanged()` invocator method.
+* A new `ObserveCanExecuteChanges()` method creates an `IObservable<bool>` that publishes the value of `CanExecute()` each time it changes, assuming the `CanExecuteChanged` event is triggered properly.
