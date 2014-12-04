@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandBase.cs" />
     <Compile Include="Create.cs" />
     <Compile Include="Expressions\ExpressionVisitor.cs" />
     <Compile Include="Expressions\NotifyPropertyChangedExpressionAnalyzer.cs" />
