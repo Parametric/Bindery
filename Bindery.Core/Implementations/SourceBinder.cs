@@ -26,7 +26,7 @@ namespace Bindery.Implementations
             return new TargetBinder<TSource, TTarget>(this, target);
         }
 
-        public IObservableBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member)
+        public IObservableBinder<TSource, TProp> OnPropertyChanged<TProp>(Expression<Func<TSource, TProp>> member)
         {
             var source = Source;
             var notifyPropertyChanged = source as INotifyPropertyChanged;

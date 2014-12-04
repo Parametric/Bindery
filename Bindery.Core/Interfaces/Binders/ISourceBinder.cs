@@ -14,12 +14,13 @@ namespace Bindery.Interfaces.Binders
         ITargetBinder<TSource, TTarget> Target<TTarget>(TTarget target) where TTarget : class;
 
         /// <summary>
-        ///     Bind to a source property, where the source implements INotifyPropertyChanged
+        ///     Observe source property changes
         /// </summary>
         /// <typeparam name="TProp">The type of the property</typeparam>
         /// <param name="member">The source property</param>
         /// <returns>An observable binding for the property value</returns>
-        IObservableBinder<TSource, TProp> Property<TProp>(Expression<Func<TSource, TProp>> member);
+        /// <remarks>The source must implement INotifyPropertyChanged properly</remarks>
+        IObservableBinder<TSource, TProp> OnPropertyChanged<TProp>(Expression<Func<TSource, TProp>> member);
 
         /// <summary>
         ///     Bind to an observable
