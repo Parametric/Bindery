@@ -23,7 +23,7 @@ Code Examples
 <pre><code>var binder = Create.Binder(viewModel);</code></pre>
 
 #### Remove all bindings and dispose of all subcriptions created by a binder.
-<pre><code>binder.Dispose();</code><pre>
+<pre><code>binder.Dispose();</code></pre>
 
 #### Bind a view model property to a control property.
 <pre><code>binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.Name); // Two-way binding
