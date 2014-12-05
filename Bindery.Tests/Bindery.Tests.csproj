@@ -56,7 +56,7 @@
     <Compile Include="TestClasses\TestTarget.cs" />
     <Compile Include="TestClasses\ControlTester.cs" />
     <Compile Include="Tests\BindingTest.cs" />
-    <Compile Include="Tests\CommandBaseTest.cs" />
+    <Compile Include="Tests\CommandTest.cs" />
     <Compile Include="Tests\EventTest.cs" />
     <Compile Include="Tests\ObserveTest.cs" />
     <Compile Include="Tests\OnClickTest.cs" />

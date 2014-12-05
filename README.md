@@ -85,10 +85,18 @@ Non-control targets support a limited set of binding options. Two-way binding an
        .Select(e => Convert.ToString(e.Button));
 </code></pre>
 
-### CommandBase ###
-CommandBase is an abstract implementation of `System.Windows.Input.ICommand` designed to be useful for MVVM command implementation.
+### Commands
+
+##### CommandBase
+`CommandBase` is an abstract implementation of `System.Windows.Input.ICommand` designed to be useful for MVVM command implementation.
 
 * `Execute()` is abstract and must be implemented by an inheriting class.
 * `CanExecute()` is implemented to return `true` but can be overridden by an inheriting class.
 * The `CanExecuteChanged` event has a protected `OnCanExecuteChanged()` invocator method.
 * A new `ObserveCanExecuteChanges()` method creates an `IObservable<bool>` that publishes the value of `CanExecute()` each time it changes, assuming the `CanExecuteChanged` event is triggered properly.
+
+##### EnablableCommandBase
+`EnablableCommandBase` is an abstract implementation of `CommandBase` that exposes an `Enabled` property. The `Enabled` property:
+
+* Controls the return value of CanExecute()
+* Raises the `CanExecuteChanged` event when its value changes
