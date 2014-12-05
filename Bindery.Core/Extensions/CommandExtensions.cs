@@ -2,7 +2,7 @@
 
 namespace Bindery.Extensions
 {
-    public static class CommandExtensions
+    internal static class CommandExtensions
     {
         public static void ExecuteIfValid(this ICommand command, object parameter)
         {

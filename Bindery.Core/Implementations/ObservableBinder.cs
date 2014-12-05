@@ -12,11 +12,6 @@ namespace Bindery.Implementations
         private readonly IObservable<TArg> _observable;
         private readonly SourceBinder<TSource> _parent;
 
-        public ObservableBinder(SourceBinder<TSource> parent, Func<TSource, IObservable<TArg>> observableMember)
-            : this(parent, observableMember(parent.Source))
-        {
-        }
-
         public ObservableBinder(SourceBinder<TSource> parent, IObservable<TArg> observable)
         {
             _parent = parent;

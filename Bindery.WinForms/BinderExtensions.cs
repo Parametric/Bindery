@@ -4,6 +4,9 @@ using Bindery.Interfaces.Binders;
 
 namespace Bindery
 {
+    /// <summary>
+    /// Binder extension methods
+    /// </summary>
     public static class BinderExtensions
     {
         /// <summary>

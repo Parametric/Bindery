@@ -6,7 +6,7 @@ using System.Reactive.Linq;
 
 namespace Bindery.Extensions
 {
-    public static class NotifyPropertyChangedExtensions
+    internal static class NotifyPropertyChangedExtensions
     {
         public static IObservable<PropertyChangedEventArgs> CreatePropertyChangedObservable(this INotifyPropertyChanged source)
         {
@@ -14,11 +14,6 @@ namespace Bindery.Extensions
                 argsAction => (sender, e) => argsAction(e),
                 handler => source.PropertyChanged += handler,
                 handler => source.PropertyChanged -= handler);
-        }
-
-        public static IObservable<PropertyChangedEventArgs> CreatePropertyChangedObservable(this INotifyPropertyChanged source, string propertyName)
-        {
-            return source.CreatePropertyChangedObservable().Where(e => e.PropertyName == propertyName);
         }
 
         public static IObservable<PropertyChangedEventArgs> CreatePropertyChangedObservable(this INotifyPropertyChanged source,

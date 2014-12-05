@@ -3,6 +3,10 @@ using System.Linq.Expressions;
 
 namespace Bindery.Interfaces.Binders
 {
+    /// <summary>
+    ///     Root binder for a binding source
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
     public interface ISourceBinder<TSource> : IDisposable
     {
         /// <summary>
