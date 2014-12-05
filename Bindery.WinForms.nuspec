@@ -10,7 +10,7 @@
     <copyright>Copyright 2014</copyright>
     <tags>MVVM Binding WinForms</tags>
     <dependencies>
-      <dependency id="Bindery.Core" version="$version" />
+      <dependency id="Bindery.Core" version="$version$" />
     </dependencies>
   </metadata>
   <files>
