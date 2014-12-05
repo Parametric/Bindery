@@ -1,9 +1,9 @@
 ﻿using System.Windows.Forms;
 using Bindery.Interfaces.Binders;
-using Bindery.Test.TestClasses;
+using Bindery.Tests.TestClasses;
 using NUnit.Framework;
 
-namespace Bindery.Test.Tests
+namespace Bindery.Tests.Tests
 {
     [TestFixture]
     public class OnClickTest

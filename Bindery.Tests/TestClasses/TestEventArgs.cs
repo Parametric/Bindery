@@ -1,4 +1,4 @@
-﻿namespace Bindery.Test.TestClasses
+﻿namespace Bindery.Tests.TestClasses
 {
     public class TestEventArgs
     {

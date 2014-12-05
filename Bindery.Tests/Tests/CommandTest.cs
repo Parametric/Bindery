@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Bindery.Test.Tests
+namespace Bindery.Tests.Tests
 {
     [TestFixture]
     public class CommandTest

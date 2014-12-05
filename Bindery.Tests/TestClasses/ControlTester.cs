@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Bindery.Test.TestClasses
+namespace Bindery.Tests.TestClasses
 {
     public class ControlTester : IDisposable
     {

@@ -2,7 +2,7 @@
 using System.Reactive.Linq;
 using System.Windows.Forms;
 
-namespace Bindery.Test.TestClasses
+namespace Bindery.Tests.TestClasses
 {
     public class TestButton : Button
     {

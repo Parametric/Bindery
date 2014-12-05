@@ -2,10 +2,10 @@
 using System.Reactive.Linq;
 using System.Windows.Forms;
 using Bindery.Interfaces.Binders;
-using Bindery.Test.TestClasses;
+using Bindery.Tests.TestClasses;
 using NUnit.Framework;
 
-namespace Bindery.Test.Tests
+namespace Bindery.Tests.Tests
 {
     public class EventTest
     {
@@ -177,7 +177,7 @@ namespace Bindery.Test.Tests
         {
             var ex = Assert.Throws<ArgumentException>(
                 () => _binder.Control(_button).OnEvent("BadName").Execute(_command));
-            Assert.That(ex.Message, Is.EqualTo("'BadName' is not a member of 'Bindery.Test.TestClasses.TestButton'."));
+            Assert.That(ex.Message, Is.EqualTo("'BadName' is not a member of 'Bindery.Tests.TestClasses.TestButton'."));
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace Bindery.Test.Tests
         {
             var ex = Assert.Throws<ArgumentException>(
                 () => _binder.Control(_button).OnEvent("Text").Execute(_command));
-            Assert.That(ex.Message, Is.EqualTo("'Bindery.Test.TestClasses.TestButton.Text' is not an event."));
+            Assert.That(ex.Message, Is.EqualTo("'Bindery.Tests.TestClasses.TestButton.Text' is not an event."));
         }
 
         [Test]

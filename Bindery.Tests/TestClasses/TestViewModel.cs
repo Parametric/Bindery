@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using Bindery.Test.Properties;
 
-namespace Bindery.Test.TestClasses
+namespace Bindery.Tests.TestClasses
 {
     public class TestViewModel : INotifyPropertyChanged
     {
@@ -69,7 +69,7 @@ namespace Bindery.Test.TestClasses
 
             public event PropertyChangedEventHandler PropertyChanged;
 
-            [Annotations.NotifyPropertyChangedInvocator]
+            [Test.Annotations.NotifyPropertyChangedInvocator]
             protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
             {
                 var handler = PropertyChanged;

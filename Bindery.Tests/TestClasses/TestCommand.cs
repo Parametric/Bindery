@@ -1,6 +1,6 @@
 using System;
 
-namespace Bindery.Test.TestClasses
+namespace Bindery.Tests.TestClasses
 {
     public class TestCommand : CommandBase
     {
