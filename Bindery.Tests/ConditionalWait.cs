@@ -8,7 +8,7 @@ namespace Bindery.Tests
     {
         public static void WaitFor(Func<bool> condition)
         {
-            WaitFor(condition, TimeSpan.FromMilliseconds(500));
+            WaitFor(condition, TimeSpan.FromSeconds(1));
         }
 
         public static void WaitFor(Func<bool> condition, TimeSpan timeout)

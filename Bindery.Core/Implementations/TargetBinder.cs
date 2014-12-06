@@ -54,5 +54,35 @@ namespace Bindery.Implementations
             return new ObservableBinder<TSource, T>(_sourceBinder, observable, DefaultScheduler);
         }
 
+        #region ISourceBinder implementation
+
+        ITargetBinder<TSource, T> ISourceBinder<TSource>.Target<T>(T target)
+        {
+            return _sourceBinder.Target(target);
+        }
+
+        IObservableBinder<TSource, TProp> ISourceBinder<TSource>.OnPropertyChanged<TProp>(
+            Expression<Func<TSource, TProp>> member)
+        {
+            return _sourceBinder.OnPropertyChanged(member);
+        }
+
+        IObservableBinder<TSource, TArg> ISourceBinder<TSource>.Observe<TArg>(IObservable<TArg> observable)
+        {
+            return _sourceBinder.Observe(observable);
+        }
+
+        ISourceBinder<TSource> ISourceBinder<TSource>.RegisterDisposable(params IDisposable[] disposables)
+        {
+            return _sourceBinder.RegisterDisposable(disposables);
+        }
+
+        void IDisposable.Dispose()
+        {
+            _sourceBinder.Dispose();
+        }
+
+        #endregion
+
     }
 }

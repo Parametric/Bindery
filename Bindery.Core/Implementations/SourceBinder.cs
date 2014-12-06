@@ -43,7 +43,7 @@ namespace Bindery.Implementations
             return new ObservableBinder<TSource, TProp>(this, observable, DefaultScheduler);
         }
 
-        IObservableBinder<TSource, TArg> ISourceBinder<TSource>.Observe<TArg>(IObservable<TArg> observable)
+        public IObservableBinder<TSource, TArg> Observe<TArg>(IObservable<TArg> observable)
         {
             return new ObservableBinder<TSource, TArg>(this, observable, DefaultScheduler);
         }

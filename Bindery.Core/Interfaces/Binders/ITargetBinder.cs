@@ -8,7 +8,9 @@ namespace Bindery.Interfaces.Binders
     /// </summary>
     /// <typeparam name="TSource">The type of the binding source</typeparam>
     /// <typeparam name="TTarget">The type of the binding target</typeparam>
-    public interface ITargetBinder<TSource, TTarget>
+    public interface ITargetBinder<TSource, TTarget> 
+        // Inherit from ISourceBinder to make chaining calls easier
+        : ISourceBinder<TSource>
     {
         /// <summary>
         ///     Bind to a target property
