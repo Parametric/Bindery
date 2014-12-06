@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reactive.Concurrency;
 using System.Windows.Input;
 using Bindery.Interfaces.Subscriptions;
 
@@ -68,5 +69,12 @@ namespace Bindery.Interfaces.Binders
         /// <param name="transform">A function that transforms (filters, maps, reduces) the observable</param>
         /// <returns>An observable binder for the transformed observable</returns>
         IObservableBinder<TSource, TOut> Transform<TOut>(Func<IObservable<TArg>, IObservable<TOut>> transform);
+
+        /// <summary>
+        ///     Override the default action scheduler used by the observable
+        /// </summary>
+        /// <param name="scheduler">The scheduler</param>
+        /// <returns>This binder</returns>
+        IObservableBinder<TSource, TArg> ObserveOn(IScheduler scheduler);
     }
 }

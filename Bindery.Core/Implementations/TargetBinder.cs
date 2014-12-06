@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reactive.Concurrency;
 using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
@@ -21,6 +22,11 @@ namespace Bindery.Implementations
             get { return _sourceBinder.Source; }
         }
 
+        internal IScheduler DefaultScheduler
+        {
+            get { return _sourceBinder.DefaultScheduler; }
+        }
+
         public ITargetPropertyBinder<TSource, TTarget, TProp> Property<TProp>(Expression<Func<TTarget, TProp>> member)
         {
             return new TargetPropertyBinder<TSource, TTarget, TProp>(this, member);
@@ -29,13 +35,13 @@ namespace Bindery.Implementations
         public IObservableBinder<TSource, EventArgs> OnEvent(string eventName)
         {
             var observable = Create.ObservableFor(Target).Event(eventName);
-            return new ObservableBinder<TSource, EventArgs>(_sourceBinder, observable);
+            return new ObservableBinder<TSource, EventArgs>(_sourceBinder, observable, DefaultScheduler);
         }
 
         public IObservableBinder<TSource, TEventArgs> OnEvent<TEventArgs>(string eventName)
         {
             var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);
-            return new ObservableBinder<TSource, TEventArgs>(_sourceBinder, observable);
+            return new ObservableBinder<TSource, TEventArgs>(_sourceBinder, observable, _sourceBinder.DefaultScheduler);
         }
 
         public void AddSubscription(IDisposable subscription)

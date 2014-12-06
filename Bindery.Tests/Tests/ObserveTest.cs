@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
@@ -152,6 +153,51 @@ namespace Bindery.Tests.Tests
 
             // Assert
             Assert.That(thrown, Is.InstanceOf<InvalidOperationException>());
+        }
+
+        [Test]
+        public void SpecifyDefaultScheduler()
+        {
+            // Arrange
+            _binder = Create.Binder(_viewModel);
+            var task = new Task<int>(() => 5);
+            _viewModel.MyObservable = task.ToObservable();
+
+            var bindingThread = Thread.CurrentThread;
+            Thread actionThread = null;
+            _binder.Observe(_viewModel.MyObservable).Subscribe(x => actionThread = Thread.CurrentThread);
+
+            // Act
+            task.Start();
+            task.Wait();
+
+            ConditionalWait(() => actionThread != null);
+
+            // Assert
+            Assert.That(actionThread, Is.Not.SameAs(bindingThread));
+        }
+
+        [Test]
+        public void OverrideDefaultScheduler()
+        {
+            // Arrange
+            var task = new Task<int>(() => 5);
+            _viewModel.MyObservable = task.ToObservable();
+
+            var bindingThread = Thread.CurrentThread;
+            Thread actionThread = null;
+            _binder.Observe(_viewModel.MyObservable)
+                .ObserveOn(Scheduler.Immediate)
+                .Subscribe(x => actionThread = Thread.CurrentThread);
+
+            // Act
+            task.Start();
+            task.Wait();
+
+            ConditionalWait(() => actionThread != null);
+
+            // Assert
+            Assert.That(actionThread, Is.Not.SameAs(bindingThread));
         }
     }
 }

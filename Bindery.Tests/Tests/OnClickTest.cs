@@ -1,4 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Reactive.Concurrency;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using Bindery.Interfaces.Binders;
 using Bindery.Tests.TestClasses;
 using NUnit.Framework;
@@ -60,6 +63,23 @@ namespace Bindery.Tests.Tests
             Assert.That(_button.Enabled, Is.False);
             _viewModel.IntValue = 5;
             Assert.That(_button.Enabled, Is.True);
+        }
+
+        [Test]
+        public void EnableChangesOccurOnSameThreadWhereBindingOccurred()
+        {
+            // Arrange
+            _command.CanExecuteCondition = vm => vm.IntValue > 0;
+            var bindingThreadScheduler = Scheduler.CurrentThread;
+            _binder.Control(_button).OnClick(_command);
+            IScheduler creationScheduler = null;
+            _button.EnabledChanged += (sender, e) => creationScheduler = Scheduler.CurrentThread;
+
+            // Act
+            var task = Task.Factory.StartNew(()=>_viewModel.IntValue = 5);
+            task.Wait();
+            Assert.That(_button.Enabled, Is.True);
+            Assert.That(creationScheduler, Is.SameAs(bindingThreadScheduler));
         }
     }
 }

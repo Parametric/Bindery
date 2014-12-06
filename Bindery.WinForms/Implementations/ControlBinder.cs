@@ -1,8 +1,10 @@
 using System;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Bindery.Extensions;
 using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
@@ -37,7 +39,11 @@ namespace Bindery.Implementations
                 throw new NotSupportedException(
                     "The control must inherit from System.Windows.Form.Control in order use OnClick()");
             control.Click += (sender, e) => command.Execute(getParameter());
-            command.CanExecuteChanged += (sender, e) => control.Enabled = command.CanExecute(getParameter);
+            var canExecuteChanges = command.CreateCanExecuteChangedObservable();
+            var subscription = canExecuteChanges
+                .ObserveOn(DefaultScheduler)
+                .Subscribe(e => control.Enabled = command.CanExecute(getParameter));
+            AddSubscription(subscription);
             control.Enabled = command.CanExecute(getParameter());
             return this;
         }
@@ -51,7 +57,7 @@ namespace Bindery.Implementations
                 binding.Parse += parseHandler;
             _control.DataBindings.Add(binding);
 
-            IDisposable subscription = Disposable.Create(() => RemoveDataBinding(binding, formatHandler, parseHandler));
+            var subscription = Disposable.Create(() => RemoveDataBinding(binding, formatHandler, parseHandler));
             AddSubscription(subscription);
         }
 

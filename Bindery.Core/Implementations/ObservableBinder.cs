@@ -1,5 +1,7 @@
 using System;
 using System.Linq.Expressions;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using Bindery.Extensions;
 using Bindery.Interfaces.Binders;
@@ -11,21 +13,30 @@ namespace Bindery.Implementations
     {
         private readonly IObservable<TArg> _observable;
         private readonly SourceBinder<TSource> _parent;
+        private IScheduler _scheduler;
 
-        public ObservableBinder(SourceBinder<TSource> parent, IObservable<TArg> observable)
+        public ObservableBinder(SourceBinder<TSource> parent, IObservable<TArg> observable, IScheduler scheduler)
         {
             _parent = parent;
             _observable = observable;
+            _scheduler = scheduler;
         }
 
         public IObservableBinder<TSource, TOut> Transform<TOut>(Func<IObservable<TArg>, IObservable<TOut>> transform)
         {
-            return new ObservableBinder<TSource, TOut>(_parent, transform(_observable));
+            return new ObservableBinder<TSource, TOut>(_parent, transform(_observable), _scheduler);
+        }
+
+        public IObservableBinder<TSource, TArg> ObserveOn(IScheduler scheduler)
+        {
+            _scheduler = scheduler;
+            return this;
         }
 
         public ISourceBinder<TSource> Subscribe(Action<TArg> action)
         {
-            _parent.AddSubscription(_observable.Subscribe(action));
+            var subscription = _observable.ObserveOn(_scheduler).Subscribe(action);
+            _parent.AddSubscription(subscription);
             return _parent;
         }
 
@@ -33,7 +44,7 @@ namespace Bindery.Implementations
         {
             var context = new SubscriptionContext<TArg>();
             subscription(context);
-            var disposable = context.Subscribe(_observable);
+            var disposable = context.Subscribe(_observable.ObserveOn(_scheduler));
             if (disposable != null)
                 _parent.AddSubscription(disposable);
             return _parent;
@@ -41,31 +52,23 @@ namespace Bindery.Implementations
 
         public ISourceBinder<TSource> Execute(ICommand command)
         {
-            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(x));
-            _parent.AddSubscription(subscription);
-            return _parent;
+            return Subscribe(x => command.ExecuteIfValid(x));
         }
 
         public ISourceBinder<TSource> Execute(ICommand command, object commandParameter)
         {
-            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(commandParameter));
-            _parent.AddSubscription(subscription);
-            return _parent;
+            return Subscribe(x => command.ExecuteIfValid(commandParameter));
         }
 
         public ISourceBinder<TSource> Execute(ICommand command, Func<object> getCommandParameter)
         {
-            var subscription = _observable.Subscribe(x => command.ExecuteIfValid(getCommandParameter()));
-            _parent.AddSubscription(subscription);
-            return _parent;
+            return Subscribe(x => command.ExecuteIfValid(getCommandParameter()));
         }
 
         public ISourceBinder<TSource> Set(Expression<Func<TSource, TArg>> member)
         {
             var propertySetter = member.GetPropertySetter(_parent.Source);
-            var subscription = _observable.Subscribe(propertySetter);
-            _parent.AddSubscription(subscription);
-            return _parent;
+            return Subscribe(propertySetter);
         }
     }
 }

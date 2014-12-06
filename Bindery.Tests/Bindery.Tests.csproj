@@ -48,6 +48,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncHelper.cs" />
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="TestClasses\TestButton.cs">
       <SubType>Component</SubType>

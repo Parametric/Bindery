@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Bindery.Extensions;
 using Bindery.Interfaces.Binders;
@@ -13,13 +14,16 @@ namespace Bindery.Implementations
         private readonly List<IDisposable> _subscriptions;
         private bool _disposed;
 
-        public SourceBinder(TSource source)
+        public SourceBinder(TSource source, IScheduler defaultScheduler)
         {
             Source = source;
             _subscriptions = new List<IDisposable>();
+            DefaultScheduler = defaultScheduler;
         }
 
         public TSource Source { get; private set; }
+
+        public IScheduler DefaultScheduler { get; private set; }
 
         public ITargetBinder<TSource, TTarget> Target<TTarget>(TTarget target) where TTarget : class
         {
@@ -36,12 +40,12 @@ namespace Bindery.Implementations
             var observable = notifyPropertyChanged.CreatePropertyChangedObservable()
                 .Where(args => args.PropertyName == member.GetAccessorName())
                 .Select(x => memberAccessor(source));
-            return new ObservableBinder<TSource, TProp>(this, observable);
+            return new ObservableBinder<TSource, TProp>(this, observable, DefaultScheduler);
         }
 
         IObservableBinder<TSource, TArg> ISourceBinder<TSource>.Observe<TArg>(IObservable<TArg> observable)
         {
-            return new ObservableBinder<TSource, TArg>(this, observable);
+            return new ObservableBinder<TSource, TArg>(this, observable, DefaultScheduler);
         }
 
         public void Dispose()
