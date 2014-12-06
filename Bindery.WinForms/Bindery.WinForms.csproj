@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinderExtensions.cs" />
+    <Compile Include="ControlExtensions.cs" />
     <Compile Include="Interfaces\IInvoker.cs" />
     <Compile Include="Implementations\ControlBinder.cs" />
     <Compile Include="Interfaces\Binders\IControlBinder.cs" />

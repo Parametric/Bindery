@@ -41,17 +41,17 @@ binder.Control(form).Property(c => c.UseWaitCursor).Get(vm => vm.IsBusy);
 binder.Control(textBox).Property(c => c.Text).Set(vm => vm.Name); 
 </code></pre>
 
-##### Set up binding conversion
+##### Bind an integer view model property to a string control property
 <pre><code>binder.Control(textBox).Property(c => c.Text).Get(vm => vm.Age, Convert.ToString);
 </code></pre>
 
-##### Bind a control's Click event to a command
+##### Bind a button's `Click` event to a command
 This also "binds" the control's `Enabled` property to the command's `CanExecute` method.
 <pre><code>ICommand command = new CommandImplementation(viewModel);
-binder.Control(textBox).OnClick(command);
+binder.Control(button).OnClick(command);
 </code></pre>
 
-##### Bind a control's event to a command
+##### Bind a form's `MouseMove` event to a command
 <pre><code>ICommand command = new CommandImplementation(viewModel);
 binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Transform(o => o.Where(e => e.Button==MouseButtons.Left).Select(e => new {e.X, e.Y})) 
@@ -59,7 +59,7 @@ binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Execute(command);
 </code></pre>
 
-##### Bind a control's event arguments to a view model property
+##### Bind a form's `MouseMove` event arguments to a view model property
 <pre><code>binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Transform(o => o.Select(e => new MyCoord{X = e.X, Y = e.Y}))
   .Set(vm => vm.CurrentMouseCoords);
@@ -69,16 +69,24 @@ binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
 Non-control targets support a limited set of binding options. Two-way binding and one-way binding from target to source are not supported.
 <pre><code>binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);</code></pre>
 
+### Observable subscriptions
+
 ##### Trigger an action when a view model property changes
 <pre><code>binder.OnPropertyChanged(vm => vm.ErrorMessage).Subscribe(msg => DisplayErrorDialog(msg));</code></pre>
 
-##### Subscribe to an observable to execute a command
+##### Subscribe to a button's `Click` event to close the form
+<pre><code>binder.Control(cancelButton).OnClick().Subscribe(e => form.Close());</code></pre>
+
+##### Subscribe to a form's `Closed` event to dispose of the binder
+<pre><code>binder.Control(form).OnEvent("Closed").Subscribe(e => binder.Dispose())</code></pre>
+
+##### Create an observable subscription to execute a command
 <pre><code>binder.Observe(viewModel.Observable).Execute(command);</code></pre>
 
-##### Subscribe to an observable to execute a command, overriding the default scheduler to execute the command immediately on each observed object
+##### Overriding the default scheduler to execute the command immediately on each observed object
 <pre><code>binder.Observe(viewModel.Observable).ObserveOn(Scheduler.Immediate).Execute(command);</code></pre>
 
-##### Subscribe to an observable with full subscription support
+##### Subscribe to an observable with full subscription syntax support
 <pre><code>binder.Observe(viewModel.Observable).Subscribe(
   ctx=>ctx.OnNext(oVal => OnNextAction(oVal))
        .OnError(ex => HandleException(ex))

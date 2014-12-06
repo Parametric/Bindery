@@ -35,18 +35,24 @@ namespace Bindery.Implementations
         public IObservableBinder<TSource, EventArgs> OnEvent(string eventName)
         {
             var observable = Create.ObservableFor(Target).Event(eventName);
-            return new ObservableBinder<TSource, EventArgs>(_sourceBinder, observable, DefaultScheduler);
+            return CreateObservableBinder(observable);
         }
 
         public IObservableBinder<TSource, TEventArgs> OnEvent<TEventArgs>(string eventName)
         {
             var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);
-            return new ObservableBinder<TSource, TEventArgs>(_sourceBinder, observable, _sourceBinder.DefaultScheduler);
+            return CreateObservableBinder(observable);
         }
 
         public void AddSubscription(IDisposable subscription)
         {
             _sourceBinder.AddSubscription(subscription);
         }
+
+        protected ObservableBinder<TSource, T> CreateObservableBinder<T>(IObservable<T> observable)
+        {
+            return new ObservableBinder<TSource, T>(_sourceBinder, observable, DefaultScheduler);
+        }
+
     }
 }

@@ -37,13 +37,33 @@ namespace Bindery.Implementations
             if (control == null)
                 throw new NotSupportedException(
                     "The control must inherit from System.Windows.Form.Control in order use OnClick()");
-            control.Click += (sender, e) => command.Execute(getParameter());
+
+            // Set control Enabled property immediately
+            control.Enabled = command.CanExecute(getParameter());
+
+            // Add subscription to control's Click event
+            var click = control.CreateClickObservable();
+            var clickSubscription = click.Subscribe(e => command.ExecuteIfValid(getParameter));
+            AddSubscription(clickSubscription);
+
+            // Add subscription to command's CanExecuteChanged event
             var canExecuteChanges = command.CreateCanExecuteChangedObservable();
             var subscription = canExecuteChanges
                 .Subscribe(e => Invoker.Current.Invoke(control, () => control.Enabled = command.CanExecute(getParameter)));
             AddSubscription(subscription);
-            control.Enabled = command.CanExecute(getParameter());
+
             return this;
+        }
+
+        public IObservableBinder<TSource, EventArgs> OnClick()
+        {
+            var control = _control as Control;
+            if (control == null)
+                throw new NotSupportedException(
+                    "The control must inherit from System.Windows.Form.Control in order use OnClick()");
+            var observable = control.CreateClickObservable();
+            var observableBinder = CreateObservableBinder(observable);
+            return observableBinder;
         }
 
         public void AddDataBinding(Binding binding, ConvertEventHandler formatHandler = null,

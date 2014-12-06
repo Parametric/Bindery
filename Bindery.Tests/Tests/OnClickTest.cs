@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Bindery.Interfaces.Binders;
 using Bindery.Tests.TestClasses;
 using NUnit.Framework;
@@ -76,8 +75,6 @@ namespace Bindery.Tests.Tests
             // Arrange
             _command.CanExecuteCondition = vm => vm.IntValue > 0;
             _binder.Control(_control).OnClick(_command);
-            Thread actionThread = null;
-            _control.EnabledChanged += (sender, e) => actionThread = Thread.CurrentThread;
 
             // Act
             var task = Task.Factory.StartNew(() => _viewModel.IntValue = 5);
@@ -85,6 +82,20 @@ namespace Bindery.Tests.Tests
             ConditionalWait.WaitFor(()=>_control.Enabled);
             Assert.That(_control.Enabled, Is.True);
             Assert.That(_invoker.Invoked, Is.True);
+        }
+
+        [Test]
+        public void OnClickObservable()
+        {
+            // Arrange
+            var actionCalled = false;
+            _binder.Control(_control).OnClick().Subscribe(e => actionCalled = true);
+
+            // Act
+            _control.PerformClick();
+
+            // Assert
+            Assert.That(actionCalled, Is.True);
         }
     }
 }
