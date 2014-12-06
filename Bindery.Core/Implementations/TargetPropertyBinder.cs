@@ -39,8 +39,13 @@ namespace Bindery.Implementations
                 throw new ArgumentException("At least one object defined in the expression must implement INotifyPropertyChanged.");
             var observables = notificationSources.Select(source => source.Object.CreatePropertyChangedObservable(source.PropertyNames)
                 .Select(x => sourceAccessor(_parent.Source)));
-            var subscriptions = observables.Select(observable => observable.ObserveOn(_parent.DefaultScheduler).Subscribe(updateProperty));
+            var subscriptions = observables.Select(observable => GetObservableForSubscription(observable).Subscribe(updateProperty));
             subscriptions.ToList().ForEach(sub => _parent.AddSubscription(sub));
+        }
+
+        private IObservable<T> GetObservableForSubscription<T>(IObservable<T> observable)
+        {
+            return _parent.DefaultScheduler == null ? observable : observable.ObserveOn(_parent.DefaultScheduler);
         }
     }
 }

@@ -25,6 +25,9 @@ Code Examples
 ##### Create a root binder for the view model
 <pre><code>var binder = Create.Binder(viewModel);</code></pre>
 
+##### Create a root binder and set the default subscription scheduler to schedule actions on the form's thread
+<pre><code>var binder = Create.Binder(viewModel, new ControlScheduler(form));</code></pre>
+
 ##### Dispose of a binder
 Diposing of a binder removes all bindings and disposes of all subcriptions created by the binder.
 <pre><code>binder.Dispose();</code></pre>
@@ -71,6 +74,9 @@ Non-control targets support a limited set of binding options. Two-way binding an
 
 ##### Subscribe to an observable to execute a command
 <pre><code>binder.Observe(viewModel.Observable).Execute(command);</code></pre>
+
+##### Subscribe to an observable to execute a command, overriding the default scheduler to execute the command immediately on each observed object
+<pre><code>binder.Observe(viewModel.Observable).ObserveOn(Scheduler.Immediate).Execute(command);</code></pre>
 
 ##### Subscribe to an observable with full subscription support
 <pre><code>binder.Observe(viewModel.Observable).Subscribe(

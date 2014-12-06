@@ -1,7 +1,5 @@
-﻿using System;
-using System.Reactive.Concurrency;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Bindery.Interfaces.Binders;
 using Bindery.Tests.TestClasses;
 using NUnit.Framework;
@@ -9,6 +7,7 @@ using NUnit.Framework;
 namespace Bindery.Tests.Tests
 {
     [TestFixture]
+    [RequiresSTA]
     public class OnClickTest
     {
         [SetUp]
@@ -17,20 +16,23 @@ namespace Bindery.Tests.Tests
             _viewModel = new TestViewModel();
             _command = new TestCommand(_viewModel);
             _binder = Create.Binder(_viewModel);
-            _button = new Button();
+            _control = new TestControl();
+            _invoker = new TestInvoker();
+            Invoker.Override(_invoker);
         }
 
         [TearDown]
         public void AfterEach()
         {
             _binder.Dispose();
-            _button.Dispose();
+            _control.Dispose();
         }
 
         private TestViewModel _viewModel;
-        private Button _button;
+        private TestControl _control;
         private ISourceBinder<TestViewModel> _binder;
         private TestCommand _command;
+        private TestInvoker _invoker;
 
         [Test]
         public void ClickingTheControlExecutesTheCommand()
@@ -38,11 +40,11 @@ namespace Bindery.Tests.Tests
             // Arrange
             var executedCount = 0;
             _command.ExecuteAction = vm => executedCount++;
-            _binder.Control(_button).OnClick(_command);
+            _binder.Control(_control).OnClick(_command);
 
             // Act
-            _button.PerformClick();
-            _button.PerformClick();
+            _control.PerformClick();
+            _control.PerformClick();
 
             // Assert
             Assert.That(executedCount, Is.EqualTo(2));
@@ -55,14 +57,17 @@ namespace Bindery.Tests.Tests
             _command.CanExecuteCondition = vm => vm.IntValue > 0;
 
             // Act & Assert
-            _binder.Control(_button).OnClick(_command);
-            Assert.That(_button.Enabled, Is.False, "Enabled should be set based off initial condition");
+            _binder.Control(_control).OnClick(_command);
+            Assert.That(_control.Enabled, Is.False, "Enabled should be set based off initial condition");
             _viewModel.IntValue = 5;
-            Assert.That(_button.Enabled, Is.True);
+            ConditionalWait.WaitFor(() => _control.Enabled);
+            Assert.That(_control.Enabled, Is.True);
             _viewModel.IntValue = -1;
-            Assert.That(_button.Enabled, Is.False);
+            ConditionalWait.WaitFor(() => !_control.Enabled);
+            Assert.That(_control.Enabled, Is.False);
             _viewModel.IntValue = 5;
-            Assert.That(_button.Enabled, Is.True);
+            ConditionalWait.WaitFor(() => _control.Enabled);
+            Assert.That(_control.Enabled, Is.True);
         }
 
         [Test]
@@ -70,16 +75,16 @@ namespace Bindery.Tests.Tests
         {
             // Arrange
             _command.CanExecuteCondition = vm => vm.IntValue > 0;
-            var bindingThreadScheduler = Scheduler.CurrentThread;
-            _binder.Control(_button).OnClick(_command);
-            IScheduler creationScheduler = null;
-            _button.EnabledChanged += (sender, e) => creationScheduler = Scheduler.CurrentThread;
+            _binder.Control(_control).OnClick(_command);
+            Thread actionThread = null;
+            _control.EnabledChanged += (sender, e) => actionThread = Thread.CurrentThread;
 
             // Act
-            var task = Task.Factory.StartNew(()=>_viewModel.IntValue = 5);
+            var task = Task.Factory.StartNew(() => _viewModel.IntValue = 5);
             task.Wait();
-            Assert.That(_button.Enabled, Is.True);
-            Assert.That(creationScheduler, Is.SameAs(bindingThreadScheduler));
+            ConditionalWait.WaitFor(()=>_control.Enabled);
+            Assert.That(_control.Enabled, Is.True);
+            Assert.That(_invoker.Invoked, Is.True);
         }
     }
 }

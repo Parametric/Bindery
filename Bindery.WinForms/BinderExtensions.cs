@@ -20,7 +20,9 @@ namespace Bindery
         public static IControlBinder<TSource, TControl> Control<TSource, TControl>(this ISourceBinder<TSource> sourceBinder, TControl control)
             where TControl : IBindableComponent
         {
-            return new ControlBinder<TSource, TControl>((SourceBinder<TSource>) sourceBinder, control);
+            var sourceBinderImpl = (SourceBinder<TSource>) sourceBinder;
+            var controlBinder = new ControlBinder<TSource, TControl>(sourceBinderImpl, control);
+            return controlBinder;
         }
     }
 }

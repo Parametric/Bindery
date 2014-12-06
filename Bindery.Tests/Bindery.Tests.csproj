@@ -35,23 +35,29 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reactive.Core">
+    <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
     </Reference>
-    <Reference Include="System.Reactive.Interfaces">
+    <Reference Include="System.Reactive.Interfaces, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="System.Reactive.Linq">
+    <Reference Include="System.Reactive.Linq, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncHelper.cs" />
+    <Compile Include="ConditionalWait.cs" />
     <Compile Include="Properties\Annotations1.cs" />
     <Compile Include="TestClasses\TestButton.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TestClasses\TestControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TestClasses\TestEventArgs.cs" />
     <Compile Include="TestClasses\TestTarget.cs" />
@@ -67,6 +73,7 @@
     <Compile Include="TestClasses\TestCommand.cs" />
     <Compile Include="TestClasses\TestViewModel.cs" />
     <Compile Include="Tests\TargetTest.cs" />
+    <Compile Include="TestClasses\TestInvoker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

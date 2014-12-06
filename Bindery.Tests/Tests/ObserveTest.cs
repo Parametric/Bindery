@@ -93,24 +93,13 @@ namespace Bindery.Tests.Tests
 
             var expectedComplete = expectUpdated;
             var expectedResult = expectUpdated ? 5 : 0;
-            ConditionalWait(() => complete == expectedComplete && result == expectedResult);
+            ConditionalWait.WaitFor(() => complete == expectedComplete && result == expectedResult);
 
             // Assert
             Assert.That(result, Is.EqualTo(expectedResult));
             Assert.That(complete, Is.EqualTo(expectedComplete));
         }
 
-        private static void ConditionalWait(Func<bool> condition)
-        {
-            Task.Run(() =>
-            {
-                while (!condition())
-                {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(10));
-                }
-            }).Wait(TimeSpan.FromSeconds(1));
-            Assert.That(condition(), Is.True, "Failed to meet condition before timeout.");
-        }
 
         [Test]
         public void ObserveSourceWithCancellation()
@@ -149,7 +138,7 @@ namespace Bindery.Tests.Tests
 
             // Act
             task.Start();
-            ConditionalWait(() => task.IsFaulted && thrown != null);
+            ConditionalWait.WaitFor(() => task.IsFaulted && thrown != null);
 
             // Assert
             Assert.That(thrown, Is.InstanceOf<InvalidOperationException>());
@@ -171,7 +160,7 @@ namespace Bindery.Tests.Tests
             task.Start();
             task.Wait();
 
-            ConditionalWait(() => actionThread != null);
+            ConditionalWait.WaitFor(() => actionThread != null);
 
             // Assert
             Assert.That(actionThread, Is.Not.SameAs(bindingThread));
@@ -181,23 +170,27 @@ namespace Bindery.Tests.Tests
         public void OverrideDefaultScheduler()
         {
             // Arrange
-            var task = new Task<int>(() => 5);
-            _viewModel.MyObservable = task.ToObservable();
+            var binder = Create.Binder(_viewModel, Scheduler.Default);
+            Thread observableThread = null;
+            var task = new Task<int>(() =>
+            {
+                observableThread = Thread.CurrentThread;
+                return 5;
+            });
 
-            var bindingThread = Thread.CurrentThread;
             Thread actionThread = null;
-            _binder.Observe(_viewModel.MyObservable)
-                .ObserveOn(Scheduler.Immediate)
+            binder.Observe(task.ToObservable())
+                .ObserveOn(Scheduler.CurrentThread)
                 .Subscribe(x => actionThread = Thread.CurrentThread);
 
             // Act
             task.Start();
-            task.Wait();
 
-            ConditionalWait(() => actionThread != null);
+            ConditionalWait.WaitFor(() => actionThread != null);
 
             // Assert
-            Assert.That(actionThread, Is.Not.SameAs(bindingThread));
+            Assert.That(actionThread.ManagedThreadId, Is.EqualTo(observableThread.ManagedThreadId), 
+                "Expected subscription action to run on same thread as observable.");
         }
     }
 }

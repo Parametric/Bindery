@@ -1,7 +1,6 @@
 using System;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Bindery.Extensions;
@@ -41,8 +40,7 @@ namespace Bindery.Implementations
             control.Click += (sender, e) => command.Execute(getParameter());
             var canExecuteChanges = command.CreateCanExecuteChangedObservable();
             var subscription = canExecuteChanges
-                .ObserveOn(DefaultScheduler)
-                .Subscribe(e => control.Enabled = command.CanExecute(getParameter));
+                .Subscribe(e => Invoker.Current.Invoke(control, () => control.Enabled = command.CanExecute(getParameter)));
             AddSubscription(subscription);
             control.Enabled = command.CanExecute(getParameter());
             return this;

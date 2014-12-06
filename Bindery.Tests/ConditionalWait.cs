@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace Bindery.Tests
 {
-    public static class AsyncHelper
+    public static class ConditionalWait
     {
         public static void WaitFor(Func<bool> condition)
         {
-            WaitFor(condition, TimeSpan.FromSeconds(5));
+            WaitFor(condition, TimeSpan.FromMilliseconds(500));
         }
 
         public static void WaitFor(Func<bool> condition, TimeSpan timeout)

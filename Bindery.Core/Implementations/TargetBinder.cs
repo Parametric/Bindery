@@ -22,7 +22,7 @@ namespace Bindery.Implementations
             get { return _sourceBinder.Source; }
         }
 
-        internal IScheduler DefaultScheduler
+        public IScheduler DefaultScheduler
         {
             get { return _sourceBinder.DefaultScheduler; }
         }

@@ -35,7 +35,8 @@ namespace Bindery.Implementations
 
         public ISourceBinder<TSource> Subscribe(Action<TArg> action)
         {
-            var subscription = _observable.ObserveOn(_scheduler).Subscribe(action);
+            var observable = GetObservableForSubscription();
+            var subscription = observable.Subscribe(action);
             _parent.AddSubscription(subscription);
             return _parent;
         }
@@ -44,7 +45,8 @@ namespace Bindery.Implementations
         {
             var context = new SubscriptionContext<TArg>();
             subscription(context);
-            var disposable = context.Subscribe(_observable.ObserveOn(_scheduler));
+            var observable = GetObservableForSubscription();
+            var disposable = context.Subscribe(observable);
             if (disposable != null)
                 _parent.AddSubscription(disposable);
             return _parent;
@@ -69,6 +71,14 @@ namespace Bindery.Implementations
         {
             var propertySetter = member.GetPropertySetter(_parent.Source);
             return Subscribe(propertySetter);
+        }
+
+        private IObservable<TArg> GetObservableForSubscription()
+        {
+            var observable = _observable;
+            if (_scheduler != null)
+                observable = observable.ObserveOn(_scheduler);
+            return observable;
         }
     }
 }

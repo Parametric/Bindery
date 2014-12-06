@@ -19,7 +19,7 @@ namespace Bindery
         /// <remarks>Dispose of the source binder to remove bindings and event/observable subscriptions created by it.</remarks>
         public static ISourceBinder<T> Binder<T>(T source)
         {
-            return new SourceBinder<T>(source, Scheduler.Default);
+            return new SourceBinder<T>(source, null);
         }
 
         /// <summary>
