@@ -46,7 +46,7 @@ namespace Bindery.Implementations
 
         public void AddSubscription(IDisposable subscription)
         {
-            _sourceBinder.AddSubscription(subscription);
+            _sourceBinder.RegisterDisposable(subscription);
         }
 
         protected ObservableBinder<TSource, T> CreateObservableBinder<T>(IObservable<T> observable)

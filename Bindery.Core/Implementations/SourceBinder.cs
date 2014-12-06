@@ -11,13 +11,13 @@ namespace Bindery.Implementations
 {
     internal class SourceBinder<TSource> : ISourceBinder<TSource>
     {
-        private readonly List<IDisposable> _subscriptions;
+        private readonly List<IDisposable> _disposables;
         private bool _disposed;
 
         public SourceBinder(TSource source, IScheduler defaultScheduler)
         {
             Source = source;
-            _subscriptions = new List<IDisposable>();
+            _disposables = new List<IDisposable>();
             DefaultScheduler = defaultScheduler;
         }
 
@@ -48,16 +48,17 @@ namespace Bindery.Implementations
             return new ObservableBinder<TSource, TArg>(this, observable, DefaultScheduler);
         }
 
+        public ISourceBinder<TSource> RegisterDisposable(params IDisposable[] disposables)
+        {
+            _disposables.AddRange(disposables);
+            return this;
+        }
+
         public void Dispose()
         {
             if (_disposed) return;
-            _subscriptions.ForEach(x => TryDispose(x));
+            _disposables.ForEach(x => TryDispose(x));
             _disposed = true;
-        }
-
-        public void AddSubscription(IDisposable subscription)
-        {
-            _subscriptions.Add(subscription);
         }
 
         private static bool TryDispose(IDisposable x)

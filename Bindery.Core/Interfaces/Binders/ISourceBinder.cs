@@ -33,5 +33,12 @@ namespace Bindery.Interfaces.Binders
         /// <param name="observable">The observable</param>
         /// <returns>An observable binding</returns>
         IObservableBinder<TSource, TArg> Observe<TArg>(IObservable<TArg> observable);
+
+        /// <summary>
+        ///     Register disposables created outside the binder for disposal when the binder is disposed.
+        /// </summary>
+        /// <param name="disposables">One or more IDisposable objects</param>
+        /// <returns>This source binder</returns>
+        ISourceBinder<TSource> RegisterDisposable(params IDisposable[] disposables);
     }
 }

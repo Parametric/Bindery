@@ -32,6 +32,10 @@ Code Examples
 Diposing of a binder removes all bindings and disposes of all subcriptions created by the binder.
 <pre><code>binder.Dispose();</code></pre>
 
+##### Register external disposables with the binder
+This can be used to tie the lifetime of other objects to the binder's lifetime.
+<pre><code>binder.RegisterDisposable(disposableViewModel, disposableCommand);</code></pre>
+
 ##### Bind a view model property to a control property
 <pre><code>// Two-way binding
 binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.Name); 

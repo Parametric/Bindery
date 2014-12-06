@@ -37,7 +37,7 @@ namespace Bindery.Implementations
         {
             var observable = GetObservableForSubscription();
             var subscription = observable.Subscribe(action);
-            _parent.AddSubscription(subscription);
+            _parent.RegisterDisposable(subscription);
             return _parent;
         }
 
@@ -48,7 +48,7 @@ namespace Bindery.Implementations
             var observable = GetObservableForSubscription();
             var disposable = context.Subscribe(observable);
             if (disposable != null)
-                _parent.AddSubscription(disposable);
+                _parent.RegisterDisposable(disposable);
             return _parent;
         }
 
