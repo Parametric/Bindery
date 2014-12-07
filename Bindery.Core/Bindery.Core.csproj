@@ -61,6 +61,7 @@
     <Compile Include="Implementations\TargetPropertyBinder.cs" />
     <Compile Include="Interfaces\Binders\IObservableBinder.cs" />
     <Compile Include="Interfaces\Binders\ISourceBinder.cs" />
+    <Compile Include="Interfaces\Binders\ISourceBinderAccess.cs" />
     <Compile Include="Interfaces\Binders\ITargetBinder.cs" />
     <Compile Include="Interfaces\Binders\ITargetPropertyBinder.cs" />
     <Compile Include="Interfaces\IEventObservableFactory.cs" />

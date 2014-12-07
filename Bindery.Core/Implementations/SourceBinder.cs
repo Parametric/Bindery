@@ -9,7 +9,7 @@ using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {
-    internal class SourceBinder<TSource> : ISourceBinder<TSource>
+    internal class SourceBinder<TSource> : ISourceBinder<TSource>, ISourceBinderAccess<TSource>
     {
         private readonly List<IDisposable> _disposables;
         private bool _disposed;
@@ -73,6 +73,11 @@ namespace Bindery.Implementations
                 // Disposal can fail accessing old window handles
                 return false;
             }
+        }
+
+        public SourceBinder<TSource> GetSourceBinder()
+        {
+            return this;
         }
     }
 }

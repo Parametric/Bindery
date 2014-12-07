@@ -5,7 +5,7 @@ using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {
-    internal class TargetBinder<TSource, TTarget> : ITargetBinder<TSource, TTarget>
+    internal class TargetBinder<TSource, TTarget> : ITargetBinder<TSource, TTarget>, ISourceBinderAccess<TSource>
     {
         private readonly SourceBinder<TSource> _sourceBinder;
 
@@ -84,5 +84,9 @@ namespace Bindery.Implementations
 
         #endregion
 
+        public SourceBinder<TSource> GetSourceBinder()
+        {
+            return _sourceBinder;
+        }
     }
 }
