@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Windows.Input;
-using Bindery.Extensions;
 
 namespace Bindery
 {
@@ -46,8 +45,7 @@ namespace Bindery
         /// <returns>An observable of CanExecute state</returns>
         public IObservable<bool> ObserveCanExecuteChanges(object parameter = null)
         {
-            return this.CreateCanExecuteChangedObservable()
-                .Select(e => CanExecute(parameter))
+            return CreateCanExecuteChangedObservable().Select(e => CanExecute(parameter))
                 .DistinctUntilChanged();
         }
 
@@ -58,6 +56,14 @@ namespace Bindery
         {
             var handler = CanExecuteChanged;
             if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        private IObservable<EventArgs> CreateCanExecuteChangedObservable()
+        {
+            return Observable.FromEvent<EventHandler, EventArgs>(
+                argsAction => (sender, e) => argsAction(e),
+                handler => CanExecuteChanged += handler,
+                handler => CanExecuteChanged -= handler);
         }
     }
 }

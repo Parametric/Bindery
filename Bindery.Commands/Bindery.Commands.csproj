@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{93F19FFF-4AD3-4908-A25E-1CD5382A9DA5}</ProjectGuid>
+    <ProjectGuid>{99A16972-1566-427B-A0B0-2AAE420E34FC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bindery</RootNamespace>
-    <AssemblyName>Bindery.Core</AssemblyName>
+    <AssemblyName>Bindery</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -28,7 +28,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Bindery.Core.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,38 +41,21 @@
     <Reference Include="System.Reactive.Linq">
       <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create.cs" />
-    <Compile Include="Expressions\ExpressionVisitor.cs" />
-    <Compile Include="Expressions\NotifyPropertyChangedExpressionAnalyzer.cs" />
-    <Compile Include="Expressions\NotifyPropertySource.cs" />
-    <Compile Include="Extensions\CommandExtensions.cs" />
-    <Compile Include="Extensions\ExpressionExtensions.cs" />
-    <Compile Include="Extensions\NotifyPropertyChangedExtensions.cs" />
-    <Compile Include="Implementations\EventObservableFactory.cs" />
-    <Compile Include="Implementations\ObservableBinder.cs" />
-    <Compile Include="Implementations\SourceBinder.cs" />
-    <Compile Include="Implementations\SubscriptionContext.cs" />
-    <Compile Include="Implementations\TargetBinder.cs" />
-    <Compile Include="Implementations\TargetPropertyBinder.cs" />
-    <Compile Include="Interfaces\Binders\IObservableBinder.cs" />
-    <Compile Include="Interfaces\Binders\ISourceBinder.cs" />
-    <Compile Include="Interfaces\Binders\ISourceBinderAccess.cs" />
-    <Compile Include="Interfaces\Binders\ITargetBinder.cs" />
-    <Compile Include="Interfaces\Binders\ITargetPropertyBinder.cs" />
-    <Compile Include="Interfaces\IEventObservableFactory.cs" />
-    <Compile Include="Interfaces\Subscriptions\IOnCompleteDefined.cs" />
-    <Compile Include="Interfaces\Subscriptions\IOnErrorDefined.cs" />
-    <Compile Include="Interfaces\Subscriptions\IOnNextDefined.cs" />
-    <Compile Include="Interfaces\Subscriptions\ISubscriptionComplete.cs" />
-    <Compile Include="Interfaces\Subscriptions\ISubscriptionContext.cs" />
+    <Compile Include="CommandBase.cs" />
+    <Compile Include="CommandExtensions.cs" />
+    <Compile Include="EnablableCommandBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
