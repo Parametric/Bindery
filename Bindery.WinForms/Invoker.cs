@@ -28,6 +28,10 @@ namespace Bindery
                 action();
         }
 
+        /// <summary>
+        /// Override the default IInvoker implementation used by the Bindery libraries
+        /// </summary>
+        /// <param name="invoker"></param>
         public static void Override(IInvoker invoker)
         {
             Current = invoker;
