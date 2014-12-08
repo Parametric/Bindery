@@ -4,13 +4,12 @@ Bindery aims to support fluent MVVM binding definition for WinForms applications
 
 Projects
 --------
-* **Bindery.Core:** 
+* **Bindery:** 
   * Contains the static `Create` factory class 
-  * Contains `CommandBase` (an abstract base implementation of ICommand)
   * Dependent on the `Rx-Linq` package
-* **Bindery.WinForms:** 
-  * Contains an extension method for `ISourceBinder` that allows bindings to WinForms controls to be created
-  * Dependent on `Bindery.Core` and `System.Windows.Forms`.
+* **Bindery.Commands:** 
+  * Contains `CommandBase` and `EnablableCommandBase` (abstract base implementations of ICommand)
+  * Dependent on the `Rx-Linq` package
 
 Assumptions
 -----------

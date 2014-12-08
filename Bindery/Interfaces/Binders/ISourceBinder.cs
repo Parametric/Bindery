@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Windows.Forms;
+using Bindery.Implementations;
 
 namespace Bindery.Interfaces.Binders
 {
@@ -16,6 +18,15 @@ namespace Bindery.Interfaces.Binders
         /// <param name="target">The target</param>
         /// <returns>A target binder</returns>
         ITargetBinder<TSource, TTarget> Target<TTarget>(TTarget target) where TTarget : class;
+
+        /// <summary>
+        ///     Bind to an IBindableComponent
+        /// </summary>
+        /// <typeparam name="TSource">The source type</typeparam>
+        /// <typeparam name="TControl">The control type</typeparam>
+        /// <param name="control">The control</param>
+        /// <returns>A control binder</returns>
+        IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent;
 
         /// <summary>
         ///     Observe source property changes

@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Bindery.WinForms</id>
+    <id>Bindery</id>
     <version>$version$</version>
     <authors>Parametric Portfolio Associates</authors>
     <owners>Parametric Portfolio Associates</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>WinForms MVVM binding library</description>
     <copyright>Copyright 2014</copyright>
-    <tags>MVVM Binding WinForms</tags>
+    <tags>WinForms MVVM Binding</tags>
     <dependencies>
-      <dependency id="Bindery.Core" version="$version$" />
+      <dependency id="Rx-Linq" version="2.2.5" />
     </dependencies>
   </metadata>
   <files>
-    <file src="Bindery.WinForms\bin\Release\Bindery.WinForms.dll" target="lib/net45" />
-    <file src="Bindery.WinForms\bin\Release\Bindery.WinForms.pdb" target="lib/net45" />
-    <file src="Bindery.WinForms\bin\Release\Bindery.WinForms.XML" target="lib/net45" />
+    <file src="Bindery\bin\Release\Bindery.dll" target="lib/net45" />
+    <file src="Bindery\bin\Release\Bindery.pdb" target="lib/net45" />
+    <file src="Bindery\bin\Release\Bindery.XML" target="lib/net45" />
   </files>
 </package>

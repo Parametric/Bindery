@@ -4,12 +4,13 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Windows.Forms;
 using Bindery.Extensions;
 using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {
-    internal class SourceBinder<TSource> : ISourceBinder<TSource>, ISourceBinderAccess<TSource>
+    internal class SourceBinder<TSource> : ISourceBinder<TSource>
     {
         private readonly List<IDisposable> _disposables;
         private bool _disposed;
@@ -28,6 +29,11 @@ namespace Bindery.Implementations
         public ITargetBinder<TSource, TTarget> Target<TTarget>(TTarget target) where TTarget : class
         {
             return new TargetBinder<TSource, TTarget>(this, target);
+        }
+
+        public IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent
+        {
+            return new ControlBinder<TSource, TControl>(this, control);
         }
 
         public IObservableBinder<TSource, TProp> OnPropertyChanged<TProp>(Expression<Func<TSource, TProp>> member)
@@ -73,11 +79,6 @@ namespace Bindery.Implementations
                 // Disposal can fail accessing old window handles
                 return false;
             }
-        }
-
-        public SourceBinder<TSource> GetSourceBinder()
-        {
-            return this;
         }
     }
 }

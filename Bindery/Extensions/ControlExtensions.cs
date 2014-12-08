@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Reactive.Linq;
 using System.Windows.Forms;
 
-namespace Bindery
+namespace Bindery.Extensions
 {
     internal static class ControlExtensions
     {

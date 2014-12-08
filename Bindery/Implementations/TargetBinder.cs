@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;
+using System.Windows.Forms;
 using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
 {
-    internal class TargetBinder<TSource, TTarget> : ITargetBinder<TSource, TTarget>, ISourceBinderAccess<TSource>
+    internal class TargetBinder<TSource, TTarget> : ITargetBinder<TSource, TTarget>
     {
         private readonly SourceBinder<TSource> _sourceBinder;
 
@@ -61,6 +62,11 @@ namespace Bindery.Implementations
             return _sourceBinder.Target(target);
         }
 
+        public IControlBinder<TSource, TControl> Control<TControl>(TControl control) where TControl : IBindableComponent
+        {
+            return new ControlBinder<TSource, TControl>(_sourceBinder, control);
+        }
+
         IObservableBinder<TSource, TProp> ISourceBinder<TSource>.OnPropertyChanged<TProp>(
             Expression<Func<TSource, TProp>> member)
         {
@@ -83,10 +89,5 @@ namespace Bindery.Implementations
         }
 
         #endregion
-
-        public SourceBinder<TSource> GetSourceBinder()
-        {
-            return _sourceBinder;
-        }
     }
 }

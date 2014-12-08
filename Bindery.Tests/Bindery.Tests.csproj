@@ -84,13 +84,9 @@
       <Project>{99A16972-1566-427B-A0B0-2AAE420E34FC}</Project>
       <Name>Bindery.Commands</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Bindery.Core\Bindery.Core.csproj">
-      <Project>{93f19fff-4ad3-4908-a25e-1cd5382a9da5}</Project>
-      <Name>Bindery.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bindery.WinForms\Bindery.WinForms.csproj">
-      <Project>{247e6f34-eed2-46ca-8c86-7cb73b7296cd}</Project>
-      <Name>Bindery.WinForms</Name>
+    <ProjectReference Include="..\Bindery\Bindery.csproj">
+      <Project>{93F19FFF-4AD3-4908-A25E-1CD5382A9DA5}</Project>
+      <Name>Bindery</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
