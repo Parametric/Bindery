@@ -108,7 +108,7 @@ binder.Observe(viewModel.Observable).Subscribe(
 ```
 ### Event to observable conversion
 ```C#
-IObservable&lt;string&gt; mouseMoveButtons =
+IObservable<string> mouseMoveButtons =
   Create.ObservableFor(form).Event<MouseEventArgs>("MouseMove")
        .Select(e => Convert.ToString(e.Button));
 ```
