@@ -22,86 +22,96 @@ Code Examples
 -------------
 ### Binding
 ##### Create a root binder for the view model
-<pre><code>var binder = Create.Binder(viewModel);</code></pre>
-
+```C#
+var binder = Create.Binder(viewModel);
+```
 ##### Create a root binder and set the default subscription scheduler to schedule actions on the form's thread
-<pre><code>var binder = Create.Binder(viewModel, new ControlScheduler(form));</code></pre>
-
+```C#
+var binder = Create.Binder(viewModel, new ControlScheduler(form));
+```
 ##### Dispose of a binder
 Diposing of a binder removes all bindings and disposes of all subcriptions created by the binder.
-<pre><code>binder.Dispose();</code></pre>
-
+```C#
+binder.Dispose();
+```
 ##### Register external disposables with the binder
 This can be used to tie the lifetime of other objects to the binder's lifetime.
-<pre><code>binder.RegisterDisposable(disposableViewModel, disposableCommand);</code></pre>
-
+```C#
+binder.RegisterDisposable(disposableViewModel, disposableCommand);
+```
 ##### Bind a view model property to a control property
-<pre><code>// Two-way binding
+```C#
+// Two-way binding
 binder.Control(textBox).Property(c => c.Text).Bind(vm => vm.Name); 
 // One-way binding from source to control
 binder.Control(form).Property(c => c.UseWaitCursor).Get(vm => vm.IsBusy); 
 // One-way binding from control to source
 binder.Control(textBox).Property(c => c.Text).Set(vm => vm.Name); 
-</code></pre>
-
+```
 ##### Bind an integer view model property to a string control property
-<pre><code>binder.Control(textBox).Property(c => c.Text).Get(vm => vm.Age, Convert.ToString);
-</code></pre>
-
+```C#
+binder.Control(textBox).Property(c => c.Text).Get(vm => vm.Age, Convert.ToString);
+```
 ##### Bind a button's `Click` event to a command
 This also "binds" the control's `Enabled` property to the command's `CanExecute` method.
-<pre><code>ICommand command = new CommandImplementation(viewModel);
+```C#
+ICommand command = new CommandImplementation(viewModel);
 binder.Control(button).OnClick(command);
-</code></pre>
-
+```
 ##### Bind a form's `MouseMove` event to a command
-<pre><code>ICommand command = new CommandImplementation(viewModel);
+```C#
+ICommand command = new CommandImplementation(viewModel);
 binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Transform(o => o.Where(e => e.Button==MouseButtons.Left).Select(e => new {e.X, e.Y})) 
   // Mouse coords are passed to command.Execute()
   .Execute(command);
-</code></pre>
-
+```
 ##### Bind a form's `MouseMove` event arguments to a view model property
-<pre><code>binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
+```C#
+binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
   .Transform(o => o.Select(e => new MyCoord{X = e.X, Y = e.Y}))
   .Set(vm => vm.CurrentMouseCoords);
-</code></pre>
-
+```
 ##### Bind to a non-control target object
 Non-control targets support a limited set of binding options. Two-way binding and one-way binding from target to source are not supported.
-<pre><code>binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);</code></pre>
-
+```C#
+binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);
+```
 ### Observable subscriptions
 
 ##### Trigger an action when a view model property changes
-<pre><code>binder.OnPropertyChanged(vm => vm.ErrorMessage).Subscribe(msg => DisplayErrorDialog(msg));</code></pre>
-
+```C#
+binder.OnPropertyChanged(vm => vm.ErrorMessage).Subscribe(msg => DisplayErrorDialog(msg));
+```
 ##### Subscribe to a button's `Click` event to close the form
-<pre><code>binder.Control(cancelButton).OnClick().Subscribe(e => form.Close());</code></pre>
-
+```C#
+binder.Control(cancelButton).OnClick().Subscribe(e => form.Close());
+```
 ##### Subscribe to a form's `Closed` event to dispose of the binder
-<pre><code>binder.Control(form).OnEvent("Closed").Subscribe(e => binder.Dispose())</code></pre>
-
+```C#
+binder.Control(form).OnEvent("Closed").Subscribe(e => binder.Dispose());
+```
 ##### Create an observable subscription to execute a command
-<pre><code>binder.Observe(viewModel.Observable).Execute(command);</code></pre>
-
+```C#
+binder.Observe(viewModel.Observable).Execute(command);
+```
 ##### Overriding the default scheduler to execute the command immediately on each observed object
-<pre><code>binder.Observe(viewModel.Observable).ObserveOn(Scheduler.Immediate).Execute(command);</code></pre>
-
+```C#
+binder.Observe(viewModel.Observable).ObserveOn(Scheduler.Immediate).Execute(command);
+```
 ##### Subscribe to an observable with full subscription syntax support
-<pre><code>binder.Observe(viewModel.Observable).Subscribe(
+```C#
+binder.Observe(viewModel.Observable).Subscribe(
   ctx=>ctx.OnNext(oVal => OnNextAction(oVal))
        .OnError(ex => HandleException(ex))
        .OnComplete(() => OnCompleteAction()));
-</code></pre>
-
+```
 ### Event to observable conversion
-<pre><code>IObservable&lt;string&gt; mouseMoveButtons =
+```C#
+IObservable&lt;string&gt; mouseMoveButtons =
   Create.ObservableFor(form).Event&lt;MouseEventArgs&gt;("MouseMove")
        .Select(e => Convert.ToString(e.Button));
-</code></pre>
-
+```
 ### Commands
 
 ##### CommandBase
@@ -115,5 +125,5 @@ Non-control targets support a limited set of binding options. Two-way binding an
 ##### EnablableCommandBase
 `EnablableCommandBase` is an abstract implementation of `CommandBase` that exposes an `Enabled` property. The `Enabled` property:
 
-* Controls the return value of CanExecute()
+* Controls the return value of `CanExecute()`
 * Raises the `CanExecuteChanged` event when its value changes
