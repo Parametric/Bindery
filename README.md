@@ -61,14 +61,14 @@ binder.Control(button).OnClick(command);
 ##### Bind a form's `MouseMove` event to a command
 ```C#
 ICommand command = new CommandImplementation(viewModel);
-binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
+binder.Control(form).OnEvent<MouseEventArgs>("MouseMove")
   .Transform(o => o.Where(e => e.Button==MouseButtons.Left).Select(e => new {e.X, e.Y})) 
   // Mouse coords are passed to command.Execute()
   .Execute(command);
 ```
 ##### Bind a form's `MouseMove` event arguments to a view model property
 ```C#
-binder.Control(form).OnEvent&lt;MouseEventArgs&gt;("MouseMove")
+binder.Control(form).OnEvent<MouseEventArgs>("MouseMove")
   .Transform(o => o.Select(e => new MyCoord{X = e.X, Y = e.Y}))
   .Set(vm => vm.CurrentMouseCoords);
 ```
@@ -109,7 +109,7 @@ binder.Observe(viewModel.Observable).Subscribe(
 ### Event to observable conversion
 ```C#
 IObservable&lt;string&gt; mouseMoveButtons =
-  Create.ObservableFor(form).Event&lt;MouseEventArgs&gt;("MouseMove")
+  Create.ObservableFor(form).Event<MouseEventArgs>("MouseMove")
        .Select(e => Convert.ToString(e.Button));
 ```
 ### Commands
