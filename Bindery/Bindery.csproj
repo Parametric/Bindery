@@ -55,6 +55,7 @@
     <Compile Include="Extensions\NotifyPropertyChangedExtensions.cs" />
     <Compile Include="Implementations\ControlBinder.cs" />
     <Compile Include="Implementations\ControlPropertyBinder.cs" />
+    <Compile Include="Implementations\ControlStringPropertyBinder.cs" />
     <Compile Include="Implementations\EventObservableFactory.cs" />
     <Compile Include="Implementations\ObservableBinder.cs" />
     <Compile Include="Implementations\SourceBinder.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Interfaces\Binders\ISourceBinder.cs" />
     <Compile Include="Interfaces\Binders\ITargetBinder.cs" />
     <Compile Include="Interfaces\Binders\ITargetPropertyBinder.cs" />
+    <Compile Include="Interfaces\IControlStringPropertyBinder.cs" />
     <Compile Include="Interfaces\IEventObservableFactory.cs" />
     <Compile Include="Interfaces\IInvoker.cs" />
     <Compile Include="Interfaces\Subscriptions\IOnCompleteDefined.cs" />

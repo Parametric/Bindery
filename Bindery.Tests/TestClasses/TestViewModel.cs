@@ -76,5 +76,10 @@ namespace Bindery.Tests.TestClasses
                 if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        public object MyMethod()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

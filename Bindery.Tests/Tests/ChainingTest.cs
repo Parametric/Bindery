@@ -17,7 +17,7 @@ namespace Bindery.Tests.Tests
             // Act
             binder.Control(control).OnClick().Subscribe(e => { var a = 1; })
                 .Target(control).Property(c => c.Text).Get(vm => vm.StringValue)
-                .Control(control).Property(c=>c.Top).Get(vm=>vm.IntValue);
+                .Control(control).Property(c => c.Top).Get(vm => vm.IntValue);
         }
     }
 }

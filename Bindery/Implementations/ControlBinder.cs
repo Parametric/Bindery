@@ -4,6 +4,7 @@ using System.Reactive.Disposables;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Bindery.Extensions;
+using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
@@ -22,6 +23,11 @@ namespace Bindery.Implementations
             Expression<Func<TControl, TProp>> member)
         {
             return new ControlPropertyBinder<TSource, TControl, TProp>(this, member);
+        }
+
+        public IControlStringPropertyBinder<TSource, TControl> Property(Expression<Func<TControl, string>> member)
+        {
+            return new ControlStringPropertyBinder<TSource, TControl>(this, member);
         }
 
         public IControlBinder<TSource, TControl> OnClick(ICommand command, object parameter = null)

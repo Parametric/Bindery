@@ -22,6 +22,13 @@ namespace Bindery.Interfaces.Binders
         new IControlPropertyBinder<TSource, TControl, TProp> Property<TProp>(Expression<Func<TControl, TProp>> member);
 
         /// <summary>
+        ///     Bind one of the control's string properties
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        IControlStringPropertyBinder<TSource, TControl> Property(Expression<Func<TControl, string>> member);
+
+        /// <summary>
         ///     Bind the control's Click event to a command
         /// </summary>
         /// <param name="command">The command</param>
@@ -55,5 +62,6 @@ namespace Bindery.Interfaces.Binders
         /// </summary>
         /// <returns>An observable binder</returns>
         IObservableBinder<TSource,EventArgs> OnClick();
+
     }
 }

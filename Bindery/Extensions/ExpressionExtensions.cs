@@ -12,7 +12,7 @@ namespace Bindery.Extensions
         {
             var member = expression.Body as MemberExpression;
             if (member == null)
-                throw new ArgumentException("Expression is not a member access", "expression");
+                throw new ArgumentException(string.Format("Expression '{0}' is not a member access", expression.Body), "expression");
             var retVal = member.Member.Name;
             while (true)
             {
@@ -28,7 +28,7 @@ namespace Bindery.Extensions
         {
             var member = expression.Body as MemberExpression;
             if (member == null)
-                throw new ArgumentException("Expression is not a member access", "expression");
+                throw new ArgumentException(string.Format("Expression '{0}' is not a member access", expression.Body), "expression");
             var lambdaParameter = expression.Parameters.Single();
             var assignTo = GetObjectToAssignTo(obj, member, lambdaParameter);
             var value = Expression.Parameter(typeof (TR), "value");

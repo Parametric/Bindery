@@ -87,7 +87,7 @@ namespace Bindery.Tests.Tests
         public void TwoWayBindingWithMultiPartSource(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.ComplexValue.DecValue, Convert.ToString, Convert.ToDecimal);
+            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.ComplexValue.DecValue);
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
 
@@ -104,7 +104,7 @@ namespace Bindery.Tests.Tests
         [Test]
         public void TwoWayBindingWithConversion()
         {
-            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.IntValue, Convert.ToString, int.Parse);
+            _binder.Control(_userControl).Property(c => c.Text).Bind(vm => vm.IntValue);
 
             _viewModel.IntValue = 3;
             Assert.That(_userControl.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
@@ -116,7 +116,7 @@ namespace Bindery.Tests.Tests
         [Test]
         public void UpdateControlWithConversion()
         {
-            _binder.Control(_userControl).Property(c => c.Text).Get(vm => vm.IntValue, Convert.ToString);
+            _binder.Control(_userControl).Property(c => c.Text).Get(vm => vm.IntValue);
             _viewModel.IntValue = 3;
             Assert.That(_userControl.Text, Is.EqualTo(Convert.ToString(_viewModel.IntValue)));
         }
@@ -124,9 +124,17 @@ namespace Bindery.Tests.Tests
         [Test]
         public void UpdateSourceWithConversion()
         {
-            _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.IntValue, Convert.ToInt32);
+            _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.IntValue);
             _userControl.Text = "3";
             Assert.That(_viewModel.IntValue, Is.EqualTo(Convert.ToInt32(_userControl.Text)));
+        }
+
+        [Test]
+        public void NotAMemberAccess()
+        {
+            var ex = Assert.Throws<ArgumentException>(
+                () => _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.MyMethod()));
+            Assert.That(ex.Message, Is.StringStarting("Expression 'vm.MyMethod()' is not a member access"));
         }
     }
 }
