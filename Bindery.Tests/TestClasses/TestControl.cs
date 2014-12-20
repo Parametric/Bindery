@@ -9,5 +9,7 @@ namespace Bindery.Tests.TestClasses
         {
             OnClick(EventArgs.Empty);
         }
+
+        public object ObjectValue { get; set; }
     }
 }

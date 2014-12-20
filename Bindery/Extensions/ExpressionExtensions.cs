@@ -10,7 +10,18 @@ namespace Bindery.Extensions
     {
         public static string GetAccessorName<T, TR>(this Expression<Func<T, TR>> expression)
         {
-            var member = expression.Body as MemberExpression;
+            MemberExpression member = null;
+            if (expression.Body.NodeType == ExpressionType.Convert)
+            {
+                var unary = expression.Body as UnaryExpression;
+                if (unary != null)
+                    member = unary.Operand as MemberExpression;
+            }
+            else
+            {
+                member = expression.Body as MemberExpression;
+            }
+
             if (member == null)
                 throw new ArgumentException(string.Format("Expression '{0}' is not a member access", expression.Body), "expression");
             var retVal = member.Member.Name;

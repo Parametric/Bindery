@@ -14,7 +14,7 @@ namespace Bindery.Tests.Tests
         {
             _viewModel = new TestViewModel();
             _binder = Create.Binder(_viewModel);
-            _userControl = new UserControl();
+            _userControl = new TestControl();
             _userControl.CreateControl();
         }
 
@@ -26,7 +26,7 @@ namespace Bindery.Tests.Tests
         }
 
         private TestViewModel _viewModel;
-        private UserControl _userControl;
+        private TestControl _userControl;
         private ISourceBinder<TestViewModel> _binder;
 
         [TestCase(true, true)]
@@ -135,6 +135,16 @@ namespace Bindery.Tests.Tests
             var ex = Assert.Throws<ArgumentException>(
                 () => _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.MyMethod()));
             Assert.That(ex.Message, Is.StringStarting("Expression 'vm.MyMethod()' is not a member access"));
+        }
+
+        [Test]
+        public void BindControlObjectPropertyToDecimalViewModelProperty()
+        {
+            // Arrange
+            _binder.Control(_userControl).Property(c => c.ObjectValue).Bind(vm => vm.IntValue);
+
+            _viewModel.IntValue = 5;
+            Assert.That(_userControl.ObjectValue, Is.EqualTo(5));
         }
     }
 }
