@@ -21,7 +21,7 @@ namespace Bindery.Implementations
         public IControlBinder<TSource, TControl> Bind<TSourceMember>(Expression<Func<TSource, TSourceMember>> sourceMember, 
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
         {
-            var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), ControlUpdateMode.OnPropertyChanged, dataSourceUpdateMode);
+            var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), true, ControlUpdateMode.OnPropertyChanged, dataSourceUpdateMode);
             _parent.AddDataBinding(binding);
             return _parent;
         }
@@ -29,14 +29,14 @@ namespace Bindery.Implementations
         public IControlBinder<TSource, TControl> Set<TSourceMember>(Expression<Func<TSource, TSourceMember>> sourceMember, 
             DataSourceUpdateMode dataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged)
         {
-            var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), ControlUpdateMode.Never, dataSourceUpdateMode);
+            var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), true, ControlUpdateMode.Never, dataSourceUpdateMode);
             _parent.AddDataBinding(binding);
             return _parent;
         }
 
         public IControlBinder<TSource, TControl> Get<TSourceMember>(Expression<Func<TSource, TSourceMember>> sourceMember)
         {
-            var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), ControlUpdateMode.OnPropertyChanged, DataSourceUpdateMode.Never);
+            var binding = _parent.CreateBinding(_memberName, sourceMember.GetAccessorName(), true, ControlUpdateMode.OnPropertyChanged, DataSourceUpdateMode.Never);
             _parent.AddDataBinding(binding);
             return _parent;
         }

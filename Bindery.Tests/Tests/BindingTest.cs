@@ -14,7 +14,7 @@ namespace Bindery.Tests.Tests
         {
             _viewModel = new TestViewModel();
             _binder = Create.Binder(_viewModel);
-            _userControl = new TestControl();
+            _userControl = new PropertyGrid();
             _userControl.CreateControl();
         }
 
@@ -26,7 +26,7 @@ namespace Bindery.Tests.Tests
         }
 
         private TestViewModel _viewModel;
-        private TestControl _userControl;
+        private PropertyGrid _userControl;
         private ISourceBinder<TestViewModel> _binder;
 
         [TestCase(true, true)]
@@ -58,8 +58,9 @@ namespace Bindery.Tests.Tests
                 _binder.Dispose();
 
             // Act & Assert
+            var currentVmValue = _viewModel.StringValue;
             _userControl.Text = "value #1";
-            var expected = expectUpdated ? _userControl.Text : string.Empty;
+            var expected = expectUpdated ? _userControl.Text : currentVmValue;
             Assert.That(_viewModel.StringValue, Is.EqualTo(expected));
             _viewModel.StringValue = "value #2";
             Assert.That(_userControl.Text, Is.Not.EqualTo(_viewModel.StringValue));
@@ -141,10 +142,14 @@ namespace Bindery.Tests.Tests
         public void BindControlObjectPropertyToDecimalViewModelProperty()
         {
             // Arrange
-            _binder.Control(_userControl).Property(c => c.ObjectValue).Bind(vm => vm.IntValue);
+            using (var control = new PropertyGrid())
+            {
+                control.CreateControl();
+                _binder.Control(control).Property(c => c.SelectedObject).Bind(vm => vm.IntValue);
 
-            _viewModel.IntValue = 5;
-            Assert.That(_userControl.ObjectValue, Is.EqualTo(5));
+                _viewModel.IntValue = 5;
+                Assert.That(control.SelectedObject, Is.EqualTo(_viewModel.IntValue));
+            }
         }
     }
 }

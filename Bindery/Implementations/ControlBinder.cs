@@ -95,11 +95,10 @@ namespace Bindery.Implementations
                 binding.Parse -= parseHandler;
         }
 
-        internal Binding CreateBinding(string controlPropertyName, string sourcePropertyName,
-            ControlUpdateMode controlUpdateMode,
-            DataSourceUpdateMode dataSourceUpdateMode)
+        internal Binding CreateBinding(string controlPropertyName, string sourcePropertyName, bool formattingEnabled, 
+            ControlUpdateMode controlUpdateMode, DataSourceUpdateMode dataSourceUpdateMode)
         {
-            return new Binding(controlPropertyName, Source, sourcePropertyName)
+            return new Binding(controlPropertyName, Source, sourcePropertyName, formattingEnabled)
             {
                 ControlUpdateMode = controlUpdateMode,
                 DataSourceUpdateMode = dataSourceUpdateMode

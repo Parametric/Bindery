@@ -10,6 +10,26 @@ namespace Bindery.Extensions
     {
         public static string GetAccessorName<T, TR>(this Expression<Func<T, TR>> expression)
         {
+            var member = GetMemberExpression(expression);
+            var retVal = member.Member.Name;
+            while (true)
+            {
+                member = member.Expression as MemberExpression;
+                if (member == null) break;
+                var dataMember = member.Member.Name;
+                retVal = dataMember + "." + retVal;
+            }
+            return retVal;
+        }
+
+        public static Type GetAccessorType<T, TR>(this Expression<Func<T, TR>> expression)
+        {
+            var member = GetMemberExpression(expression);
+            return member.Type;
+        }
+
+        private static MemberExpression GetMemberExpression<T, TR>(Expression<Func<T, TR>> expression)
+        {
             MemberExpression member = null;
             if (expression.Body.NodeType == ExpressionType.Convert)
             {
@@ -24,15 +44,7 @@ namespace Bindery.Extensions
 
             if (member == null)
                 throw new ArgumentException(string.Format("Expression '{0}' is not a member access", expression.Body), "expression");
-            var retVal = member.Member.Name;
-            while (true)
-            {
-                member = member.Expression as MemberExpression;
-                if (member == null) break;
-                var dataMember = member.Member.Name;
-                retVal = dataMember + "." + retVal;
-            }
-            return retVal;
+            return member;
         }
 
         public static Action<TR> GetPropertySetter<T, TR>(this Expression<Func<T, TR>> expression, T obj)
