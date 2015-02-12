@@ -17,8 +17,11 @@ namespace Bindery.Tests.TestClasses
         public Func<TestViewModel, bool> CanExecuteCondition { get; set; }
         public Action<dynamic> ExecuteAction { get; set; }
 
+        public object ExecutionParameter { get; set; }
+
         public override bool CanExecute(object parameter)
         {
+            ExecutionParameter = parameter;
             return CanExecuteCondition(ViewModel);
         }
 

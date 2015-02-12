@@ -49,13 +49,13 @@ namespace Bindery.Implementations
 
             // Add subscription to control's Click event
             var click = control.CreateClickObservable();
-            var clickSubscription = click.Subscribe(e => command.ExecuteIfValid(getParameter));
+            var clickSubscription = click.Subscribe(e => command.ExecuteIfValid(getParameter()));
             AddSubscription(clickSubscription);
 
             // Add subscription to command's CanExecuteChanged event
             var canExecuteChanges = command.CreateCanExecuteChangedObservable();
             var subscription = canExecuteChanges
-                .Subscribe(e => Invoker.Current.Invoke(control, () => control.Enabled = command.CanExecute(getParameter)));
+                .Subscribe(e => Invoker.Current.Invoke(control, () => control.Enabled = command.CanExecute(getParameter())));
             AddSubscription(subscription);
 
             return this;

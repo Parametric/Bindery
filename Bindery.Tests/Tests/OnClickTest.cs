@@ -97,5 +97,33 @@ namespace Bindery.Tests.Tests
             // Assert
             Assert.That(actionCalled, Is.True);
         }
+
+        [Test]
+        public void OnClickCommandWithParameter()
+        {
+            // Arrange
+            const string parameter = "test";
+            _binder.Control(_control).OnClick(_command, parameter);
+
+            // Act
+            _control.PerformClick();
+
+            // Assert
+            Assert.That(_command.ExecutionParameter, Is.EqualTo(parameter));
+        }
+
+        [Test]
+        public void OnClickCommandWithParameterFunction()
+        {
+            // Arrange
+            const string parameter = "test";
+            _binder.Control(_control).OnClick(_command, () => parameter);
+
+            // Act
+            _control.PerformClick();
+
+            // Assert
+            Assert.That(_command.ExecutionParameter, Is.EqualTo(parameter));
+        }
     }
 }
