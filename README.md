@@ -62,14 +62,14 @@ binder.Control(button).OnClick(command);
 ```C#
 ICommand command = new CommandImplementation(viewModel);
 binder.Control(form).OnEvent<MouseEventArgs>("MouseMove")
-  .Transform(o => o.Where(e => e.Button==MouseButtons.Left).Select(e => new {e.X, e.Y})) 
+  .Transform(o => o.Where(ctx => ctx.Args.Button==MouseButtons.Left).Select(ctx => new {ctx.Args.X, ctx.Args.Y})) 
   // Mouse coords are passed to command.Execute()
   .Execute(command);
 ```
 ##### Bind a form's `MouseMove` event arguments to a view model property
 ```C#
 binder.Control(form).OnEvent<MouseEventArgs>("MouseMove")
-  .Transform(o => o.Select(e => new MyCoord{X = e.X, Y = e.Y}))
+  .Transform(o => o.Select(ctx => new MyCoord{X = ctx.Args.X, Y = ctx.Args.Y}))
   .Set(vm => vm.CurrentMouseCoords);
 ```
 ##### Bind to a non-control target object
@@ -85,11 +85,11 @@ binder.OnPropertyChanged(vm => vm.ErrorMessage).Subscribe(msg => DisplayErrorDia
 ```
 ##### Subscribe to a button's `Click` event to close the form
 ```C#
-binder.Control(cancelButton).OnClick().Subscribe(e => form.Close());
+binder.Control(cancelButton).OnClick().Subscribe(ctx => form.Close());
 ```
 ##### Subscribe to a form's `Closed` event to dispose of the binder
 ```C#
-binder.Control(form).OnEvent("Closed").Subscribe(e => binder.Dispose());
+binder.Control(form).OnEvent("Closed").Subscribe(ctx => binder.Dispose());
 ```
 ##### Create an observable subscription to execute a command
 ```C#
@@ -110,7 +110,7 @@ binder.Observe(viewModel.Observable).Subscribe(
 ```C#
 IObservable<string> mouseMoveButtons =
   Create.ObservableFor(form).Event<MouseEventArgs>("MouseMove")
-       .Select(e => Convert.ToString(e.Button));
+       .Select(ctx => Convert.ToString(ctx.Args.Button));
 ```
 ### Commands
 
