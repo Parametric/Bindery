@@ -12,7 +12,7 @@ namespace Bindery.Interfaces
         /// </summary>
         /// <param name="eventName">The name of the event</param>
         /// <returns>An observable</returns>
-        IObservable<EventArgs> Event(string eventName);
+        IObservable<EventContext<EventArgs>> Event(string eventName);
 
         /// <summary>
         ///     Create an IObservable{TEventArgs} for an event
@@ -20,6 +20,6 @@ namespace Bindery.Interfaces
         /// <typeparam name="TEventArgs">The type of the event's argument parameter</typeparam>
         /// <param name="eventName">The name of the event</param>
         /// <returns>An observable</returns>
-        IObservable<TEventArgs> Event<TEventArgs>(string eventName);
+        IObservable<EventContext<TEventArgs>> Event<TEventArgs>(string eventName);
     }
 }

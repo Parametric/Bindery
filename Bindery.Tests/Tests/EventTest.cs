@@ -142,7 +142,7 @@ namespace Bindery.Tests.Tests
             _command.CanExecuteCondition = vm => commandEnabled;
             _binder.Control(_button)
                 .OnEvent<MouseEventArgs>("MouseMove")
-                .Transform(o => o.Select(e => e.X))
+                .Transform(o => o.Select(e => e.Args.X))
                 .Execute(_command);
 
             // Act
@@ -162,7 +162,7 @@ namespace Bindery.Tests.Tests
         {
             // Arrange
             _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove")
-                .Transform(o => o.Select(e => Convert.ToString(e.Button)))
+                .Transform(o => o.Select(x => Convert.ToString(x.Args.Button)))
                 .Set(vm => vm.StringValue);
             if (!binderActiveDuringEvent)
                 _binder.Dispose();
@@ -171,6 +171,26 @@ namespace Bindery.Tests.Tests
             var expectedValue = expectUpdated ? "Right" : null;
             Assert.That(_viewModel.StringValue, Is.EqualTo(expectedValue));
         }
+
+        [Test]
+        public void AccessFullEventParameters()
+        {
+            // Arrange
+            Control sentBy = null;
+            var mouseButtons = MouseButtons.None;
+            _binder.Control(_button).OnEvent("Click").Subscribe(e => sentBy = (Control) e.Sender);
+            _binder.Control(_button).OnEvent<MouseEventArgs>("MouseMove")
+                .Subscribe(x => mouseButtons = x.Args.Button);
+
+                // Act
+            _button.PerformClick();
+            _button.PerformMouseMove(new MouseEventArgs(MouseButtons.Right, 0, 0, 0, 0));
+
+            // Assert
+            Assert.That(sentBy, Is.SameAs(_button));
+            Assert.That(mouseButtons, Is.EqualTo(MouseButtons.Right));
+        }
+
 
         [Test]
         public void MemberDoesNotExist()

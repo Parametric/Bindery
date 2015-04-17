@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;
 using System.Windows.Forms;
+using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
@@ -33,13 +34,13 @@ namespace Bindery.Implementations
             return new TargetPropertyBinder<TSource, TTarget, TProp>(this, member);
         }
 
-        public IObservableBinder<TSource, EventArgs> OnEvent(string eventName)
+        public IObservableBinder<TSource, EventContext<EventArgs>> OnEvent(string eventName)
         {
             var observable = Create.ObservableFor(Target).Event(eventName);
             return CreateObservableBinder(observable);
         }
 
-        public IObservableBinder<TSource, TEventArgs> OnEvent<TEventArgs>(string eventName)
+        public IObservableBinder<TSource, EventContext<TEventArgs>> OnEvent<TEventArgs>(string eventName)
         {
             var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);
             return CreateObservableBinder(observable);

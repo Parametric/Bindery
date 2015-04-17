@@ -68,6 +68,7 @@
     <Compile Include="Interfaces\Binders\ISourceBinder.cs" />
     <Compile Include="Interfaces\Binders\ITargetBinder.cs" />
     <Compile Include="Interfaces\Binders\ITargetPropertyBinder.cs" />
+    <Compile Include="Interfaces\EventContext.cs" />
     <Compile Include="Interfaces\IControlStringPropertyBinder.cs" />
     <Compile Include="Interfaces\IEventObservableFactory.cs" />
     <Compile Include="Interfaces\IInvoker.cs" />

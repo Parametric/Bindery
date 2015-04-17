@@ -25,7 +25,7 @@ namespace Bindery.Interfaces.Binders
         /// </summary>
         /// <param name="eventName">The name of the event</param>
         /// <returns>An observable binder</returns>
-        IObservableBinder<TSource, EventArgs> OnEvent(string eventName);
+        IObservableBinder<TSource, EventContext<EventArgs>> OnEvent(string eventName);
 
         /// <summary>
         ///     Create an IObservable{TEventArgs} for one of the target's events
@@ -33,6 +33,6 @@ namespace Bindery.Interfaces.Binders
         /// <typeparam name="TEventArgs">The type of the event's argument parameter</typeparam>
         /// <param name="eventName">The name of the event</param>
         /// <returns>An observable binder</returns>
-        IObservableBinder<TSource, TEventArgs> OnEvent<TEventArgs>(string eventName);
+        IObservableBinder<TSource, EventContext<TEventArgs>> OnEvent<TEventArgs>(string eventName);
     }
 }

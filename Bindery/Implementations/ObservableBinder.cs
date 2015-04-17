@@ -4,6 +4,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using Bindery.Extensions;
+using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 using Bindery.Interfaces.Subscriptions;
 
