@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
@@ -40,6 +41,16 @@ namespace Bindery.Implementations
             return CreateObservableBinder(observable);
         }
 
+        public IObservableBinder<TSource, EventContext<TEventArgs>> OnEvent<TEventArgs>()
+        {
+            var tEventArgsName = typeof(TEventArgs).Name;
+            var match = Regex.Match(tEventArgsName, "(.*)EventArgs");
+            if (!match.Success)
+                throw new ArgumentException(string.Format("Unable to determine event name from event argument type {0}.", tEventArgsName));
+            var eventName = match.Groups[1].Value;
+            var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);
+            return CreateObservableBinder(observable);
+        }
         public IObservableBinder<TSource, EventContext<TEventArgs>> OnEvent<TEventArgs>(string eventName)
         {
             var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);

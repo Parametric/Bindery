@@ -60,7 +60,7 @@ namespace Bindery.Tests.Tests
             var executedCount = 0;
             _command.ExecuteAction = vm => executedCount++;
 
-            _binder.Control(_button).OnEvent<TestEventArgs>("Test").Execute(_command);
+            _binder.Control(_button).OnEvent<TestEventArgs>().Execute(_command);
 
             // Act
             _button.PerformTest(new TestEventArgs());

@@ -7,3 +7,4 @@ obj/
 *.ncrunchsolution
 *.ncrunchproject
 /_NCrunch_Bindery
+.vs/config/applicationhost.config

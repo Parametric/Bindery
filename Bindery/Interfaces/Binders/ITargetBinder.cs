@@ -21,11 +21,19 @@ namespace Bindery.Interfaces.Binders
         ITargetPropertyBinder<TSource, TTarget, TProp> Property<TProp>(Expression<Func<TTarget, TProp>> member);
 
         /// <summary>
-        ///     Create an IObservable{EventContex{EventArgs}} for one of the target's events
+        ///     Create an IObservable{EventContext{EventArgs}} for one of the target's events
         /// </summary>
         /// <param name="eventName">The name of the event</param>
         /// <returns>An observable binder</returns>
         IObservableBinder<TSource, EventContext<EventArgs>> OnEvent(string eventName);
+
+        /// <summary>
+        ///     Create an IObservable{EventContext{TEventArgs}} for one of the target's events
+        /// </summary>
+        /// <typeparam name="TEventArgs">The type of the event's argument parameter</typeparam>
+        /// <returns>An observable binder</returns>
+        /// <remarks>The event name is determined based on TEventArgs</remarks>
+        IObservableBinder<TSource, EventContext<TEventArgs>> OnEvent<TEventArgs>();
 
         /// <summary>
         ///     Create an IObservable{EventContext{TEventArgs}} for one of the target's events
