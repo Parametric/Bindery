@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{08231C0B-67C7-40E8-BE33-69F2DBA60E66}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{145088DD-3C6F-4B3B-8CFE-5C1F63990160}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		Bindery.Commands.nuspec = Bindery.Commands.nuspec
 		Bindery.nuspec = Bindery.nuspec
 		README.md = README.md
@@ -42,5 +43,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9F3C0707-3869-4EEE-8310-11E29702E2F7} = {08231C0B-67C7-40E8-BE33-69F2DBA60E66}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA18A083-B692-46D7-8DD9-E4FA4E34B86A}
 	EndGlobalSection
 EndGlobal

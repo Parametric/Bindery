@@ -1,10 +1,11 @@
 packages/
 bin/
 obj/
+.vs/
 *.DotSettings
 *.suo
 *.user
 *.ncrunchsolution
 *.ncrunchproject
 /_NCrunch_Bindery
-.vs/config/applicationhost.config
+
