@@ -7,15 +7,18 @@
     <owners>Parametric Portfolio Associates</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>WinForms MVVM binding library</description>
-    <copyright>Copyright 2014</copyright>
+    <copyright>Copyright 2019</copyright>
     <tags>WinForms MVVM Binding</tags>
     <dependencies>
-      <dependency id="Rx-Linq" version="2.2.5" />
+      <dependency id="System.Reactive" version="4.2.0" />
     </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Windows.Forms"  />
+    </frameworkAssemblies>  
   </metadata>
   <files>
-    <file src="Bindery\bin\Release\Bindery.dll" target="lib/net45" />
-    <file src="Bindery\bin\Release\Bindery.pdb" target="lib/net45" />
-    <file src="Bindery\bin\Release\Bindery.XML" target="lib/net45" />
+    <file src="Bindery\bin\Release\Bindery.dll" target="lib/net461" />
+    <file src="Bindery\bin\Release\Bindery.pdb" target="lib/net461" />
+    <file src="Bindery\bin\Release\Bindery.XML" target="lib/net461" />
   </files>
 </package>

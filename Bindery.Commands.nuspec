@@ -7,15 +7,15 @@
     <owners>Parametric Portfolio Associates</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Base implementations of ICommand</description>
-    <copyright>Copyright 2014</copyright>
+    <copyright>Copyright 2019</copyright>
     <tags>Command</tags>
     <dependencies>
-      <dependency id="Rx-Linq" version="2.2.5" />
+      <dependency id="System.Reactive" version="4.2.0" />
     </dependencies>
   </metadata>
   <files>
-    <file src="Bindery.Commands\bin\Release\Bindery.Commands.dll" target="lib/net45" />
-    <file src="Bindery.Commands\bin\Release\Bindery.Commands.pdb" target="lib/net45" />
-    <file src="Bindery.Commands\bin\Release\Bindery.Commands.XML" target="lib/net45" />
+    <file src="Bindery.Commands\bin\Release\Bindery.Commands.dll" target="lib" />
+    <file src="Bindery.Commands\bin\Release\Bindery.Commands.pdb" target="lib" />
+    <file src="Bindery.Commands\bin\Release\Bindery.Commands.XML" target="lib" />
   </files>
 </package>
