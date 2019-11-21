@@ -19,6 +19,6 @@
   <files>
     <file src="Bindery\bin\Release\Bindery.dll" target="lib/net461" />
     <file src="Bindery\bin\Release\Bindery.pdb" target="lib/net461" />
-    <file src="Bindery\bin\Release\Bindery.XML" target="lib/net461" />
+    <file src="Bindery\bin\Release\Bindery.xml" target="lib/net461" />
   </files>
 </package>

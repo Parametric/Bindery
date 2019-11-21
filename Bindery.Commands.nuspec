@@ -16,6 +16,6 @@
   <files>
     <file src="Bindery.Commands\bin\Release\Bindery.Commands.dll" target="lib" />
     <file src="Bindery.Commands\bin\Release\Bindery.Commands.pdb" target="lib" />
-    <file src="Bindery.Commands\bin\Release\Bindery.Commands.XML" target="lib" />
+    <file src="Bindery.Commands\bin\Release\Bindery.Commands.xml" target="lib" />
   </files>
 </package>
