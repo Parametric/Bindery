@@ -192,5 +192,61 @@ namespace Bindery.Tests.Tests
             Assert.That(actionThread.ManagedThreadId, Is.EqualTo(observableThread.ManagedThreadId), 
                 "Expected subscription action to run on same thread as observable.");
         }
+
+        [Test]
+        public void SimpleAsyncSubscription()
+        {
+            // Arrange
+            var task = new Task<int>(() => 5);
+            _viewModel.MyObservable = task.ToObservable();
+
+            var result = 0;
+            _binder.Observe(_viewModel.MyObservable).SubscribeAsync(SetResultAsync);
+
+            // Act
+            task.Start();
+            task.Wait();
+
+            var expectedResult = 5;
+            ConditionalWait.WaitFor(() => result == expectedResult);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+
+            async Task SetResultAsync(int value)
+            {
+                await Task.Run(() => { result = value; });
+            }
+        }
+
+        [Test]
+        public void ComplexAsyncSubscription()
+        {
+            // Arrange
+            var task = new Task<int>(() => 5);
+            _viewModel.MyObservable = task.ToObservable();
+
+            var result = 0;
+            var complete = false;
+            _binder.Observe(_viewModel.MyObservable)
+                .Subscribe(ctx => ctx.OnNextAsync(SetResultAsync).OnComplete(() => complete = true));
+
+            // Act
+            task.Start();
+            task.Wait();
+
+            var expectedResult = 5;
+            ConditionalWait.WaitFor(() => complete && result == expectedResult);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(expectedResult));
+            Assert.That(complete, Is.True);
+
+            async Task SetResultAsync(int value)
+            {
+                await Task.Run(() => { result = value; });
+            }
+
+        }
     }
 }

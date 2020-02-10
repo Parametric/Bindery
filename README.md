@@ -103,6 +103,10 @@ binder.Observe(viewModel.Observable).Subscribe(
        .OnError(ex => HandleException(ex))
        .OnComplete(() => OnCompleteAction()));
 ```
+##### Create an observable subscription to call an async method
+```C#
+binder.Observe(viewModel.Observable).SubscribeAsync(msg => service.NotifyAsync(msg.Value));
+```
 ### Event to observable conversion
 ```C#
 IObservable<string> mouseMoveButtons =

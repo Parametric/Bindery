@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Bindery.Interfaces.Subscriptions;
 
@@ -30,6 +31,13 @@ namespace Bindery.Interfaces.Binders
         ///     subscription
         /// </remarks>
         ISourceBinder<TSource> Subscribe(Func<ISubscriptionContext<TArg>, ISubscriptionComplete> subscription);
+
+        /// <summary>
+        ///     Subscribe to the observable
+        /// </summary>
+        /// <param name="onNext">An asynchronous action to take on IObservable.OnNext</param>
+        /// <returns>The parent source binder</returns>
+        ISourceBinder<TSource> SubscribeAsync(Func<TArg, Task> onNext);
 
         /// <summary>
         ///     Create a subscription that executes a command
@@ -76,5 +84,6 @@ namespace Bindery.Interfaces.Binders
         /// <param name="scheduler">The scheduler</param>
         /// <returns>This binder</returns>
         IObservableBinder<TSource, TArg> ObserveOn(IScheduler scheduler);
+
     }
 }

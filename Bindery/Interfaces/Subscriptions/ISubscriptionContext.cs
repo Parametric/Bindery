@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Bindery.Interfaces.Subscriptions
 {
@@ -14,5 +15,7 @@ namespace Bindery.Interfaces.Subscriptions
         /// <param name="action">The action</param>
         /// <returns>The next step in the subscription syntax</returns>
         IOnNextDefined OnNext(Action<T> action);
+
+        IOnNextDefined OnNextAsync(Func<T, Task> onNext);
     }
 }
