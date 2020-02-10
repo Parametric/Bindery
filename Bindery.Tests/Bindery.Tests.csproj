@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bindery.Commands\Bindery.Commands.csproj" />
     <ProjectReference Include="..\Bindery\Bindery.csproj" />
   </ItemGroup>
 
