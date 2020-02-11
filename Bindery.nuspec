@@ -10,7 +10,7 @@
     <copyright>Copyright 2019</copyright>
     <tags>WinForms MVVM Binding</tags>
     <dependencies>
-      <dependency id="System.Reactive" version="4.2.0" />
+      <dependency id="System.Reactive" version="4.3.2" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Windows.Forms"  />
