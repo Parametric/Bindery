@@ -7,7 +7,7 @@ Projects
 * **Bindery:** 
   * Contains the static `Create` factory class 
   * Dependent on the [System.Reactive](https://www.nuget.org/packages/System.Reactive/) package
-  * Please Note that it may be necessary to install the [System.Reactive.Compatibility](https://www.nuget.org/packages/System.Reactive.Compatibility/) package in the main project of 
+  * Please note that it may be necessary to install the [System.Reactive.Compatibility](https://www.nuget.org/packages/System.Reactive.Compatibility/) package in the main project of 
     a consuming application in order to resolve conflicts between the [System.Reactive](https://www.nuget.org/packages/System.Reactive/) package 
     and older versions of `System.Reactive`-related libraries (such as `Sytem.Reactive.Linq`).
 
