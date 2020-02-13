@@ -6,28 +6,30 @@ Projects
 --------
 * **Bindery:** 
   * Contains the static `Create` factory class 
-  * Dependent on the `Rx-Linq` package
-* **Bindery.Commands:** 
-  * Contains `CommandBase` and `EnablableCommandBase` (abstract base implementations of ICommand)
-  * Dependent on the `Rx-Linq` package
+  * Dependent on the [System.Reactive](https://www.nuget.org/packages/System.Reactive/) package
+  * Please note that it may be necessary to install the [System.Reactive.Compatibility](https://www.nuget.org/packages/System.Reactive.Compatibility/) package in the main project of 
+    a consuming application in order to resolve conflicts between the [System.Reactive](https://www.nuget.org/packages/System.Reactive/) package 
+    and older versions of `System.Reactive`-related libraries (such as `Sytem.Reactive.Linq`).
 
 Assumptions
 -----------
-* A view model is a binding source, an object of any type. Full binding functionality requires a view model to properly implement `System.ComponentModel.INotifyPropertyChanged`.
-* A target is a binding target, an object of any type. A target only supports a limited set of binding functionality.
-* A control is a target that implements `System.Windows.Forms.IBindableComponent`. A control supports the full range of binding functionality.
-* A command is an object that implements `System.Windows.Input.ICommand`.
+* A **View Model** is a binding source, an object of any type. Full binding functionality requires a View Model to properly implement
+ [INotifyPropertyChanged](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.inotifypropertychanged).
+* A **Control** is a binding target, an object that implements [IBindableComponent](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.ibindablecomponent). 
+A Control supports the full range of binding functionality.
+* A **Target** is a binding target, an object of any type. A Target only supports a limited set of binding functionality.
+* A **Command** is an object that implements [ICommand](https://docs.microsoft.com/en-us/dotnet/api/system.windows.input.icommand).
 
 Code Examples
 -------------
 ### Binding
 ##### Create a root binder for the view model
 ```C#
-var binder = Create.Binder(viewModel);
+var binder = Bindery.Create.Binder(viewModel);
 ```
 ##### Create a root binder and set the default subscription scheduler to schedule actions on the form's thread
 ```C#
-var binder = Create.Binder(viewModel, new ControlScheduler(form));
+var binder = Bindery.Create.Binder(viewModel, new ControlScheduler(form));
 ```
 ##### Dispose of a binder
 Diposing of a binder removes all bindings and disposes of all subcriptions created by the binder.
@@ -106,24 +108,13 @@ binder.Observe(viewModel.Observable).Subscribe(
        .OnError(ex => HandleException(ex))
        .OnComplete(() => OnCompleteAction()));
 ```
+##### Create an observable subscription to call an async method
+```C#
+binder.Observe(viewModel.Observable).SubscribeAsync(msg => command.ExecuteAsync(msg.Value));
+```
 ### Event to observable conversion
 ```C#
 IObservable<string> mouseMoveButtons =
-  Create.ObservableFor(form).Event<MouseEventArgs>("MouseMove")
+  Bindery.Create.ObservableFor(form).Event<MouseEventArgs>("MouseMove")
        .Select(ctx => Convert.ToString(ctx.Args.Button));
 ```
-### Commands
-
-##### CommandBase
-`CommandBase` is an abstract implementation of `System.Windows.Input.ICommand` designed to be useful for MVVM command implementation.
-
-* `Execute()` is abstract and must be implemented by an inheriting class.
-* `CanExecute()` is implemented to return `true` but can be overridden by an inheriting class.
-* The `CanExecuteChanged` event has a protected `OnCanExecuteChanged()` invocator method.
-* A new `ObserveCanExecuteChanges()` method creates an `IObservable<bool>` that publishes the value of `CanExecute()` each time it changes, assuming the `CanExecuteChanged` event is triggered properly.
-
-##### EnablableCommandBase
-`EnablableCommandBase` is an abstract implementation of `CommandBase` that exposes an `Enabled` property. The `Enabled` property:
-
-* Controls the return value of `CanExecute()`
-* Raises the `CanExecuteChanged` event when its value changes

@@ -1,95 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{93F19FFF-4AD3-4908-A25E-1CD5382A9DA5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Bindery</RootNamespace>
-    <AssemblyName>Bindery</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net461</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Bindery.xml</DocumentationFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Reactive.Core">
-      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq">
-      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Create.cs" />
-    <Compile Include="Expressions\ExpressionVisitor.cs" />
-    <Compile Include="Expressions\NotifyPropertyChangedExpressionAnalyzer.cs" />
-    <Compile Include="Expressions\NotifyPropertySource.cs" />
-    <Compile Include="Extensions\CommandExtensions.cs" />
-    <Compile Include="Extensions\ControlExtensions.cs" />
-    <Compile Include="Extensions\ExpressionExtensions.cs" />
-    <Compile Include="Extensions\NotifyPropertyChangedExtensions.cs" />
-    <Compile Include="Implementations\ControlBinder.cs" />
-    <Compile Include="Implementations\ControlPropertyBinder.cs" />
-    <Compile Include="Implementations\ControlStringPropertyBinder.cs" />
-    <Compile Include="Implementations\EventObservableFactory.cs" />
-    <Compile Include="Implementations\ObservableBinder.cs" />
-    <Compile Include="Implementations\SourceBinder.cs" />
-    <Compile Include="Implementations\SubscriptionContext.cs" />
-    <Compile Include="Implementations\TargetBinder.cs" />
-    <Compile Include="Implementations\TargetPropertyBinder.cs" />
-    <Compile Include="Interfaces\Binders\IControlBinder.cs" />
-    <Compile Include="Interfaces\Binders\IControlPropertyBinder.cs" />
-    <Compile Include="Interfaces\Binders\IObservableBinder.cs" />
-    <Compile Include="Interfaces\Binders\ISourceBinder.cs" />
-    <Compile Include="Interfaces\Binders\ITargetBinder.cs" />
-    <Compile Include="Interfaces\Binders\ITargetPropertyBinder.cs" />
-    <Compile Include="Interfaces\EventContext.cs" />
-    <Compile Include="Interfaces\IControlStringPropertyBinder.cs" />
-    <Compile Include="Interfaces\IEventObservableFactory.cs" />
-    <Compile Include="Interfaces\IInvoker.cs" />
-    <Compile Include="Interfaces\Subscriptions\IOnCompleteDefined.cs" />
-    <Compile Include="Interfaces\Subscriptions\IOnErrorDefined.cs" />
-    <Compile Include="Interfaces\Subscriptions\IOnNextDefined.cs" />
-    <Compile Include="Interfaces\Subscriptions\ISubscriptionComplete.cs" />
-    <Compile Include="Interfaces\Subscriptions\ISubscriptionContext.cs" />
-    <Compile Include="Invoker.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <PackageReference Include="System.Reactive" Version="4.3.2" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

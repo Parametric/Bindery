@@ -2,9 +2,9 @@ using System;
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Bindery.Extensions;
-using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 using Bindery.Interfaces.Subscriptions;
 
@@ -44,12 +44,20 @@ namespace Bindery.Implementations
 
         public ISourceBinder<TSource> Subscribe(Func<ISubscriptionContext<TArg>, ISubscriptionComplete> subscription)
         {
-            var context = new SubscriptionContext<TArg>();
+            var context = new SubscriptionContext<TArg>(_scheduler);
             subscription(context);
             var observable = GetObservableForSubscription();
             var disposable = context.Subscribe(observable);
             if (disposable != null)
                 _parent.RegisterDisposable(disposable);
+            return _parent;
+        }
+
+        public ISourceBinder<TSource> SubscribeAsync(Func<TArg, Task> onNext)
+        {
+            var observable = GetObservableForSubscription();
+            var subscription = observable.CreateObservableForAsyncAction(onNext, _scheduler).Subscribe();
+            _parent.RegisterDisposable(subscription);
             return _parent;
         }
 

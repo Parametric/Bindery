@@ -135,7 +135,7 @@ namespace Bindery.Tests.Tests
         {
             var ex = Assert.Throws<ArgumentException>(
                 () => _binder.Control(_userControl).Property(c => c.Text).Set(vm => vm.MyMethod()));
-            Assert.That(ex.Message, Is.StringStarting("Expression 'vm.MyMethod()' is not a member access"));
+            Assert.That(ex.Message, Does.StartWith("Expression 'vm.MyMethod()' is not a member access"));
         }
 
         [Test]

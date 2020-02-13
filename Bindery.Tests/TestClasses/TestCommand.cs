@@ -1,13 +1,14 @@
 using System;
+using System.Windows.Input;
 
 namespace Bindery.Tests.TestClasses
 {
-    public class TestCommand : CommandBase
+    public class TestCommand : ICommand
     {
         public TestCommand(TestViewModel viewModel)
         {
             ViewModel = viewModel;
-            ViewModel.PropertyChanged += (sender, e) => OnCanExecuteChanged();
+            ViewModel.PropertyChanged += (sender, e) => CanExecuteChanged?.Invoke(sender, e);
             ExecuteAction = parm => { };
             CanExecuteCondition = vm => true;
         }
@@ -19,15 +20,17 @@ namespace Bindery.Tests.TestClasses
 
         public object ExecutionParameter { get; set; }
 
-        public override bool CanExecute(object parameter)
+        public bool CanExecute(object parameter)
         {
             ExecutionParameter = parameter;
             return CanExecuteCondition(ViewModel);
         }
 
-        public override void Execute(object parameter)
+        public void Execute(object parameter)
         {
             ExecuteAction(parameter);
         }
+
+        public event EventHandler CanExecuteChanged;
     }
 }

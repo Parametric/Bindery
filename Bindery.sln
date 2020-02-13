@@ -1,22 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{08231C0B-67C7-40E8-BE33-69F2DBA60E66}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{145088DD-3C6F-4B3B-8CFE-5C1F63990160}"
 	ProjectSection(SolutionItems) = preProject
-		Bindery.Commands.nuspec = Bindery.Commands.nuspec
+		.gitignore = .gitignore
 		Bindery.nuspec = Bindery.nuspec
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bindery.Tests", "Bindery.Tests\Bindery.Tests.csproj", "{9F3C0707-3869-4EEE-8310-11E29702E2F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bindery.Tests", "Bindery.Tests\Bindery.Tests.csproj", "{9F3C0707-3869-4EEE-8310-11E29702E2F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bindery.Commands", "Bindery.Commands\Bindery.Commands.csproj", "{99A16972-1566-427B-A0B0-2AAE420E34FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bindery", "Bindery\Bindery.csproj", "{93F19FFF-4AD3-4908-A25E-1CD5382A9DA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bindery", "Bindery\Bindery.csproj", "{93F19FFF-4AD3-4908-A25E-1CD5382A9DA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,10 +26,6 @@ Global
 		{9F3C0707-3869-4EEE-8310-11E29702E2F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F3C0707-3869-4EEE-8310-11E29702E2F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F3C0707-3869-4EEE-8310-11E29702E2F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99A16972-1566-427B-A0B0-2AAE420E34FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99A16972-1566-427B-A0B0-2AAE420E34FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99A16972-1566-427B-A0B0-2AAE420E34FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99A16972-1566-427B-A0B0-2AAE420E34FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93F19FFF-4AD3-4908-A25E-1CD5382A9DA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93F19FFF-4AD3-4908-A25E-1CD5382A9DA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93F19FFF-4AD3-4908-A25E-1CD5382A9DA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9F3C0707-3869-4EEE-8310-11E29702E2F7} = {08231C0B-67C7-40E8-BE33-69F2DBA60E66}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA18A083-B692-46D7-8DD9-E4FA4E34B86A}
 	EndGlobalSection
 EndGlobal
