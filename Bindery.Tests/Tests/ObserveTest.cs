@@ -246,7 +246,46 @@ namespace Bindery.Tests.Tests
             {
                 await Task.Run(() => { result = value; });
             }
+        }
 
+        [Test]
+        public void OnNextNullArgumentException()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(
+                () => _binder.Observe(_viewModel.MyObservable)
+                    .Subscribe(ctx => ctx.OnNext(null))
+            );
+            Assert.That(ex.ParamName, Is.EqualTo("onNext"));
+        }
+
+        [Test]
+        public void OnNextAsyncNullArgumentException()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(
+                () => _binder.Observe(_viewModel.MyObservable)
+                    .Subscribe(ctx => ctx.OnNextAsync(null))
+            );
+            Assert.That(ex.ParamName, Is.EqualTo("onNext"));
+        }
+
+        [Test]
+        public void OnErrorNullArgumentException()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(
+                () => _binder.Observe(_viewModel.MyObservable).Subscribe(
+                    ctx => ctx.OnNext(x => { }).OnError(null))
+            );
+            Assert.That(ex.ParamName, Is.EqualTo("onError"));
+        }
+
+        [Test]
+        public void OnCompleteNullArgumentException()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(
+                () => _binder.Observe(_viewModel.MyObservable).Subscribe(
+                    ctx => ctx.OnNext(x => { }).OnError(_ => { }).OnComplete(null))
+            );
+            Assert.That(ex.ParamName, Is.EqualTo("onCompleted"));
         }
     }
 }
