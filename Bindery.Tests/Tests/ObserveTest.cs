@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
@@ -171,26 +173,25 @@ namespace Bindery.Tests.Tests
         {
             // Arrange
             var binder = Create.Binder(_viewModel, Scheduler.Default);
-            Thread observableThread = null;
-            var task = new Task<int>(() =>
+            var observableThreadId = 0;
+            var observable = Observable.Create<int>(o =>
             {
-                observableThread = Thread.CurrentThread;
-                return 5;
-            });
+                observableThreadId = Thread.CurrentThread.ManagedThreadId;
+                o.OnNext(5);
+                return Disposable.Empty;
+            }).SubscribeOn(NewThreadScheduler.Default);
 
-            Thread actionThread = null;
-            binder.Observe(task.ToObservable())
-                .ObserveOn(Scheduler.CurrentThread)
-                .Subscribe(x => actionThread = Thread.CurrentThread);
+            var subscriptionThreadId = 0;
+            binder.Observe(observable)
+                .ObserveOn(Scheduler.CurrentThread) // CurrentThread means observable's thread
+                .Subscribe(x => subscriptionThreadId = Thread.CurrentThread.ManagedThreadId);
 
             // Act
-            task.Start();
-
-            ConditionalWait.WaitFor(() => actionThread != null);
+            ConditionalWait.WaitFor(() => subscriptionThreadId > 0);
 
             // Assert
-            Assert.That(actionThread.ManagedThreadId, Is.EqualTo(observableThread.ManagedThreadId), 
-                "Expected subscription action to run on same thread as observable.");
+            Assert.That(subscriptionThreadId, Is.EqualTo(observableThreadId), 
+                "Expected subscribed action to run on same thread as the observable.");
         }
 
         [Test]

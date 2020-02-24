@@ -19,7 +19,7 @@ namespace Bindery.Implementations
 
         public SubscriptionContext(IScheduler scheduler)
         {
-            _scheduler = scheduler ?? Scheduler.Default;
+            _scheduler = scheduler;
         }
 
         public IOnErrorDefined OnError(Action<Exception> onError)
