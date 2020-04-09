@@ -154,5 +154,27 @@ namespace Bindery.Tests.Tests
             _viewModel.ComplexValue.DecValue = 0;
             Assert.That(_textBox.Text, Is.EqualTo("0"));
         }
+
+        [Test]
+        public void TargetIsAnInterfaceWithExplicitImplementation()
+        {
+            ITestIInterface target = new TestInterfaceImplementation();
+            _viewModel.StringValue = "value #1";
+            _binder.Target(target).Property(t => t.Text).Get(vm => vm.StringValue);
+            Assert.That(target.Text, Is.EqualTo(_viewModel.StringValue));
+
+            _viewModel.StringValue = "value #2";
+            Assert.That(target.Text, Is.EqualTo(_viewModel.StringValue));
+        }
+
+        private interface ITestIInterface
+        {
+            string Text { get; set; }
+        }
+
+        private class TestInterfaceImplementation : ITestIInterface
+        {
+            string ITestIInterface.Text { get; set; }
+        }
     }
 }

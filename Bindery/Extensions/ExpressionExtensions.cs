@@ -62,12 +62,15 @@ namespace Bindery.Extensions
 
         private static Expression GetObjectToAssignTo<T>(T obj, MemberExpression member, ParameterExpression lambdaParameter)
         {
+            var objExpr = Expression.Constant(obj);
+            // Convert to the type that the member belongs to (this handles cases such as accessing an interface's explicit method implementation)
+            var accessExpr = Expression.Convert(objExpr, lambdaParameter.Type);
             if (member.Expression is ParameterExpression)
-                return Expression.Constant(obj);
+                return accessExpr;
 
             var subMember = member.Expression;
             var getSubMember = Expression.Lambda(Expression.GetFuncType(typeof (T), subMember.Type), subMember, lambdaParameter);
-            var assignTo = Expression.Invoke(getSubMember, Expression.Constant(obj));
+            var assignTo = Expression.Invoke(getSubMember, accessExpr);
             return assignTo;
         }
 
