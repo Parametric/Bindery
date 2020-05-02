@@ -5,7 +5,7 @@ Bindery aims to support fluent MVVM binding definition for WinForms applications
 Projects
 --------
 * **Bindery:** 
-  * Contains the static `Create` factory class 
+  * Contains the static `Binder` factory class 
   * Dependent on the [System.Reactive](https://www.nuget.org/packages/System.Reactive/) package
   * Please note that it may be necessary to install the [System.Reactive.Compatibility](https://www.nuget.org/packages/System.Reactive.Compatibility/) package in the main project of 
     a consuming application in order to resolve conflicts between the [System.Reactive](https://www.nuget.org/packages/System.Reactive/) package 
@@ -18,11 +18,9 @@ Assumptions
 * A **Control** is a binding target, an object that implements [IBindableComponent](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.ibindablecomponent). 
 A Control supports the full range of binding functionality.
 * A **Target** is a binding target, an object of any type. A Target only supports a limited set of binding functionality.
-* A **Command** is an object that implements [ICommand](https://docs.microsoft.com/en-us/dotnet/api/system.windows.input.icommand).
-
-Code Examples
 -------------
-### Binding
+# Code Examples
+## Binding
 ##### Create a root binder for the view model
 ```C#
 var binder = Binder.Source(viewModel);
@@ -39,7 +37,7 @@ binder.Dispose();
 ##### Register external disposables with the binder
 This can be used to tie the lifetime of other objects to the binder's lifetime.
 ```C#
-binder.RegisterDisposable(disposableViewModel, disposableCommand);
+binder.RegisterDisposable(disposableViewModel, disposableSubscription);
 ```
 ##### Bind a view model property to a control property
 ```C#
@@ -54,19 +52,16 @@ binder.Control(textBox).Property(c => c.Text).Set(vm => vm.Name);
 ```C#
 binder.Control(textBox).Property(c => c.Text).Get(vm => vm.Age, Convert.ToString);
 ```
-##### Bind a button's `Click` event to a command
-This also "binds" the control's `Enabled` property to the command's `CanExecute` method.
+##### Subscribe to a button's click event
 ```C#
-ICommand command = new CommandImplementation(viewModel);
-binder.Control(button).OnClick(command);
+binder.Control(button).OnClick().Subscribe(_ => DoSomething());
 ```
-##### Bind a form's `MouseMove` event to a command
+##### Subscribe to a form's `MouseMove` event
 ```C#
-ICommand command = new CommandImplementation(viewModel);
 binder.Control(form).OnEvent<MouseEventArgs>(nameof(form.MouseMove))
   .Transform(o => o.Where(e => e.Args.Button==MouseButtons.Left).Select(e => new {e.Args.X, e.Args.Y})) 
-  // Mouse coords are passed to command.Execute()
-  .Execute(command);
+  // Mouse coords are passed
+  .Subscribe(a => DoSomething(a.X, a.Y));
 ```
 ##### Bind a form's `MouseMove` event arguments to a view model property
 ```C#
@@ -75,7 +70,7 @@ binder.Control(form).OnEvent<MouseEventArgs>(nameof(form.MouseMove))
   .Set(vm => vm.CurrentMouseCoords);
 ```
 ##### Bind to a non-control target object
-Non-control targets support a limited set of binding options. Two-way binding and one-way binding from target to source are not supported.
+Non-control targets only support one-way binding from source to target.
 ```C#
 binder.Target(target).Property(t => t.Status).Get(vm => vm.Status);
 ```
@@ -93,13 +88,11 @@ binder.Control(cancelButton).OnClick().Subscribe(_ => form.Close());
 ```C#
 binder.Control(form).OnEvent(nameof(form.Closed)).Subscribe(_ => binder.Dispose());
 ```
-##### Create an observable subscription to execute a command
+##### Create an observable subscription
 ```C#
-binder.Observe(viewModel.Observable).Execute(command);
-```
-##### Overriding the default scheduler to execute the command immediately on each observed object
-```C#
-binder.Observe(viewModel.Observable).ObserveOn(Scheduler.Immediate).Execute(command);
+binder.Observe(viewModel.Observable).Subscribe(_ => DoSomething());
+// Override the default scheduler
+binder.Observe(viewModel.Observable).ObserveOn(Scheduler.Immediate).Subscribe(_ => DoSomethingImmediately());
 ```
 ##### Subscribe to an observable with full subscription syntax support
 ```C#
@@ -112,13 +105,13 @@ binder.Observe(viewModel.Observable).Subscribe(
 ```C#
 binder.Observe(viewModel.Observable).SubscribeAsync(msg => command.ExecuteAsync(msg.Value));
 ```
-### Event to observable conversion
+## Event to observable conversion
 ```C#
 IObservable<string> mouseMoveButtons =
   Binder.Observe(form).Event<MouseEventArgs>(nameof(form.MouseMove))
        .Select(e => Convert.ToString(e.Args.Button));
 ```
-### Send value to `IObservable`
+## Send value to `IObservable`
 A view model will often want to send messages to the UI through an `IObservable` property. 
 It can be useful to have the underlying value of that property also implement `IObserver`, e.g. by using `System.Reactive.Subjects.Subject`.
 ```C#

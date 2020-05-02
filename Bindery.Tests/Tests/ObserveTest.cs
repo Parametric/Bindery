@@ -19,7 +19,6 @@ namespace Bindery.Tests.Tests
         public void BeforeEach()
         {
             _viewModel = new TestViewModel();
-            _command = new TestCommand(_viewModel);
             _button = new TestButton();
             _binder = Binder.Source(_viewModel);
         }
@@ -34,19 +33,14 @@ namespace Bindery.Tests.Tests
         private TestViewModel _viewModel;
         private TestButton _button;
         private ISourceBinder<TestViewModel> _binder;
-        private TestCommand _command;
 
-        [TestCase(true, true, true)]
-        [TestCase(false, false, false)]
-        [TestCase(true, false, false)]
-        [TestCase(false, true, false)]
-        public void ObserveControlAndSendToCommand(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void ObserveControlAndSendToCommand(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
             string mouseMoveButton = null;
-            _command.ExecuteAction = param => { mouseMoveButton = param; };
-            _command.CanExecuteCondition = vm => commandEnabled;
-            _binder.Observe(_button.MouseMoveButton).Execute(_command);
+            _binder.Observe(_button.MouseMoveButton).Subscribe(x => mouseMoveButton = x);
 
             // Act
             if (!binderActiveDuringEvent) _binder.Dispose();

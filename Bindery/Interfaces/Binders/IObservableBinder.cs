@@ -40,30 +40,6 @@ namespace Bindery.Interfaces.Binders
         ISourceBinder<TSource> SubscribeAsync(Func<TArg, Task> onNext);
 
         /// <summary>
-        ///     Create a subscription that executes a command
-        /// </summary>
-        /// <param name="command">The command</param>
-        /// <returns>The parent source binder</returns>
-        /// <remarks>The value of the observable is passed as the parameter to ICommand.Execute</remarks>
-        ISourceBinder<TSource> Execute(ICommand command);
-
-        /// <summary>
-        ///     Create a subscription that executes a command
-        /// </summary>
-        /// <param name="command">The command</param>
-        /// <param name="commandParameter">The parameter passed to ICommand.Execute</param>
-        /// <returns>The parent source binder</returns>
-        ISourceBinder<TSource> Execute(ICommand command, object commandParameter);
-
-        /// <summary>
-        ///     Create a subscription that executes a command
-        /// </summary>
-        /// <param name="command">The command</param>
-        /// <param name="getCommandParameter">Function to get the command parameter, which is evaluated at command execution time</param>
-        /// <returns>The parent source binder</returns>
-        ISourceBinder<TSource> Execute(ICommand command, Func<object> getCommandParameter);
-
-        /// <summary>
         ///     Create a subscription that sets a source member with the observable's value
         /// </summary>
         /// <param name="member">An expression that defines the source member</param>
@@ -85,5 +61,11 @@ namespace Bindery.Interfaces.Binders
         /// <returns>This binder</returns>
         IObservableBinder<TSource, TArg> ObserveOn(IScheduler scheduler);
 
+        [Obsolete("ICommand support removed in version 3", true)]
+        ISourceBinder<TSource> Execute(ICommand command);
+        [Obsolete("ICommand support removed in version 3", true)]
+        ISourceBinder<TSource> Execute(ICommand command, object commandParameter);
+        [Obsolete("ICommand support removed in version 3", true)]
+        ISourceBinder<TSource> Execute(ICommand command, Func<object> getCommandParameter);
     }
 }

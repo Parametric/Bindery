@@ -63,17 +63,17 @@ namespace Bindery.Implementations
 
         public ISourceBinder<TSource> Execute(ICommand command)
         {
-            return Subscribe(x => command.ExecuteIfValid(x));
+            throw new NotImplementedException();
         }
 
         public ISourceBinder<TSource> Execute(ICommand command, object commandParameter)
         {
-            return Subscribe(x => command.ExecuteIfValid(commandParameter));
+            throw new NotImplementedException();
         }
 
         public ISourceBinder<TSource> Execute(ICommand command, Func<object> getCommandParameter)
         {
-            return Subscribe(x => command.ExecuteIfValid(getCommandParameter()));
+            throw new NotImplementedException();
         }
 
         public ISourceBinder<TSource> Set(Expression<Func<TSource, TArg>> member)

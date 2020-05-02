@@ -11,14 +11,12 @@ namespace Bindery.Tests.Tests
     {
         private ISourceBinder<TestViewModel> _binder;
         private TestButton _button;
-        private TestCommand _command;
         private TestViewModel _viewModel;
 
         [SetUp]
         public void BeforeEach()
         {
             _viewModel = new TestViewModel();
-            _command = new TestCommand(_viewModel);
             _binder = Binder.Source(_viewModel);
             _button = new TestButton();
         }
@@ -30,18 +28,14 @@ namespace Bindery.Tests.Tests
             _button.Dispose();
         }
 
-        [TestCase(true, true, true)]
-        [TestCase(false, false, false)]
-        [TestCase(true, false, false)]
-        [TestCase(false, true, false)]
-        public void SimpleEvent(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void SimpleEvent(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
             var executedCount = 0;
-            _command.ExecuteAction = vm => executedCount++;
-            _command.CanExecuteCondition = vm => commandEnabled;
 
-            _binder.Control(_button).OnEvent(nameof(_button.Click)).Execute(_command);
+            _binder.Control(_button).OnEvent(nameof(_button.Click)).Subscribe(_ => executedCount++);
 
             // Act
             if (!binderActiveDuringEvent)
@@ -58,9 +52,7 @@ namespace Bindery.Tests.Tests
         {
             // Arrange
             var executedCount = 0;
-            _command.ExecuteAction = vm => executedCount++;
-
-            _binder.Control(_button).OnEvent<TestEventArgs>().Execute(_command);
+            _binder.Control(_button).OnEvent<TestEventArgs>().Subscribe(_=>executedCount++);
 
             // Act
             _button.PerformTest(new TestEventArgs());
@@ -74,8 +66,7 @@ namespace Bindery.Tests.Tests
         {
             // Arrange
             var executedCount = 0;
-            _command.ExecuteAction = vm => executedCount++;
-            _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.MouseMove)).Execute(_command);
+            _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.MouseMove)).Subscribe(_ => executedCount++);
 
             // Act
             _button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
@@ -84,66 +75,16 @@ namespace Bindery.Tests.Tests
             Assert.That(executedCount, Is.EqualTo(1));
         }
 
-        [TestCase(true, true, true)]
-        [TestCase(false, false, false)]
-        [TestCase(true, false, false)]
-        [TestCase(false, true, false)]
-        public void ExecuteCommandWithConstantParameter(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void ConvertEventArgsAndSendToCommand(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
             var x = 0;
-            const int newX = 7;
-            _command.ExecuteAction = param => { x = param; };
-            _command.CanExecuteCondition = vm => commandEnabled;
-            _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.MouseMove)).Execute(_command, newX);
-
-            // Act
-            if (!binderActiveDuringEvent) _binder.Dispose();
-            _button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
-
-            var expectedX = expectUpdated ? newX : 0;
-
-            // Assert
-            Assert.That(x, Is.EqualTo(expectedX));
-        }
-
-        [TestCase(true, true, true)]
-        [TestCase(false, false, false)]
-        [TestCase(true, false, false)]
-        [TestCase(false, true, false)]
-        public void ExecuteCommandWithCalculatedParameter(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
-        {
-            // Arrange
-            var x = 0;
-            const int newX = 7;
-            _command.ExecuteAction = param => { x = param; };
-            _command.CanExecuteCondition = vm => commandEnabled;
-            _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.MouseMove)).Execute(_command, () => newX);
-
-            // Act
-            if (!binderActiveDuringEvent) _binder.Dispose();
-            _button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
-
-            var expectedX = expectUpdated ? newX : 0;
-
-            // Assert
-            Assert.That(x, Is.EqualTo(expectedX));
-        }
-
-        [TestCase(true, true, true)]
-        [TestCase(false, false, false)]
-        [TestCase(true, false, false)]
-        [TestCase(false, true, false)]
-        public void ConvertEventArgsAndSendToCommand(bool commandEnabled, bool binderActiveDuringEvent, bool expectUpdated)
-        {
-            // Arrange
-            var x = 0;
-            _command.ExecuteAction = param => { x = param; };
-            _command.CanExecuteCondition = vm => commandEnabled;
             _binder.Control(_button)
                 .OnEvent<MouseEventArgs>(nameof(_button.MouseMove))
                 .Transform(o => o.Select(e => e.Args.X))
-                .Execute(_command);
+                .Subscribe(argsX=>x = argsX);
 
             // Act
             if (!binderActiveDuringEvent) _binder.Dispose();
@@ -196,7 +137,7 @@ namespace Bindery.Tests.Tests
         public void MemberDoesNotExist()
         {
             var ex = Assert.Throws<ArgumentException>(
-                () => _binder.Control(_button).OnEvent("BadName").Execute(_command));
+                () => _binder.Control(_button).OnEvent("BadName"));
             Assert.That(ex.Message, Is.EqualTo("'BadName' is not a member of 'Bindery.Tests.TestClasses.TestButton'."));
         }
 
@@ -204,14 +145,14 @@ namespace Bindery.Tests.Tests
         public void EventNameIsNonEventMember()
         {
             var ex = Assert.Throws<ArgumentException>(
-                () => _binder.Control(_button).OnEvent(nameof(_button.Text)).Execute(_command));
+                () => _binder.Control(_button).OnEvent(nameof(_button.Text)));
             Assert.That(ex.Message, Is.EqualTo("'Bindery.Tests.TestClasses.TestButton.Text' is not an event."));
         }
 
         [Test]
         public void WrongEventArgSpecified()
         {
-            var ex = Assert.Throws<ArgumentException>(() => _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.Click)).Execute(_command));
+            var ex = Assert.Throws<ArgumentException>(() => _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.Click)));
             Assert.That(ex.Message,
                 Is.EqualTo(
                     "ParameterExpression of type 'System.Windows.Forms.MouseEventArgs' cannot be used for delegate parameter of type 'System.EventArgs'"));

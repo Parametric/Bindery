@@ -29,39 +29,14 @@ namespace Bindery.Interfaces.Binders
         IControlStringPropertyBinder<TSource, TControl> Property(Expression<Func<TControl, string>> member);
 
         /// <summary>
-        ///     Bind the control's Click event to a command
-        /// </summary>
-        /// <param name="command">The command</param>
-        /// <param name="parameter">(optional) The parameter passed to ICommand.Execute</param>
-        /// <returns>The control binder</returns>
-        /// <remarks>
-        ///     The control's Enabled property will also be bound to ICommand.CanExecute.
-        ///     ICommand.CanExecute() will be validated before executing the command.
-        /// </remarks>
-        /// <exception cref="NotSupportedException">TControl must inherit from System.Windows.Form.Control</exception>
-        IControlBinder<TSource, TControl> OnClick(ICommand command, object parameter = null);
-
-        /// <summary>
-        ///     Bind the control's Click event to a command
-        /// </summary>
-        /// <param name="command">The command</param>
-        /// <param name="getParameter">
-        ///     A function that determines the parameter passed to ICommand.Execute, evaluated at the time
-        ///     the Click event occurs
-        /// </param>
-        /// <returns>The control binder</returns>
-        /// <remarks>
-        ///     The control's Enabled property will also be bound to ICommand.CanExecute.
-        ///     ICommand.CanExecute() will be validated before executing the command.
-        /// </remarks>
-        /// <exception cref="NotSupportedException">TControl must inherit from System.Windows.Form.Control</exception>
-        IControlBinder<TSource, TControl> OnClick(ICommand command, Func<object> getParameter);
-
-        /// <summary>
         ///     Create an observable for the control's Click event
         /// </summary>
         /// <returns>An observable binder</returns>
         IObservableBinder<TSource,EventArgs> OnClick();
 
+        [Obsolete("ICommand support removed in version 3", true)]
+        IControlBinder<TSource, TControl> OnClick(ICommand command, object parameter = null);
+        [Obsolete("ICommand support removed in version 3", true)]
+        IControlBinder<TSource, TControl> OnClick(ICommand command, Func<object> getParameter);
     }
 }
