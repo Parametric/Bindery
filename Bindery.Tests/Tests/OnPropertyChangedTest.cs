@@ -67,6 +67,9 @@ namespace Bindery.Tests.Tests
 
             // Act
             _viewModel.StringValue = "3";
+
+            // Assert
+            Assert.That(callCount, Is.Zero);
         }
 
         [Test]

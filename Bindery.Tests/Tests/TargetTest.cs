@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 using Bindery.Interfaces.Binders;
 using Bindery.Tests.TestClasses;
@@ -78,7 +79,7 @@ namespace Bindery.Tests.Tests
 
             public int X
             {
-                get { return _x; }
+                get => _x;
                 set
                 {
                     _x = value;
@@ -126,7 +127,7 @@ namespace Bindery.Tests.Tests
         }
 
         [Test]
-        public void SetTargetSubPropertyWithAccessThroughParameterlessMethod()
+        public void SetTargetSubPropertyWithAccessThroughMethodWithNoParameter()
         {
             // Arrange
             _binder.Target(_target).Property(x => x.GetInfo().A).Get(vm => vm.IntValue);
@@ -145,6 +146,7 @@ namespace Bindery.Tests.Tests
             // Arrange
             _viewModel.IntValue = 3;
             _viewModel.ComplexValue.DecValue = 7m;
+            // ReSharper disable once SpecifyACultureInStringConversionExplicitly - can't handle use of static argument
             _binder.Target(_textBox).Property(t => t.Text).Get(vm => Convert.ToString(vm.IntValue*vm.ComplexValue.DecValue));
             Assert.That(_textBox.Text, Is.EqualTo("21"));
 

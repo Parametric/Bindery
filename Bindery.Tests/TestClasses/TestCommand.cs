@@ -9,11 +9,11 @@ namespace Bindery.Tests.TestClasses
         {
             ViewModel = viewModel;
             ViewModel.PropertyChanged += (sender, e) => CanExecuteChanged?.Invoke(sender, e);
-            ExecuteAction = parm => { };
+            ExecuteAction = _ => { };
             CanExecuteCondition = vm => true;
         }
 
-        public TestViewModel ViewModel { get; private set; }
+        public TestViewModel ViewModel { get; }
 
         public Func<TestViewModel, bool> CanExecuteCondition { get; set; }
         public Action<dynamic> ExecuteAction { get; set; }

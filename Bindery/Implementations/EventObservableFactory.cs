@@ -16,17 +16,17 @@ namespace Bindery.Implementations
             _obj = obj;
         }
 
-        public IObservable<EventContext<EventArgs>> Event(string eventName)
+        public IObservable<(object Sender, EventArgs Args)> Event(string eventName)
         {
             return EventAsObservable<EventArgs>(_obj, eventName);
         }
 
-        public IObservable<EventContext<TEventArgs>> Event<TEventArgs>(string eventName)
+        public IObservable<(object Sender, TEventArgs Args)> Event<TEventArgs>(string eventName)
         {
             return EventAsObservable<TEventArgs>(_obj, eventName);
         }
 
-        private static IObservable<EventContext<TEventArgs>> EventAsObservable<TEventArgs>(T obj, string eventName)
+        private static IObservable<(object Sender, TEventArgs Args)> EventAsObservable<TEventArgs>(T obj, string eventName)
         {
             var memberInfos = typeof (T).GetMember(eventName);
             if (memberInfos.Length == 0)
@@ -39,7 +39,7 @@ namespace Bindery.Implementations
             return CreateObservable<TEventArgs>(obj, eventInfo);
         }
 
-        private static IObservable<EventContext<TEventArgs>> CreateObservable<TEventArgs>(T control, EventInfo eventInfo)
+        private static IObservable<(object Sender, TEventArgs Args)> CreateObservable<TEventArgs>(T control, EventInfo eventInfo)
         {
             var conversion = CreateConversion<TEventArgs>(eventInfo);
             var addHandler = CreateEventHandlerAction(control, eventInfo, eventInfo.GetAddMethod());
@@ -47,9 +47,9 @@ namespace Bindery.Implementations
 
             //Observable.FromEvent<THandler,TEventArgs>(Action<EventContext<TEventArgs>>=>THandler,THandler=>void,THandler=>void)
             var call = Expression.Call(typeof (Observable), "FromEvent",
-                new[] {eventInfo.EventHandlerType, typeof (EventContext<TEventArgs>)},
+                new[] {eventInfo.EventHandlerType, typeof ((object Sender, TEventArgs Args)) },
                 new[] {conversion, addHandler, removeHandler});
-            var lambda = Expression.Lambda<Func<IObservable<EventContext<TEventArgs>>>>(call);
+            var lambda = Expression.Lambda<Func<IObservable<(object Sender, TEventArgs Args)>>>(call);
             var func = lambda.Compile();
             return func();
         }
@@ -59,14 +59,14 @@ namespace Bindery.Implementations
             // Builds:
             // func(argAction=>(sender,e)=>argAction(new EventContext(sender,e)))
             // where argAction is Action<TEventArgs> and (sender,e)=>action(e) has event handler signature
-            var argAction = Expression.Parameter(typeof (Action<EventContext<TEventArgs>>), "argAction");
+            var argAction = Expression.Parameter(typeof (Action<(object Sender, TEventArgs Args)>), "argAction");
             var sender = Expression.Parameter(typeof (object), "sender");
             var e = Expression.Parameter(typeof (TEventArgs), "e");
-            var constructorInfo = typeof (EventContext<TEventArgs>).GetConstructors().Single();
+            var constructorInfo = typeof ((object Sender, TEventArgs Args)).GetConstructors().Single();
             var ctx = Expression.New(constructorInfo, sender, e);
             var argActionInvoke = Expression.Invoke(argAction, ctx);
             var eventHandler = Expression.Lambda(eventInfo.EventHandlerType, argActionInvoke, sender, e);
-            var funcType = Expression.GetFuncType(typeof(Action<EventContext<TEventArgs>>), eventInfo.EventHandlerType);
+            var funcType = Expression.GetFuncType(typeof(Action<(object Sender, TEventArgs Args)>), eventInfo.EventHandlerType);
             return Expression.Lambda(funcType, eventHandler, argAction);
         }
 

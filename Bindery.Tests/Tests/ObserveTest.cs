@@ -44,7 +44,7 @@ namespace Bindery.Tests.Tests
         {
             // Arrange
             string mouseMoveButton = null;
-            _command.ExecuteAction = parm => { mouseMoveButton = parm; };
+            _command.ExecuteAction = param => { mouseMoveButton = param; };
             _command.CanExecuteCondition = vm => commandEnabled;
             _binder.Observe(_button.MouseMoveButton).Execute(_command);
 
@@ -132,7 +132,7 @@ namespace Bindery.Tests.Tests
         public void ObserveSourceWithException()
         {
             // Arrange
-            var task = new Task<int>(() => { throw new InvalidOperationException(); });
+            var task = new Task<int>(() => throw new InvalidOperationException());
             _viewModel.MyObservable = task.ToObservable();
 
             Exception thrown = null;

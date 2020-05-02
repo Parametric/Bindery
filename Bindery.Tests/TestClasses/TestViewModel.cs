@@ -19,7 +19,7 @@ namespace Bindery.Tests.TestClasses
 
         public int IntValue
         {
-            get { return _intValue; }
+            get => _intValue;
             set
             {
                 if (value == _intValue) return;
@@ -30,7 +30,7 @@ namespace Bindery.Tests.TestClasses
 
         public string StringValue
         {
-            get { return _stringValue; }
+            get => _stringValue;
             set
             {
                 if (value == _stringValue) return;
@@ -39,7 +39,7 @@ namespace Bindery.Tests.TestClasses
             }
         }
 
-        public Inner ComplexValue { get; private set; }
+        public Inner ComplexValue { get; }
 
         public IObservable<int> MyObservable { get; set; }
 
@@ -48,8 +48,7 @@ namespace Bindery.Tests.TestClasses
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public class Inner : INotifyPropertyChanged
@@ -58,7 +57,7 @@ namespace Bindery.Tests.TestClasses
 
             public decimal DecValue
             {
-                get { return _decValue; }
+                get => _decValue;
                 set
                 {
                     if (value == _decValue) return;
@@ -72,8 +71,7 @@ namespace Bindery.Tests.TestClasses
             [Test.Annotations.NotifyPropertyChangedInvocator]
             protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
             {
-                var handler = PropertyChanged;
-                if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 

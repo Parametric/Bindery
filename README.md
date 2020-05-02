@@ -63,15 +63,15 @@ binder.Control(button).OnClick(command);
 ##### Bind a form's `MouseMove` event to a command
 ```C#
 ICommand command = new CommandImplementation(viewModel);
-binder.Control(form).OnEvent<MouseEventArgs>("MouseMove")
-  .Transform(o => o.Where(ctx => ctx.Args.Button==MouseButtons.Left).Select(ctx => new {ctx.Args.X, ctx.Args.Y})) 
+binder.Control(form).OnEvent<MouseEventArgs>(nameof(form.MouseMove))
+  .Transform(o => o.Where(e => e.Args.Button==MouseButtons.Left).Select(e => new {e.Args.X, e.Args.Y})) 
   // Mouse coords are passed to command.Execute()
   .Execute(command);
 ```
 ##### Bind a form's `MouseMove` event arguments to a view model property
 ```C#
-binder.Control(form).OnEvent<MouseEventArgs>("MouseMove")
-  .Transform(o => o.Select(ctx => new MyCoord{X = ctx.Args.X, Y = ctx.Args.Y}))
+binder.Control(form).OnEvent<MouseEventArgs>(nameof(form.MouseMove))
+  .Transform(o => o.Select(e => new MyCoord{X = e.Args.X, Y = e.Args.Y}))
   .Set(vm => vm.CurrentMouseCoords);
 ```
 ##### Bind to a non-control target object
@@ -87,11 +87,11 @@ binder.OnPropertyChanged(vm => vm.ErrorMessage).Subscribe(msg => DisplayErrorDia
 ```
 ##### Subscribe to a button's `Click` event to close the form
 ```C#
-binder.Control(cancelButton).OnClick().Subscribe(ctx => form.Close());
+binder.Control(cancelButton).OnClick().Subscribe(_ => form.Close());
 ```
 ##### Subscribe to a form's `Closed` event to dispose of the binder
 ```C#
-binder.Control(form).OnEvent("Closed").Subscribe(ctx => binder.Dispose());
+binder.Control(form).OnEvent(nameof(form.Closed)).Subscribe(_ => binder.Dispose());
 ```
 ##### Create an observable subscription to execute a command
 ```C#
@@ -115,6 +115,6 @@ binder.Observe(viewModel.Observable).SubscribeAsync(msg => command.ExecuteAsync(
 ### Event to observable conversion
 ```C#
 IObservable<string> mouseMoveButtons =
-  Bindery.Create.ObservableFor(form).Event<MouseEventArgs>("MouseMove")
-       .Select(ctx => Convert.ToString(ctx.Args.Button));
+  Bindery.Create.ObservableFor(form).Event<MouseEventArgs>(nameof(form.MouseMove))
+       .Select(e => Convert.ToString(e.Args.Button));
 ```

@@ -1,9 +1,12 @@
-﻿namespace Bindery.Interfaces
+﻿using System;
+
+namespace Bindery.Interfaces
 {
     /// <summary>
     /// Full event information
     /// </summary>
     /// <typeparam name="TEventArgs"></typeparam>
+    [Obsolete("No longer supported. Use a tuple of (object Sender, EventArgs Args) instead.", true)]
     public class EventContext<TEventArgs>
     {
         /// <summary>
