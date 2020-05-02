@@ -15,7 +15,7 @@ namespace Bindery.Tests.Tests
         {
             _viewModel = new TestViewModel();
             _command = new TestCommand(_viewModel);
-            _binder = Create.Binder(_viewModel);
+            _binder = Binder.Source(_viewModel);
             _control = new TestControl();
             _invoker = new TestInvoker();
             Invoker.Override(_invoker);

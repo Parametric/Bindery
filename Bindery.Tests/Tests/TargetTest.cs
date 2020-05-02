@@ -16,7 +16,7 @@ namespace Bindery.Tests.Tests
             _viewModel = new TestViewModel();
             _textBox = new TextBox();
             _target = new TestTarget();
-            _binder = Create.Binder(_viewModel);
+            _binder = Binder.Source(_viewModel);
         }
 
         [TearDown]

@@ -21,7 +21,7 @@ namespace Bindery.Tests.Tests
             _viewModel = new TestViewModel();
             _command = new TestCommand(_viewModel);
             _button = new TestButton();
-            _binder = Create.Binder(_viewModel);
+            _binder = Binder.Source(_viewModel);
         }
 
         [TearDown]
@@ -102,7 +102,6 @@ namespace Bindery.Tests.Tests
             Assert.That(complete, Is.EqualTo(expectedComplete));
         }
 
-
         [Test]
         public void ObserveSourceWithCancellation()
         {
@@ -150,7 +149,7 @@ namespace Bindery.Tests.Tests
         public void SpecifyDefaultScheduler()
         {
             // Arrange
-            _binder = Create.Binder(_viewModel);
+            _binder = Binder.Source(_viewModel);
             var task = new Task<int>(() => 5);
             _viewModel.MyObservable = task.ToObservable();
 
@@ -172,7 +171,7 @@ namespace Bindery.Tests.Tests
         public void OverrideDefaultScheduler()
         {
             // Arrange
-            var binder = Create.Binder(_viewModel, Scheduler.Default);
+            var binder = Binder.Source(_viewModel, Scheduler.Default);
             var observableThreadId = 0;
             var observable = Observable.Create<int>(o =>
             {

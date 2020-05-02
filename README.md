@@ -25,11 +25,11 @@ Code Examples
 ### Binding
 ##### Create a root binder for the view model
 ```C#
-var binder = Bindery.Create.Binder(viewModel);
+var binder = Binder.Source(viewModel);
 ```
 ##### Create a root binder and set the default subscription scheduler to schedule actions on the form's thread
 ```C#
-var binder = Bindery.Create.Binder(viewModel, new ControlScheduler(form));
+var binder = Binder.Source(viewModel, new ControlScheduler(form));
 ```
 ##### Dispose of a binder
 Diposing of a binder removes all bindings and disposes of all subcriptions created by the binder.
@@ -115,6 +115,6 @@ binder.Observe(viewModel.Observable).SubscribeAsync(msg => command.ExecuteAsync(
 ### Event to observable conversion
 ```C#
 IObservable<string> mouseMoveButtons =
-  Bindery.Create.ObservableFor(form).Event<MouseEventArgs>(nameof(form.MouseMove))
+  Binder.Observe(form).Event<MouseEventArgs>(nameof(form.MouseMove))
        .Select(e => Convert.ToString(e.Args.Button));
 ```

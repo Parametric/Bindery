@@ -13,7 +13,7 @@ namespace Bindery.Tests.Tests
         public void BeforeEach()
         {
             _viewModel = new TestViewModel();
-            _binder = Create.Binder(_viewModel);
+            _binder = Binder.Source(_viewModel);
             _userControl = new PropertyGrid();
             _userControl.CreateControl();
         }

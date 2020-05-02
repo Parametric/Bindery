@@ -37,7 +37,7 @@ namespace Bindery.Implementations
 
         public IObservableBinder<TSource, (object Sender, EventArgs Args)> OnEvent(string eventName)
         {
-            var observable = Create.ObservableFor(Target).Event(eventName);
+            var observable = Binder.Observe(Target).Event(eventName);
             return CreateObservableBinder(observable);
         }
 
@@ -48,12 +48,12 @@ namespace Bindery.Implementations
             if (!match.Success)
                 throw new ArgumentException(string.Format("Unable to determine event name from event argument type {0}.", tEventArgsName));
             var eventName = match.Groups[1].Value;
-            var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);
+            var observable = Binder.Observe(Target).Event<TEventArgs>(eventName);
             return CreateObservableBinder(observable);
         }
         public IObservableBinder<TSource, (object Sender, TEventArgs Args)> OnEvent<TEventArgs>(string eventName)
         {
-            var observable = Create.ObservableFor(Target).Event<TEventArgs>(eventName);
+            var observable = Binder.Observe(Target).Event<TEventArgs>(eventName);
             return CreateObservableBinder(observable);
         }
 

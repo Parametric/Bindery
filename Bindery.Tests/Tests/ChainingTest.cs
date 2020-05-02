@@ -12,7 +12,7 @@ namespace Bindery.Tests.Tests
             // Arrange
             var viewModel = new TestViewModel();
             var control = new TestControl();
-            var binder = Create.Binder(viewModel);
+            var binder = Binder.Source(viewModel);
 
             // Act
             binder.Control(control).OnClick().Subscribe(e => { var a = 1; })
