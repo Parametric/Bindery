@@ -118,3 +118,14 @@ IObservable<string> mouseMoveButtons =
   Binder.Observe(form).Event<MouseEventArgs>(nameof(form.MouseMove))
        .Select(e => Convert.ToString(e.Args.Button));
 ```
+### Send value to `IObservable`
+A view model will often want to send messages to the UI through an `IObservable` property. 
+It can be useful to have the underlying value of that property also implement `IObserver`, e.g. by using `System.Reactive.Subjects.Subject`.
+```C#
+// Send on current thread
+observable.Send(value);
+// Send synchronously to synchronization context
+observable.Send(message, syncContext);
+// Send asynchronously to synchronization context
+observable.Post(request, syncContext);
+```
