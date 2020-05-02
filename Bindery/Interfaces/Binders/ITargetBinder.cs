@@ -21,26 +21,25 @@ namespace Bindery.Interfaces.Binders
         ITargetPropertyBinder<TSource, TTarget, TProp> Property<TProp>(Expression<Func<TTarget, TProp>> member);
 
         /// <summary>
-        ///     Create an IObservable{EventContext{EventArgs}} for one of the target's events
+        ///     Create an IObservable{(object, EventArgs)} for one of the target's events
         /// </summary>
         /// <param name="eventName">The name of the event</param>
         /// <returns>An observable binder</returns>
+        IObservableBinder<TSource, (object Sender, EventArgs Args)> Event(string eventName);
+
+        /// <summary>
+        ///     Create an IObservable{(object, TEventARgs)} for one of the target's events
+        /// </summary>
+        /// <typeparam name="TEventArgs">The type of the event's argument parameter</typeparam>
+        /// <param name="eventName">The name of the event</param>
+        /// <returns>An observable binder</returns>
+        IObservableBinder<TSource, (object Sender, TEventArgs Args)> Event<TEventArgs>(string eventName);
+
+        [Obsolete("Use Event()", true)]
         IObservableBinder<TSource, (object Sender, EventArgs Args)> OnEvent(string eventName);
-
-        /// <summary>
-        ///     Create an IObservable{EventContext{TEventArgs}} for one of the target's events
-        /// </summary>
-        /// <typeparam name="TEventArgs">The type of the event's argument parameter</typeparam>
-        /// <returns>An observable binder</returns>
-        /// <remarks>The event name is determined based on TEventArgs</remarks>
+        [Obsolete("Use Event() and specify event name", true)]
         IObservableBinder<TSource, (object Sender, TEventArgs Args)> OnEvent<TEventArgs>();
-
-        /// <summary>
-        ///     Create an IObservable{EventContext{TEventArgs}} for one of the target's events
-        /// </summary>
-        /// <typeparam name="TEventArgs">The type of the event's argument parameter</typeparam>
-        /// <param name="eventName">The name of the event</param>
-        /// <returns>An observable binder</returns>
+        [Obsolete("Use Event()", true)]
         IObservableBinder<TSource, (object Sender, TEventArgs Args)> OnEvent<TEventArgs>(string eventName);
     }
 }

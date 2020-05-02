@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Bindery.Interfaces;
 using Bindery.Interfaces.Binders;
 
 namespace Bindery.Implementations
@@ -20,38 +18,22 @@ namespace Bindery.Implementations
 
         public TTarget Target { get; private set; }
 
-        public TSource Source
-        {
-            get { return _sourceBinder.Source; }
-        }
+        public TSource Source => _sourceBinder.Source;
 
-        public IScheduler DefaultScheduler
-        {
-            get { return _sourceBinder.DefaultScheduler; }
-        }
+        public IScheduler DefaultScheduler => _sourceBinder.DefaultScheduler;
 
         public ITargetPropertyBinder<TSource, TTarget, TProp> Property<TProp>(Expression<Func<TTarget, TProp>> member)
         {
             return new TargetPropertyBinder<TSource, TTarget, TProp>(this, member);
         }
 
-        public IObservableBinder<TSource, (object Sender, EventArgs Args)> OnEvent(string eventName)
+        public IObservableBinder<TSource, (object Sender, EventArgs Args)> Event(string eventName)
         {
             var observable = Binder.Observe(Target).Event(eventName);
             return CreateObservableBinder(observable);
         }
 
-        public IObservableBinder<TSource, (object Sender, TEventArgs Args)> OnEvent<TEventArgs>()
-        {
-            var tEventArgsName = typeof(TEventArgs).Name;
-            var match = Regex.Match(tEventArgsName, "(.*)EventArgs");
-            if (!match.Success)
-                throw new ArgumentException(string.Format("Unable to determine event name from event argument type {0}.", tEventArgsName));
-            var eventName = match.Groups[1].Value;
-            var observable = Binder.Observe(Target).Event<TEventArgs>(eventName);
-            return CreateObservableBinder(observable);
-        }
-        public IObservableBinder<TSource, (object Sender, TEventArgs Args)> OnEvent<TEventArgs>(string eventName)
+        public IObservableBinder<TSource, (object Sender, TEventArgs Args)> Event<TEventArgs>(string eventName)
         {
             var observable = Binder.Observe(Target).Event<TEventArgs>(eventName);
             return CreateObservableBinder(observable);
@@ -100,6 +82,26 @@ namespace Bindery.Implementations
             _sourceBinder.Dispose();
         }
 
+        #endregion
+
+        #region Deprecated
+        public IObservableBinder<TSource, (object Sender, EventArgs Args)> OnEvent(string eventName)
+        {
+            // deprecated
+            throw new NotImplementedException();
+        }
+
+        public IObservableBinder<TSource, (object Sender, TEventArgs Args)> OnEvent<TEventArgs>()
+        {
+            // deprecated
+            throw new NotImplementedException();
+        }
+
+        public IObservableBinder<TSource, (object Sender, TEventArgs Args)> OnEvent<TEventArgs>(string eventName)
+        {
+            // deprecated
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

@@ -58,14 +58,14 @@ binder.Control(button).OnClick().Subscribe(_ => DoSomething());
 ```
 ##### Subscribe to a form's `MouseMove` event
 ```C#
-binder.Control(form).OnEvent<MouseEventArgs>(nameof(form.MouseMove))
+binder.Control(form).Event<MouseEventArgs>(nameof(form.MouseMove))
   .Transform(o => o.Where(e => e.Args.Button==MouseButtons.Left).Select(e => new {e.Args.X, e.Args.Y})) 
   // Mouse coords are passed
   .Subscribe(a => DoSomething(a.X, a.Y));
 ```
 ##### Bind a form's `MouseMove` event arguments to a view model property
 ```C#
-binder.Control(form).OnEvent<MouseEventArgs>(nameof(form.MouseMove))
+binder.Control(form).Event<MouseEventArgs>(nameof(form.MouseMove))
   .Transform(o => o.Select(e => new MyCoord{X = e.Args.X, Y = e.Args.Y}))
   .Set(vm => vm.CurrentMouseCoords);
 ```
@@ -86,7 +86,7 @@ binder.Control(cancelButton).OnClick().Subscribe(_ => form.Close());
 ```
 ##### Subscribe to a form's `Closed` event to dispose of the binder
 ```C#
-binder.Control(form).OnEvent(nameof(form.Closed)).Subscribe(_ => binder.Dispose());
+binder.Control(form).Event(nameof(form.Closed)).Subscribe(_ => binder.Dispose());
 ```
 ##### Create an observable subscription
 ```C#
@@ -97,7 +97,7 @@ binder.Observe(viewModel.Observable).ObserveOn(Scheduler.Immediate).Subscribe(_ 
 ##### Subscribe to an observable with full subscription syntax support
 ```C#
 binder.Observe(viewModel.Observable).Subscribe(
-  ctx=>ctx.OnNext(oVal => OnNextAction(oVal))
+  ctx => ctx.OnNext(oVal => OnNextAction(oVal))
        .OnError(ex => HandleException(ex))
        .OnComplete(() => OnCompleteAction()));
 ```

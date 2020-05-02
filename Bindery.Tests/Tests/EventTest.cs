@@ -35,7 +35,7 @@ namespace Bindery.Tests.Tests
             // Arrange
             var executedCount = 0;
 
-            _binder.Control(_button).OnEvent(nameof(_button.Click)).Subscribe(_ => executedCount++);
+            _binder.Control(_button).Event(nameof(_button.Click)).Subscribe(_ => executedCount++);
 
             // Act
             if (!binderActiveDuringEvent)
@@ -48,25 +48,11 @@ namespace Bindery.Tests.Tests
         }
 
         [Test]
-        public void EventWithGenericEventHandler()
-        {
-            // Arrange
-            var executedCount = 0;
-            _binder.Control(_button).OnEvent<TestEventArgs>().Subscribe(_=>executedCount++);
-
-            // Act
-            _button.PerformTest(new TestEventArgs());
-
-            // Assert
-            Assert.That(executedCount, Is.EqualTo(1));
-        }
-
-        [Test]
         public void ExplicitEventSpecification()
         {
             // Arrange
             var executedCount = 0;
-            _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.MouseMove)).Subscribe(_ => executedCount++);
+            _binder.Control(_button).Event<MouseEventArgs>(nameof(_button.MouseMove)).Subscribe(_ => executedCount++);
 
             // Act
             _button.PerformMouseMove(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0));
@@ -82,7 +68,7 @@ namespace Bindery.Tests.Tests
             // Arrange
             var x = 0;
             _binder.Control(_button)
-                .OnEvent<MouseEventArgs>(nameof(_button.MouseMove))
+                .Event<MouseEventArgs>(nameof(_button.MouseMove))
                 .Transform(o => o.Select(e => e.Args.X))
                 .Subscribe(argsX=>x = argsX);
 
@@ -102,7 +88,7 @@ namespace Bindery.Tests.Tests
         public void ConvertEventArgsAndUpdateSource(bool binderActiveDuringEvent, bool expectUpdated)
         {
             // Arrange
-            _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.MouseMove))
+            _binder.Control(_button).Event<MouseEventArgs>(nameof(_button.MouseMove))
                 .Transform(o => o.Select(x => Convert.ToString(x.Args.Button)))
                 .Set(vm => vm.StringValue);
             if (!binderActiveDuringEvent)
@@ -119,8 +105,8 @@ namespace Bindery.Tests.Tests
             // Arrange
             Control sentBy = null;
             var mouseButtons = MouseButtons.None;
-            _binder.Control(_button).OnEvent(nameof(_button.Click)).Subscribe(e => sentBy = (Control) e.Sender);
-            _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.MouseMove))
+            _binder.Control(_button).Event(nameof(_button.Click)).Subscribe(e => sentBy = (Control) e.Sender);
+            _binder.Control(_button).Event<MouseEventArgs>(nameof(_button.MouseMove))
                 .Subscribe(x => mouseButtons = x.Args.Button);
 
                 // Act
@@ -137,7 +123,7 @@ namespace Bindery.Tests.Tests
         public void MemberDoesNotExist()
         {
             var ex = Assert.Throws<ArgumentException>(
-                () => _binder.Control(_button).OnEvent("BadName"));
+                () => _binder.Control(_button).Event("BadName"));
             Assert.That(ex.Message, Is.EqualTo("'BadName' is not a member of 'Bindery.Tests.TestClasses.TestButton'."));
         }
 
@@ -145,14 +131,14 @@ namespace Bindery.Tests.Tests
         public void EventNameIsNonEventMember()
         {
             var ex = Assert.Throws<ArgumentException>(
-                () => _binder.Control(_button).OnEvent(nameof(_button.Text)));
+                () => _binder.Control(_button).Event(nameof(_button.Text)));
             Assert.That(ex.Message, Is.EqualTo("'Bindery.Tests.TestClasses.TestButton.Text' is not an event."));
         }
 
         [Test]
         public void WrongEventArgSpecified()
         {
-            var ex = Assert.Throws<ArgumentException>(() => _binder.Control(_button).OnEvent<MouseEventArgs>(nameof(_button.Click)));
+            var ex = Assert.Throws<ArgumentException>(() => _binder.Control(_button).Event<MouseEventArgs>(nameof(_button.Click)));
             Assert.That(ex.Message,
                 Is.EqualTo(
                     "ParameterExpression of type 'System.Windows.Forms.MouseEventArgs' cannot be used for delegate parameter of type 'System.EventArgs'"));
